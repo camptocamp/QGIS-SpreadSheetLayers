@@ -9,7 +9,7 @@
 [general]
 name=Spreadsheet Layers
 qgisMinimumVersion=2.5
-description=Load layers from MS Excel and OpenOffice spreadsheets
+description=Load layers from spreadsheet files (*.ods, *.xls, *.xlsx)
 version=0.1
 author=Camptocamp
 email=info@camptocamp.com

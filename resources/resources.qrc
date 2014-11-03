@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/plugins/SpreadsheetLayersPlugin">
+    <qresource prefix="/plugins/SpreadsheetLayers">
         <file>icon/spreadsheet7.svg</file>
     </qresource>
 </RCC>
