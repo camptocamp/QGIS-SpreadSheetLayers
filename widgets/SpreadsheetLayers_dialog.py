@@ -416,6 +416,12 @@ class SpreadsheetLayersPluginDialog(QtGui.QDialog, Ui_SpreadsheetLayersPluginDia
         vrtPath = self.vrtPath()
         file = QtCore.QFile(vrtPath)
         if file.exists():
+            if file.open(QtCore.QIODevice.ReadOnly | QtCore. QIODevice.Text):
+                oldContent = file.readAll()
+                file.close()
+                if content == oldContent:
+                    return True
+
             msgBox = QtGui.QMessageBox()
             msgBox.setText("The file {} already exist.".format(vrtPath))
             msgBox.setInformativeText("Do you want to overwrite ?");
