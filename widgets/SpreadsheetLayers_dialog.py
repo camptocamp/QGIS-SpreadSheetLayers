@@ -138,11 +138,11 @@ class SpreadsheetLayersPluginDialog(QtGui.QDialog, Ui_SpreadsheetLayersPluginDia
         settings = QtCore.QSettings()
         s = QtGui.QFileDialog.getOpenFileName(
             self,
-            str(self.tr("Choose a spreadsheet file to open")),
-            str(settings.value(self.pluginKey + "/directory", "./")),
-            str(self.tr("Spreadsheet files") + " (*.ods *.xls *.xlsx);;"
+            self.tr("Choose a spreadsheet file to open"),
+            settings.value(self.pluginKey + "/directory", "./"),
+            self.tr("Spreadsheet files") + " (*.ods *.xls *.xlsx);;"
                 + self.tr("GDAL Virtual Format") + " (*.vrt);;"
-                + self.tr("All files") + " (* *.*)".format()))
+                + self.tr("All files") + " (* *.*)".format())
         if s == '':
             return
         settings.setValue(self.pluginKey + "/directory", os.path.dirname(s))
