@@ -22,9 +22,10 @@
 """
 
 import os
-from osgeo import gdal, ogr
+from osgeo import ogr
+from qgis.core import QgsVectorDataProvider
 from qgis.gui import QgsMessageBar, QgsGenericProjectionSelector
-from PyQt4 import QtCore, QtGui, QtXml
+from PyQt4 import QtCore, QtGui
 from ..ui.ui_SpreadsheetLayers_dialog import Ui_SpreadsheetLayersPluginDialogBase
 
 
@@ -185,11 +186,7 @@ class SpreadsheetLayersPluginDialog(QtGui.QDialog, Ui_SpreadsheetLayersPluginDia
         return self.sheetBox.currentText()
 
     def setSheet(self, sheetName):
-        index = self.sheetBox.findText(sheetName)
-        if index == -1:
-            return False
-        self.sheetBox.setCurrentIndex(index)
-        return True
+        self.sheetBox.setCurrentIndex(self.sheetBox.findText(sheetName))
 
     def updateSheetBox(self):
         self.sheetBox.clear()
@@ -214,21 +211,13 @@ class SpreadsheetLayersPluginDialog(QtGui.QDialog, Ui_SpreadsheetLayersPluginDia
         return self.xFieldBox.currentText()
 
     def setXField(self, fieldName):
-        index = self.xFieldBox.findText(fieldName)
-        if index == -1:
-            return False
-        self.xFieldBox.setCurrentIndex(index)
-        return True
+        self.xFieldBox.setCurrentIndex(self.xFieldBox.findText(fieldName))
 
     def yField(self):
         return self.yFieldBox.currentText()
 
     def setYField(self, fieldName):
-        index = self.yFieldBox.findText(fieldName)
-        if index == -1:
-            return False
-        self.yFieldBox.setCurrentIndex(index)
-        return True
+        self.yFieldBox.setCurrentIndex(self.yFieldBox.findText(fieldName))
 
     def updateFieldBoxes(self):
         if self.layer is None:
