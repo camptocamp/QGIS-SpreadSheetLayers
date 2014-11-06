@@ -317,43 +317,49 @@ class SpreadsheetLayersPluginDialog(QtGui.QDialog, Ui_SpreadsheetLayersPluginDia
             self.warning("Impossible to open VRT file {}".format(vrtPath))
             return False
 
-        stream = QtCore.QXmlStreamReader(file)
-
-        stream.readNextStartElement()
-        if stream.name() == "OGRVRTDataSource":
+        try:
+            stream = QtCore.QXmlStreamReader(file)
 
             stream.readNextStartElement()
-            if stream.name() == "OGRVRTLayer":
-                self.setLayerName(stream.attributes().value("name"))
+            if stream.name() == "OGRVRTDataSource":
 
-                while stream.readNextStartElement():
-                    if stream.name() == "SrcDataSource":
-                        # do nothing : datasource should be already set
-                        pass
+                stream.readNextStartElement()
+                if stream.name() == "OGRVRTLayer":
+                    self.setLayerName(stream.attributes().value("name"))
 
-                    elif stream.name() == "SrcLayer":
-                        text = stream.readElementText()
-                        self.setSheet(text)
+                    while stream.readNextStartElement():
+                        if stream.name() == "SrcDataSource":
+                            # do nothing : datasource should be already set
+                            pass
 
-                    elif stream.name() == "GeometryType":
-                        pass
+                        elif stream.name() == "SrcLayer":
+                            text = stream.readElementText()
+                            self.setSheet(text)
 
-                    elif stream.name() == "LayerSRS":
-                        text = stream.readElementText()
-                        self.setCrs(text)
+                        elif stream.name() == "GeometryType":
+                            pass
 
-                    elif stream.name() == "GeometryField":
-                        self.setXField(stream.attributes().value("x"))
-                        self.setYField(stream.attributes().value("y"))
+                        elif stream.name() == "LayerSRS":
+                            text = stream.readElementText()
+                            self.setCrs(text)
 
-                    if not stream.isEndElement():
-                        stream.skipCurrentElement()
+                        elif stream.name() == "GeometryField":
+                            self.setXField(stream.attributes().value("x"))
+                            self.setYField(stream.attributes().value("y"))
+
+                        if not stream.isEndElement():
+                            stream.skipCurrentElement()
+
+                stream.skipCurrentElement()
 
             stream.skipCurrentElement()
 
-        stream.skipCurrentElement()
+        except Exception:
+            self.warning("An error occurs during existing VRT file loading")
+            return False
 
-        file.close()
+        finally:
+            file.close()
 
         self.info("Existing VRT file has been loaded")
         return True
