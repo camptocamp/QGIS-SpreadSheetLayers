@@ -26,8 +26,8 @@ tags=
 
 homepage=
 tracker=
-repository=
-icon=resources/icon/spreadsheet7.svg
+repository=https://github.com/camptocamp/QGIS-SpreadSheetLayers
+icon=resources/icon/icon/mActionAddSpreadsheetLayer.svg
 # experimental flag
 experimental=True
 

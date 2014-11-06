@@ -61,7 +61,7 @@ class SpreadsheetLayersPlugin(QtCore.QObject):
 
     def initGui(self):
         self.action = QtGui.QAction(
-            QtGui.QIcon(':/plugins/SpreadsheetLayers/icon/spreadsheet7.svg'),
+            QtGui.QIcon(':/plugins/SpreadsheetLayers/icon/mActionAddSpreadsheetLayer.svg'),
             self.tr("Add spreadsheet layer"),
             self)
         self.action.triggered.connect(self.showDialog)
