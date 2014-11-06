@@ -50,7 +50,7 @@ class SpreadsheetLayersPlugin(QtCore.QObject):
         locale_path = os.path.join(
             self.plugin_dir,
             'i18n',
-            'SpreadsheetLayersPlugin_{}.qm'.format(locale))
+            'SpreadsheetLayers_{}.qm'.format(locale))
 
         if os.path.exists(locale_path):
             self.translator = QtCore.QTranslator()
