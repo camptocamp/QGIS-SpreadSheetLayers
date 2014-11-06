@@ -19,10 +19,10 @@
 # ***************************************************************************/
 
 ###################CONFIGURE HERE########################
-PLUGINNAME = DPFE
-PACKAGES_NO_UI = core widgets
+PLUGINNAME = SpreadsheetLayers
+PACKAGES_NO_UI = widgets
 PACKAGES = $(PACKAGES_NO_UI) ui
-TRANSLATIONS = DPFE_fr.ts
+TRANSLATIONS = SpreadsheetLayers_fr.ts
 
 #this can be overiden by calling QGIS_PREFIX_PATH=/my/path make
 # DEFAULT_QGIS_PREFIX_PATH=/usr/local/qgis-master
@@ -30,7 +30,8 @@ DEFAULT_QGIS_PREFIX_PATH=/usr
 ###################END CONFIGURE#########################
 
 PACKAGESSOURCES := $(shell find $(PACKAGES) -name "*.py")
-SOURCES := dpfe_plugin.py $(PACKAGESSOURCES)
+SOURCES := SpreadsheetLayersPlugin.py $(PACKAGESSOURCES)
+SOURCES_FOR_I18N = $(SOURCES:%=../%)
 
 # QGIS PATHS
 ifndef QGIS_PREFIX_PATH
@@ -93,9 +94,7 @@ compile:
 	./bin/pip install -q -r requirements.txt
 	make -C ui
 	make -C resources
-	#make -C doc/user html
-	#make -C doc/dev api
-	#make -C doc/dev html
+	#make -C help html
 
 ################CLEAN#######################
 clean:
@@ -107,8 +106,7 @@ clean:
 	rm -f *.pyc
 	make clean -C ui
 	make clean -C resources
-	#make clean -C doc/user
-	#make clean -C doc/dev
+	#make clean -C help
 
 ################TESTS#######################
 .ONESHELL:
@@ -122,12 +120,27 @@ tests:
 	unset GREP_OPTIONS
 	nosetests -v test --nocapture --with-id --with-coverage --cover-package=$(PLUGINNAME) 3>&1 1>&2 2>&3 3>&- | \grep -v "^Object::" || true
 
-################DOCS#######################
-# build documentation with sphinx
-doc:
-	make -C doc/user html
-	#make -C doc/dev api
-	#make -C doc/dev html
+################TRANSLATION#######################
+updatei18nconf:
+	echo "SOURCES = " $(SOURCES_FOR_I18N) > i18n/i18n.generatedconf
+	echo "TRANSLATIONS = " $(TRANSLATIONS) >> i18n/i18n.generatedconf
+	echo "CODECFORTR = UTF-8"  >> i18n/i18n.generatedconf
+	echo "CODECFORSRC = UTF-8"  >> i18n/i18n.generatedconf
+
+# transup: update .ts translation files
+transup:updatei18nconf
+	pylupdate4 -noobsolete i18n/i18n.generatedconf
+	rm -f i18n/i18n.generatedconf
+
+# transcompile: compile translation files into .qm binary format
+transcompile: $(TRANSLATIONS:%.ts=i18n/%.qm)
+
+# transclean: deletes all .qm files
+transclean:
+	rm -f i18n/*.qm
+
+%.qm : %.ts
+	lrelease $<
 
 ################PACKAGE############################
 # Create a zip package of the plugin named $(PLUGINNAME).zip.
@@ -142,18 +155,12 @@ package: compile
 	rm -f $(PLUGINNAME).zip
 	rm -rf $(PLUGINNAME)/
 	mkdir -p $(PLUGINNAME)/ui/
-	mkdir -p $(PLUGINNAME)/doc/user/build
 	cp -r lib/ $(PLUGINNAME)/
 	cp ui/*.py $(PLUGINNAME)/ui/
-	cp -r doc/user/build/html/ $(PLUGINNAME)/doc/user/build/
 	git archive -o $(PLUGINNAME).zip --prefix=$(PLUGINNAME)/ $(HASH)
 	zip -d $(PLUGINNAME).zip $(PLUGINNAME)/\*Makefile
 	zip -d $(PLUGINNAME).zip $(PLUGINNAME)/.gitignore
 	zip -g $(PLUGINNAME).zip $(PLUGINNAME)/*/*
-	zip -x \*.pyc -g $(PLUGINNAME).zip `find $(PLUGINNAME)/lib/python2.7/site-packages/matplotlib`
-	zip -g $(PLUGINNAME).zip $(PLUGINNAME)/lib/python2.7/site-packages/pylab.py
-	zip -g $(PLUGINNAME).zip $(PLUGINNAME)/lib/python2.7/site-packages/pyparsing.py
-	zip -g $(PLUGINNAME).zip `find $(PLUGINNAME)/doc/user/build/html`
 	rm -rf $(PLUGINNAME)/
 	mv $(PLUGINNAME).zip $(PLUGINNAME).$(VERSION).zip
 	echo "Created package: $(PLUGINNAME).$(VERSION).zip"
