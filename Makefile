@@ -90,11 +90,8 @@ compile:
 	@echo "------------------------------"
 	@echo "Compile ui and resources forms"
 	@echo "------------------------------"
-	virtualenv .
-	./bin/pip install -q -r requirements.txt
 	make -C ui
 	make -C resources
-	#make -C help html
 
 ################CLEAN#######################
 clean:
@@ -102,11 +99,9 @@ clean:
 	@echo "------------------------------"
 	@echo "Clean ui and resources forms"
 	@echo "------------------------------"
-	rm -rf bin include lib local
 	rm -f *.pyc
 	make clean -C ui
 	make clean -C resources
-	#make clean -C help
 
 ################TESTS#######################
 .ONESHELL:
@@ -151,11 +146,10 @@ transclean:
 #   make package VERSION=0.3.2 HASH=master
 #   make package VERSION=0.3.2 HASH=83c34c7d
 
-package: compile
+package: compile transcompile
 	rm -f $(PLUGINNAME).zip
 	rm -rf $(PLUGINNAME)/
 	mkdir -p $(PLUGINNAME)/ui/
-	cp -r lib/ $(PLUGINNAME)/
 	cp ui/*.py $(PLUGINNAME)/ui/
 	git archive -o $(PLUGINNAME).zip --prefix=$(PLUGINNAME)/ $(HASH)
 	zip -d $(PLUGINNAME).zip $(PLUGINNAME)/\*Makefile
