@@ -43,10 +43,10 @@
        <item>
         <widget class="QLineEdit" name="filePathEdit">
          <property name="toolTip">
-          <string>Full path to the delimited text file</string>
+          <string/>
          </property>
          <property name="whatsThis">
-          <string>Full path to the delimited text file. In order to properly parse the fields in the file, the delimiter must be defined prior to entering the file name. Use the Browse button to the right of this field to choose the input file.</string>
+          <string/>
          </property>
          <property name="readOnly">
           <bool>false</bool>
@@ -65,10 +65,10 @@
           </size>
          </property>
          <property name="toolTip">
-          <string>Browse to find the delimited text file to be processed</string>
+          <string/>
          </property>
          <property name="whatsThis">
-          <string>Use this button to browse to the location of the delimited text file. This button will not be enabled until a delimiter has been entered in the &lt;i&gt;Delimiter&lt;/i&gt; box. Once a file is chosen, the X and Y field drop-down boxes will be populated with the fields from the delimited text file.</string>
+          <string/>
          </property>
          <property name="text">
           <string>Browse...</string>
@@ -101,33 +101,10 @@
        <item>
         <widget class="QLineEdit" name="layerNameEdit">
          <property name="toolTip">
-          <string>Name to display in the map legend</string>
+          <string/>
          </property>
          <property name="whatsThis">
-          <string>Name displayed in the map legend</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="encodingLabel">
-         <property name="text">
-          <string>Encoding</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QComboBox" name="encodingBox">
-         <property name="toolTip">
-          <string>Select the file encoding</string>
-         </property>
-         <property name="statusTip">
-          <string>Select the file encoding</string>
-         </property>
-         <property name="whatsThis">
-          <string>Select the file encoding</string>
-         </property>
-         <property name="insertPolicy">
-          <enum>QComboBox::InsertAtTop</enum>
+          <string/>
          </property>
         </widget>
        </item>
@@ -171,7 +148,7 @@
           <bool>true</bool>
          </property>
          <property name="text">
-          <string>&lt;p align=&quot;right&quot;&gt;X field&lt;/p&gt;</string>
+          <string>X field</string>
          </property>
         </widget>
        </item>
@@ -193,13 +170,13 @@
           </size>
          </property>
          <property name="toolTip">
-          <string>Name of the field containing x values</string>
+          <string/>
          </property>
          <property name="statusTip">
-          <string>Name of the field containing x values</string>
+          <string/>
          </property>
          <property name="whatsThis">
-          <string>Name of the field containing x values</string>
+          <string/>
          </property>
          <property name="editable">
           <bool>false</bool>
@@ -212,7 +189,7 @@
           <bool>true</bool>
          </property>
          <property name="text">
-          <string>&lt;p align=&quot;right&quot;&gt;Y field&lt;/p&gt;</string>
+          <string>Y field</string>
          </property>
         </widget>
        </item>
@@ -234,13 +211,13 @@
           </size>
          </property>
          <property name="toolTip">
-          <string>Name of the field containing y values</string>
+          <string/>
          </property>
          <property name="statusTip">
-          <string>Name of the field containing y values</string>
+          <string/>
          </property>
          <property name="whatsThis">
-          <string>Name of the field containing y values</string>
+          <string/>
          </property>
          <property name="editable">
           <bool>false</bool>
