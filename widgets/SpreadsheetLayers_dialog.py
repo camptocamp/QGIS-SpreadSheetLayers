@@ -316,8 +316,10 @@ class SpreadsheetLayersPluginDialog(QtGui.QDialog, Ui_SpreadsheetLayersPluginDia
         return '{}.vrt'.format(self.filePath())
 
     def readVrt(self):
-        vrtPath = self.vrtPath()
+        if self.dataSource is None:
+            return False
 
+        vrtPath = self.vrtPath()
         if not os.path.exists(vrtPath):
             return False
 
