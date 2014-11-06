@@ -361,7 +361,7 @@ class SpreadsheetLayersPluginDialog(QtGui.QDialog, Ui_SpreadsheetLayersPluginDia
         finally:
             file.close()
 
-        self.info("Existing VRT file has been loaded")
+        # self.info("Existing VRT file has been loaded")
         return True
 
     def prepareVrt(self):
