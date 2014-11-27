@@ -26,7 +26,7 @@ from osgeo import ogr
 from qgis.core import QgsVectorDataProvider
 from qgis.gui import QgsMessageBar, QgsGenericProjectionSelector
 from PyQt4 import QtCore, QtGui
-from ..ui.ui_SpreadsheetLayers_dialog import Ui_SpreadsheetLayersPluginDialogBase
+from ..ui.ui_SpreadsheetLayersDialog import Ui_SpreadsheetLayersDialog
 
 
 class QOgrFieldModel(QtCore.QAbstractListModel):
@@ -46,7 +46,7 @@ class QOgrFieldModel(QtCore.QAbstractListModel):
             fieldDefn = self.layerDefn.GetFieldDefn(index.row())
             if fieldDefn is None:
                 return ''
-            return fieldDefn.GetNameRef()
+            return fieldDefn.GetNameRef().decode('UTF-8')
 
         if role == QtCore.Qt.ItemDataRole:
             return self.layerDefn.GetFieldDefn(index.row())
@@ -81,41 +81,59 @@ class QOgrTableModel(QtCore.QAbstractTableModel):
             fieldDefn = self.layerDefn.GetFieldDefn(iField)
             if fieldDefn.GetType() == ogr.OFTInteger:
                 return feature.GetFieldAsInteger(iField)
-
             elif fieldDefn.GetType() == ogr.OFTReal:
                 return feature.GetFieldAsDouble(iField)
-
             elif fieldDefn.GetType() == ogr.OFTString:
-                return feature.GetFieldAsString(iField)
-
+                return feature.GetFieldAsString(iField).decode('UTF-8')
             else:
-                return feature.GetFieldAsString(iField)
+                return feature.GetFieldAsString(iField).decode('UTF-8')
+
+        if role == QtCore.Qt.TextAlignmentRole:
+            iField = index.column()
+            fieldDefn = self.layerDefn.GetFieldDefn(iField)
+            if fieldDefn.GetType() == ogr.OFTInteger:
+                return QtCore.Qt.AlignRight
+            if fieldDefn.GetType() == ogr.OFTReal:
+                return QtCore.Qt.AlignRight
+            if fieldDefn.GetType() == ogr.OFTString:
+                return QtCore.Qt.AlignLeft
+            return QtCore.Qt.AlignLeft
 
     def headerData(self, section, orientation, role=QtCore.Qt.DisplayRole):
         if role == QtCore.Qt.DisplayRole:
             if orientation == QtCore.Qt.Horizontal:
-                fieldDef = self.layerDefn.GetFieldDefn(section)
-                return fieldDef.GetNameRef()
+                fieldDefn = self.layerDefn.GetFieldDefn(section)
+                fieldName = fieldDefn.GetNameRef().decode('UTF-8')
+                if fieldDefn.GetType() == ogr.OFTInteger:
+                    fieldType = 'Integer'
+                if fieldDefn.GetType() == ogr.OFTReal:
+                    fieldType = 'Real'
+                if fieldDefn.GetType() == ogr.OFTString:
+                    fieldType = 'String'
+                return u"{}\n({})".format(fieldName, fieldType)
 
             if orientation == QtCore.Qt.Vertical:
                 return section
 
 
-class SpreadsheetLayersPluginDialog(QtGui.QDialog, Ui_SpreadsheetLayersPluginDialogBase):
+class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
 
     pluginKey = 'SpreadsheetLayers'
     sampleRowCount = 20
 
     def __init__(self, parent=None):
         """Constructor."""
-        super(SpreadsheetLayersPluginDialog, self).__init__(parent)
+        super(SpreadsheetLayersDialog, self).__init__(parent)
         self.setupUi(self)
 
         self.dataSource = None
         self.layer = None
+        self.sampleDatasource = None
 
         self.messageBar = QgsMessageBar(self)
         self.layout().insertWidget(0, self.messageBar)
+
+        self.geometryBox.setChecked(False)
 
     def info(self, msg):
         self.messageBar.pushMessage(msg, QgsMessageBar.INFO, 5)
@@ -182,6 +200,23 @@ class SpreadsheetLayersPluginDialog(QtGui.QDialog, Ui_SpreadsheetLayersPluginDia
                                         QgsMessageBar.WARNING, 5)
         self.dataSource = dataSource
 
+    def closeSampleDatasource(self):
+        if self.sampleDatasource is not None:
+            self.sampleDatasource = None
+
+    def openSampleDatasource(self):
+        self.closeSampleDatasource()
+
+        filePath = self.samplePath()
+        finfo = QtCore.QFileInfo(filePath)
+        if not finfo.exists():
+            return False
+        dataSource = ogr.Open(filePath, 0)
+        if dataSource is None:
+            self.messageBar.pushMessage('Could not open {}'.format(filePath),
+                                        QgsMessageBar.WARNING, 5)
+        self.sampleDatasource = dataSource
+
     def sheet(self):
         return self.sheetBox.currentText()
 
@@ -206,6 +241,25 @@ class SpreadsheetLayersPluginDialog(QtGui.QDialog, Ui_SpreadsheetLayersPluginDia
             self.layer = self.sheetBox.itemData(index)
         self.updateFieldBoxes()
         self.updateSampleView()
+
+    def offset(self):
+        return self.offsetBox.value()
+
+    def limit(self):
+        return self.layer.GetFeatureCount() - self.offset()
+
+    @QtCore.pyqtSlot(int, name='on_offsetBox_valueChanged')
+    def on_offsetBox_valueChanged(self, value):
+        self.geometryBox.setEnabled(value == 0)
+        self.updateSampleView()
+
+    def sql(self):
+        sql = ("SELECT * FROM {}"
+               " LIMIT {} OFFSET {}"
+               ).format(self.sheet(),
+                        self.limit(),
+                        self.offset())
+        return sql
 
     def xField(self):
         return self.xFieldBox.currentText()
@@ -272,7 +326,15 @@ class SpreadsheetLayersPluginDialog(QtGui.QDialog, Ui_SpreadsheetLayersPluginDia
             self.crsEdit.setText(dlg.selectedAuthId())
 
     def updateSampleView(self):
-        layer = self.layer
+        self.writeSampleVrt()
+        self.openSampleDatasource()
+
+        layer = None
+        dataSource = self.sampleDatasource
+        if dataSource is not None:
+            for i in xrange(0, dataSource.GetLayerCount()):
+                layer = dataSource.GetLayer(i)
+
         if layer is None:
             self.sampleView.setModel(None)
             return
@@ -304,6 +366,9 @@ class SpreadsheetLayersPluginDialog(QtGui.QDialog, Ui_SpreadsheetLayersPluginDia
     def vrtPath(self):
         return '{}.vrt'.format(self.filePath())
 
+    def samplePath(self):
+        return '{}.tmp.vrt'.format(self.filePath())
+
     def readVrt(self):
         if self.dataSource is None:
             return False
@@ -317,6 +382,7 @@ class SpreadsheetLayersPluginDialog(QtGui.QDialog, Ui_SpreadsheetLayersPluginDia
             self.warning("Impossible to open VRT file {}".format(vrtPath))
             return False
 
+        self.geometryBox.setChecked(False)
         try:
             stream = QtCore.QXmlStreamReader(file)
 
@@ -337,7 +403,7 @@ class SpreadsheetLayersPluginDialog(QtGui.QDialog, Ui_SpreadsheetLayersPluginDia
                             self.setSheet(text)
 
                         elif stream.name() == "GeometryType":
-                            pass
+                            self.geometryBox.setChecked(True)
 
                         elif stream.name() == "LayerSRS":
                             text = stream.readElementText()
@@ -364,7 +430,65 @@ class SpreadsheetLayersPluginDialog(QtGui.QDialog, Ui_SpreadsheetLayersPluginDia
         # self.info("Existing VRT file has been loaded")
         return True
 
-    def prepareVrt(self):
+    def getFields(self):
+        offset = self.offset()
+        if offset > 0:
+            offset = offset - 1
+
+        fields = []
+        rows = []
+
+        self.layer.SetNextByIndex(offset)
+        feature = self.layer.GetNextFeature()
+        if feature is None:
+            return fields
+
+        self.layerDefn = self.layer.GetLayerDefn()
+        for iField in xrange(0, self.layerDefn.GetFieldCount()):
+            fieldDefn = self.layerDefn.GetFieldDefn(iField)
+            field = {}
+            field['src'] = fieldDefn.GetNameRef().decode('UTF-8')
+            field['name'] = feature.GetFieldAsString(iField).decode('UTF-8')
+            fields.append(field)
+
+        # Load all values
+        feature = self.layer.GetNextFeature()
+        while feature is not None:
+            values = []
+            for iField in xrange(0, self.layerDefn.GetFieldCount()):
+                values.append(feature.GetFieldAsString(iField).decode('UTF-8'))
+            rows.append(values)
+            feature = self.layer.GetNextFeature()
+
+        # Detect types
+        for iField in xrange(0, self.layerDefn.GetFieldCount()):
+            fieldType = 'Integer'
+            for iRow in xrange(0, len(rows)):
+                value = rows[iRow][iField]
+                try:
+                    intval = int(value)
+                except:
+                    fieldType = None
+                    break
+
+            if fieldType is None:
+                fieldType = 'Real'
+                for iRow in xrange(0, len(rows)):
+                    value = rows[iRow][iField]
+                    try:
+                        floatval = float(value)
+                    except:
+                        fieldType = 'String'
+                        break
+
+            if fieldType is None:
+                fieldType = 'String'
+
+            fields[iField]['type'] = fieldType
+
+        return fields
+
+    def prepareVrt(self, sample=False):
         buffer = QtCore.QBuffer()
         buffer.open(QtCore.QBuffer.ReadWrite)
 
@@ -381,24 +505,40 @@ class SpreadsheetLayersPluginDialog(QtGui.QDialog, Ui_SpreadsheetLayersPluginDia
         stream.writeCharacters(os.path.basename(self.filePath()))
         stream.writeEndElement()
 
-        stream.writeStartElement("SrcLayer")
-        stream.writeCharacters(self.sheet())
-        stream.writeEndElement()
-
-        stream.writeStartElement("GeometryType")
-        stream.writeCharacters("wkbPoint")
-        stream.writeEndElement()
-
-        if self.crs():
-            stream.writeStartElement("LayerSRS")
-            stream.writeCharacters(self.crs())
+        if self.offset() > 0:
+            stream.writeStartElement("SrcSql")
+            stream.writeAttribute("dialect", "sqlite")
+            stream.writeCharacters(self.sql())
             stream.writeEndElement()
 
-        stream.writeStartElement("GeometryField")
-        stream.writeAttribute("encoding", "PointFromColumns")
-        stream.writeAttribute("x", self.xField())
-        stream.writeAttribute("y", self.yField())
-        stream.writeEndElement()
+            fields = self.getFields()
+            for field in fields:
+                stream.writeStartElement("Field")
+                stream.writeAttribute("name", field['name'])
+                stream.writeAttribute("src", field['src'])
+                stream.writeAttribute("type", field['type'])
+                stream.writeEndElement()
+
+        else:
+            stream.writeStartElement("SrcLayer")
+            stream.writeCharacters(self.sheet())
+            stream.writeEndElement()
+
+        if self.geometryBox.isChecked() and not sample:
+            stream.writeStartElement("GeometryType")
+            stream.writeCharacters("wkbPoint")
+            stream.writeEndElement()
+
+            if self.crs():
+                stream.writeStartElement("LayerSRS")
+                stream.writeCharacters(self.crs())
+                stream.writeEndElement()
+
+            stream.writeStartElement("GeometryField")
+            stream.writeAttribute("encoding", "PointFromColumns")
+            stream.writeAttribute("x", self.xField())
+            stream.writeAttribute("y", self.yField())
+            stream.writeEndElement()
 
         stream.writeEndElement() # OGRVRTLayer
         stream.writeEndElement() # OGRVRTDataSource
@@ -430,6 +570,23 @@ class SpreadsheetLayersPluginDialog(QtGui.QDialog, Ui_SpreadsheetLayersPluginDia
             ret = msgBox.exec_()
             if ret == QtGui.QMessageBox.Cancel:
                 return False
+            QtCore.QFile.remove(vrtPath)
+
+        if not file.open(QtCore.QIODevice.ReadWrite | QtCore. QIODevice.Text):
+            self.warning("Impossible to open VRT file {}".format(vrtPath))
+            return False
+
+        file.write(content)
+        file.close()
+        return True
+
+    def writeSampleVrt(self):
+        content = self.prepareVrt(True)
+
+        vrtPath = self.samplePath()
+        file = QtCore.QFile(vrtPath)
+        if file.exists():
+            QtCore.QFile.remove(vrtPath)
 
         if not file.open(QtCore.QIODevice.ReadWrite | QtCore. QIODevice.Text):
             self.warning("Impossible to open VRT file {}".format(vrtPath))
@@ -446,4 +603,4 @@ class SpreadsheetLayersPluginDialog(QtGui.QDialog, Ui_SpreadsheetLayersPluginDia
         if not self.writeVrt():
             return False
 
-        return super(SpreadsheetLayersPluginDialog, self).accept(*args, **kwargs)
+        return super(SpreadsheetLayersDialog, self).accept(*args, **kwargs)

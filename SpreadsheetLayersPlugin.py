@@ -21,12 +21,12 @@
  ***************************************************************************/
 """
 import os.path
-from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
+from qgis.core import QGis, QgsVectorLayer, QgsMapLayerRegistry
 from PyQt4 import QtCore, QtGui
 # Initialize Qt resources from file resources.py
 from .ui import resources_rc
 # Import the code for the dialog
-from .widgets.SpreadsheetLayers_dialog import SpreadsheetLayersPluginDialog
+from .widgets.SpreadsheetLayersDialog import SpreadsheetLayersDialog
 
 
 class SpreadsheetLayersPlugin(QtCore.QObject):
@@ -65,19 +65,45 @@ class SpreadsheetLayersPlugin(QtCore.QObject):
             self.tr("Add spreadsheet layer"),
             self)
         self.action.triggered.connect(self.showDialog)
-        self.iface.addLayerMenu().addAction(self.action)
+        if QGis.QGIS_VERSION_INT > 20400:
+            self.iface.addLayerMenu().addAction(self.action)
+        else:
+            menu = self.iface.layerMenu()
+            for action in menu.actions():
+                if action.isSeparator():
+                    break
+            self.iface.layerMenu().insertAction(action, self.action)
         self.iface.layerToolBar().addAction(self.action)
 
     def unload(self):
         if hasattr(self, 'action'):
-            self.iface.addLayerMenu().removeAction(self.action)
+            if QGis.QGIS_VERSION_INT > 20400:
+                self.iface.addLayerMenu().removeAction(self.action)
+            else:
+                self.iface.layerMenu().removeAction(self.action)
             self.iface.layerToolBar().removeAction(self.action)
 
     def showDialog(self):
-        dlg = SpreadsheetLayersPluginDialog(self.iface.mainWindow())
+        dlg = SpreadsheetLayersDialog(self.iface.mainWindow())
         dlg.show()
         if dlg.exec_():
             layer = QgsVectorLayer(dlg.vrtPath(), dlg.layerName(), 'ogr')
+
+            '''
+            layer = QgsVectorLayer("?field=id:integer&field=name", dlg.layerName(), "memory")
+            pr = layer.dataProvider()
+            from qgis.core import QgsField
+            pr.addAttributes([QgsField("name", QVariant.String),
+                                QgsField("age", QVariant.Int),
+                                QgsField("size", QVariant.Double)])
+
+            # add a feature
+            fet = QgsFeature()
+            fet.setGeometry(QgsGeometry.fromPoint(QgsPoint(10, 10)))
+            fet.setAttributes(["Johny", 2, 0.3])
+            pr.addFeatures([fet])
+            '''
+
             if not layer.isValid():
                 print "Layer failed to load"
             else:
