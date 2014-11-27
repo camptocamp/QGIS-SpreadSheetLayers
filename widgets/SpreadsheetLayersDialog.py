@@ -239,11 +239,17 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             self.layer = None
         else:
             self.layer = self.sheetBox.itemData(index)
-        self.updateFieldBoxes()
         self.updateSampleView()
 
     def offset(self):
         return self.offsetBox.value()
+
+    def setOffset(self, value):
+        try:
+            value = int(value)
+        except:
+            return False
+        self.offsetBox.setValue(value)
 
     def limit(self):
         return self.layer.GetFeatureCount() - self.offset()
@@ -273,12 +279,15 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
     def setYField(self, fieldName):
         self.yFieldBox.setCurrentIndex(self.yFieldBox.findText(fieldName))
 
-    def updateFieldBoxes(self):
-        if self.layer is None:
+    def updateFieldBoxes(self, layer):
+        if self.offset() > 0:
+            return
+
+        if layer is None:
             self.xFieldBox.clear()
             return
 
-        model = QOgrFieldModel(self.layer, parent=self)
+        model = QOgrFieldModel(layer, parent=self)
 
         xField = self.xField()
         yField = self.xField()
@@ -343,6 +352,8 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
                                maxRowCount=self.sampleRowCount)
         self.sampleView.setModel(model)
 
+        self.updateFieldBoxes(layer)
+
     def validate(self):
         try:
             if self.dataSource is None:
@@ -401,6 +412,17 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
                         elif stream.name() == "SrcLayer":
                             text = stream.readElementText()
                             self.setSheet(text)
+
+                        elif stream.name() == "SrcSql":
+                            text = stream.readElementText()
+                            terms = text.split(" ")
+                            previous = ''
+                            for term in terms:
+                                if previous.lower() == 'from':
+                                    self.setSheet(term)
+                                if previous.lower() == 'offset':
+                                    self.setOffset(term)
+                                previous = term
 
                         elif stream.name() == "GeometryType":
                             self.geometryBox.setChecked(True)
@@ -524,7 +546,9 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             stream.writeCharacters(self.sheet())
             stream.writeEndElement()
 
-        if self.geometryBox.isChecked() and not sample:
+        if (self.geometryBox.isEnabled()
+            and self.geometryBox.isChecked()
+            and not sample):
             stream.writeStartElement("GeometryType")
             stream.writeCharacters("wkbPoint")
             stream.writeEndElement()
