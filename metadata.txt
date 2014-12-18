@@ -10,7 +10,7 @@
 name=Spreadsheet Layers
 qgisMinimumVersion=2.4
 description=Load layers from spreadsheet files (*.ods, *.xls, *.xlsx)
-version=0.1
+version=0.3
 author=Camptocamp
 email=info@camptocamp.com
 
@@ -33,4 +33,3 @@ experimental=True
 
 # deprecated flag (applies to the whole plugin, not just a single version)
 deprecated=False
-

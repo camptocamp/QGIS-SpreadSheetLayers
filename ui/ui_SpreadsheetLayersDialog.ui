@@ -139,7 +139,17 @@
         </widget>
        </item>
        <item>
-        <widget class="QSpinBox" name="offsetBox"/>
+        <widget class="QSpinBox" name="linesToIgnoreBox"/>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="headerBox">
+         <property name="text">
+          <string>Header at first line</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
        <item>
         <spacer name="horizontalSpacer">
@@ -153,6 +163,13 @@
           </size>
          </property>
         </spacer>
+       </item>
+       <item>
+        <widget class="QLabel" name="ogrHeadersLabel">
+         <property name="text">
+          <string>OGR_ODS_HEADERS = None</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>

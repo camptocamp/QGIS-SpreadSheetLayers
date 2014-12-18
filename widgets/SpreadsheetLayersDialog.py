@@ -22,6 +22,8 @@
 """
 
 import os
+from exceptions import NotImplementedError
+from collections import OrderedDict
 from osgeo import ogr
 from qgis.core import QgsVectorDataProvider
 from qgis.gui import QgsMessageBar, QgsGenericProjectionSelector
@@ -29,6 +31,7 @@ from PyQt4 import QtCore, QtGui
 from ..ui.ui_SpreadsheetLayersDialog import Ui_SpreadsheetLayersDialog
 
 
+'''
 class QOgrFieldModel(QtCore.QAbstractListModel):
 
     def __init__(self, layer, parent=None):
@@ -47,11 +50,8 @@ class QOgrFieldModel(QtCore.QAbstractListModel):
             if fieldDefn is None:
                 return ''
             return fieldDefn.GetNameRef().decode('UTF-8')
-
-        if role == QtCore.Qt.ItemDataRole:
-            return self.layerDefn.GetFieldDefn(index.row())
-
-
+            
+            
 class QOgrTableModel(QtCore.QAbstractTableModel):
 
     def __init__(self, layer, parent=None, maxRowCount=None):
@@ -114,6 +114,100 @@ class QOgrTableModel(QtCore.QAbstractTableModel):
 
             if orientation == QtCore.Qt.Vertical:
                 return section
+'''
+
+class QOgrFieldModel(QtGui.QStandardItemModel):
+    '''QOgrFieldModel provide a ListModel class
+    for displaying OGR layers fields.
+    
+    OGR layer fields are read at creation or by setLayer().
+    All data are stored in parent QtCore.QStandardItemModel object.
+    No reference to any OGR related object is kept.
+    '''
+
+    def __init__(self, layer=None, parent=None):
+        super(QOgrFieldModel, self).__init__(parent)
+        self.setLayer(layer)
+
+    def setLayer(self, layer):
+        self.clear()
+        if layer is None:
+            return
+
+        layerDefn = layer.GetLayerDefn()
+        rows = layerDefn.GetFieldCount()
+        for row in xrange(0, rows):
+            fieldDefn = layerDefn.GetFieldDefn(row)
+            fieldName = fieldDefn.GetNameRef().decode('UTF-8')
+            item = QtGui.QStandardItem(fieldName)
+            self.appendRow(item)
+
+
+class QOgrTableModel(QtGui.QStandardItemModel):
+    '''QOgrTableModel provide a TableModel class
+    for displaying OGR layers data.
+    
+    OGR layer is read at creation or by setLayer().
+    All data are stored in parent QtCore.QStandardItemModel object.
+    No reference to any OGR related object is kept.
+    '''
+    def __init__(self, layer=None, parent=None, maxRowCount=None):
+        super(QOgrTableModel, self).__init__(parent)
+        self.maxRowCount = maxRowCount
+        self.setLayer(layer)
+
+    def setLayer(self, layer):
+        self.clear()
+        if layer is None:
+            return
+
+        layerDefn = layer.GetLayerDefn()
+
+        rows = min(layer.GetFeatureCount(), self.maxRowCount)
+        columns = layerDefn.GetFieldCount()
+
+        for column in xrange(0, columns):
+            fieldDefn = layerDefn.GetFieldDefn(column)
+            fieldName = fieldDefn.GetNameRef().decode('UTF-8')
+            if fieldDefn.GetType() == ogr.OFTInteger:
+                fieldType = 'Integer'
+            if fieldDefn.GetType() == ogr.OFTReal:
+                fieldType = 'Real'
+            if fieldDefn.GetType() == ogr.OFTString:
+                fieldType = 'String'
+            item = QtGui.QStandardItem(u"{}\n({})".format(fieldName, fieldType))
+            self.setHorizontalHeaderItem(column, item)
+
+        self.setRowCount(rows)
+        self.setColumnCount(columns)
+        for row in xrange(0, rows):
+            for column in xrange(0, columns):
+                layer.SetNextByIndex(row)
+                feature = layer.GetNextFeature()
+                item = self.createItem(layerDefn, feature, column)
+                self.setItem(row, column, item)
+
+    def createItem(self, layerDefn, feature, iField):
+        fieldDefn = layerDefn.GetFieldDefn(iField)
+        if fieldDefn.GetType() == ogr.OFTInteger:
+            value = feature.GetFieldAsInteger(iField)
+            hAlign = QtCore.Qt.AlignRight
+
+        elif fieldDefn.GetType() == ogr.OFTReal:
+            value = feature.GetFieldAsDouble(iField)
+            hAlign = QtCore.Qt.AlignRight
+
+        elif fieldDefn.GetType() == ogr.OFTString:
+            value = feature.GetFieldAsString(iField).decode('UTF-8')
+            hAlign = QtCore.Qt.AlignLeft
+
+        else:
+            value = feature.GetFieldAsString(iField).decode('UTF-8')
+            hAlign = QtCore.Qt.AlignLeft
+
+        item = QtGui.QStandardItem(unicode(value))
+        item.setTextAlignment(hAlign | QtCore.Qt.AlignVCenter)
+        return item
 
 
 class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
@@ -134,6 +228,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
         self.layout().insertWidget(0, self.messageBar)
 
         self.geometryBox.setChecked(False)
+        self.sampleRefreshDisabled = False
 
     def info(self, msg):
         self.messageBar.pushMessage(msg, QgsMessageBar.INFO, 5)
@@ -169,9 +264,20 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
         self.afterOpenFile()
 
     def afterOpenFile(self):
+        self.sampleRefreshDisabled = True
+
         self.openDataSource()
         self.updateSheetBox()
         self.readVrt()
+        if self.dataSourceHeaders():
+            self.headerBox.setChecked(True)
+            self.headerBox.setEnabled(False)
+            self.headerBox.setToolTip(self.tr(""))
+        else:
+            self.headerBox.setEnabled(True)
+
+        self.sampleRefreshDisabled = False
+        self.updateSampleView()
 
     def layerName(self):
         return self.layerNameEdit.text()
@@ -199,6 +305,39 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             self.messageBar.pushMessage('Could not open {}'.format(filePath),
                                         QgsMessageBar.WARNING, 5)
         self.dataSource = dataSource
+
+    def dataSourceHeaders(self):
+        if self.dataSource is None:
+            return False
+        driverName = self.dataSource.GetDriver().GetName()
+        varName = 'OGR_{}_HEADERS'.format(driverName)
+        value = os.environ.get(varName)
+        self.ogrHeadersLabel.setText('{} = {}'.format(varName, value or ''))
+
+        if value == 'FORCE':
+            headers = True
+        elif value == 'DISABLE':
+            headers = False
+        elif value is None or value == 'AUTO':
+            if driverName in ['ODS']:
+                headers = True
+            elif driverName in ['XLS', 'XLSX']:
+                headers = False
+            else:
+                raise NotImplementedError('OGR {} driver not yet implemented'.format(driverName))
+        else:
+            raise NotImplementedError('{} value {} not recognized'.format(varName, value))
+
+        if headers == True:
+            msg = self.tr("To enable this checkbox, set environment variable {} to {}"
+                          .format(varName, 'DISABLE'))
+            self.headerBox.setToolTip(msg)
+            # self.ogrHeadersLabel.setStyleSheet("color: rgb(255, 0, 0)")
+        else:
+            self.headerBox.setToolTip('')
+            # self.ogrHeadersLabel.setStyleSheet("color: rgb(0, 0, 0)")
+
+        return headers
 
     def closeSampleDatasource(self):
         if self.sampleDatasource is not None:
@@ -233,7 +372,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             layer = dataSource.GetLayer(i)
             self.sheetBox.addItem(layer.GetName(), layer)
 
-    @QtCore.pyqtSlot(int, name='on_sheetBox_currentIndexChanged')
+    @QtCore.pyqtSlot(int)
     def on_sheetBox_currentIndexChanged(self, index):
         if index is None:
             self.layer = None
@@ -241,23 +380,40 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             self.layer = self.sheetBox.itemData(index)
         self.updateSampleView()
 
+    def linesToIgnore(self):
+        return self.linesToIgnoreBox.value()
+
+    def setLinesToIgnore(self, value):
+        self.linesToIgnoreBox.setValue(value)
+
+    @QtCore.pyqtSlot(int)
+    def on_linesToIgnoreBox_valueChanged(self, value):
+        self.updateSampleView()
+
+    def header(self):
+        return self.headerBox.checkState() == QtCore.Qt.Checked
+
+    @QtCore.pyqtSlot(int)
+    def on_headerBox_stateChanged(self, state):
+        self.updateSampleView()
+
     def offset(self):
-        return self.offsetBox.value()
+        offset = self.linesToIgnore()
+        if self.header() and not self.dataSourceHeaders():
+            offset += 1
+        return offset
 
     def setOffset(self, value):
         try:
             value = int(value)
         except:
             return False
-        self.offsetBox.setValue(value)
+        if self.header() and not self.dataSourceHeaders():
+            value -= 1
+        self.setLinesToIgnore(value)
 
     def limit(self):
         return self.layer.GetFeatureCount() - self.offset()
-
-    @QtCore.pyqtSlot(int, name='on_offsetBox_valueChanged')
-    def on_offsetBox_valueChanged(self, value):
-        self.geometryBox.setEnabled(value == 0)
-        self.updateSampleView()
 
     def sql(self):
         sql = ("SELECT * FROM {}"
@@ -281,13 +437,14 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
 
     def updateFieldBoxes(self, layer):
         if self.offset() > 0:
-            return
+            # return
+            pass
 
         if layer is None:
             self.xFieldBox.clear()
             return
 
-        model = QOgrFieldModel(layer, parent=self)
+        model = QOgrFieldModel(layer)
 
         xField = self.xField()
         yField = self.xField()
@@ -335,8 +492,13 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             self.crsEdit.setText(dlg.selectedAuthId())
 
     def updateSampleView(self):
-        self.writeSampleVrt()
-        self.openSampleDatasource()
+        # self.geometryBox.setEnabled(value == 0)
+        if self.sampleRefreshDisabled:
+            return
+
+        if self.layer is not None:
+            self.writeSampleVrt()
+            self.openSampleDatasource()
 
         layer = None
         dataSource = self.sampleDatasource
@@ -394,54 +556,9 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             return False
 
         self.geometryBox.setChecked(False)
+
         try:
-            stream = QtCore.QXmlStreamReader(file)
-
-            stream.readNextStartElement()
-            if stream.name() == "OGRVRTDataSource":
-
-                stream.readNextStartElement()
-                if stream.name() == "OGRVRTLayer":
-                    self.setLayerName(stream.attributes().value("name"))
-
-                    while stream.readNextStartElement():
-                        if stream.name() == "SrcDataSource":
-                            # do nothing : datasource should be already set
-                            pass
-
-                        elif stream.name() == "SrcLayer":
-                            text = stream.readElementText()
-                            self.setSheet(text)
-
-                        elif stream.name() == "SrcSql":
-                            text = stream.readElementText()
-                            terms = text.split(" ")
-                            previous = ''
-                            for term in terms:
-                                if previous.lower() == 'from':
-                                    self.setSheet(term)
-                                if previous.lower() == 'offset':
-                                    self.setOffset(term)
-                                previous = term
-
-                        elif stream.name() == "GeometryType":
-                            self.geometryBox.setChecked(True)
-
-                        elif stream.name() == "LayerSRS":
-                            text = stream.readElementText()
-                            self.setCrs(text)
-
-                        elif stream.name() == "GeometryField":
-                            self.setXField(stream.attributes().value("x"))
-                            self.setYField(stream.attributes().value("y"))
-
-                        if not stream.isEndElement():
-                            stream.skipCurrentElement()
-
-                stream.skipCurrentElement()
-
-            stream.skipCurrentElement()
-
+            self.readVrtStream(file)
         except Exception:
             self.warning("An error occurs during existing VRT file loading")
             return False
@@ -452,28 +569,62 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
         # self.info("Existing VRT file has been loaded")
         return True
 
-    def getFields(self):
-        offset = self.offset()
-        if offset > 0:
-            offset = offset - 1
+    def readVrtStream(self, file):
+        stream = QtCore.QXmlStreamReader(file)
 
-        fields = []
+        stream.readNextStartElement()
+        if stream.name() == "OGRVRTDataSource":
+
+            stream.readNextStartElement()
+            if stream.name() == "OGRVRTLayer":
+                self.setLayerName(stream.attributes().value("name"))
+
+                while stream.readNextStartElement():
+                    if stream.name() == "SrcDataSource":
+                        # do nothing : datasource should be already set
+                        pass
+
+                    elif stream.name() == "SrcLayer":
+                        text = stream.readElementText()
+                        self.setSheet(text)
+
+                    elif stream.name() == "SrcSql":
+                        text = stream.readElementText()
+                        terms = text.split(" ")
+                        previous = ''
+                        for term in terms:
+                            if previous.lower() == 'from':
+                                self.setSheet(term)
+                            if previous.lower() == 'offset':
+                                self.setOffset(term)
+                            previous = term
+
+                    elif stream.name() == "GeometryType":
+                        self.geometryBox.setChecked(True)
+
+                    elif stream.name() == "LayerSRS":
+                        text = stream.readElementText()
+                        self.setCrs(text)
+
+                    elif stream.name() == "GeometryField":
+                        self.setXField(stream.attributes().value("x"))
+                        self.setYField(stream.attributes().value("y"))
+
+                    if not stream.isEndElement():
+                        stream.skipCurrentElement()
+
+            stream.skipCurrentElement()
+
+        stream.skipCurrentElement()
+
+    def getFields(self):
+        fields = OrderedDict()
         rows = []
 
-        self.layer.SetNextByIndex(offset)
-        feature = self.layer.GetNextFeature()
-        if feature is None:
-            return fields
-
         self.layerDefn = self.layer.GetLayerDefn()
-        for iField in xrange(0, self.layerDefn.GetFieldCount()):
-            fieldDefn = self.layerDefn.GetFieldDefn(iField)
-            field = {}
-            field['src'] = fieldDefn.GetNameRef().decode('UTF-8')
-            field['name'] = feature.GetFieldAsString(iField).decode('UTF-8')
-            fields.append(field)
 
-        # Load all values
+        # Load all values to detect types later
+        self.layer.SetNextByIndex(self.offset())
         feature = self.layer.GetNextFeature()
         while feature is not None:
             values = []
@@ -482,13 +633,28 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             rows.append(values)
             feature = self.layer.GetNextFeature()
 
-        # Detect types
+        if self.header():
+            # Select header line
+            self.layer.SetNextByIndex(self.offset() - 1)
+            feature = self.layer.GetNextFeature()
+            if feature is None:
+                return fields
+
         for iField in xrange(0, self.layerDefn.GetFieldCount()):
+            fieldDefn = self.layerDefn.GetFieldDefn(iField)
+            src = fieldDefn.GetNameRef().decode('UTF-8')
+            if self.header():
+                name = feature.GetFieldAsString(iField).decode('UTF-8')
+            else:
+                name = ''
+            if name == '':
+                name = 'Field{}'.format(iField + 1)
+
             fieldType = 'Integer'
             for iRow in xrange(0, len(rows)):
                 value = rows[iRow][iField]
                 try:
-                    intval = int(value)
+                    int(value)
                 except:
                     fieldType = None
                     break
@@ -498,7 +664,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
                 for iRow in xrange(0, len(rows)):
                     value = rows[iRow][iField]
                     try:
-                        floatval = float(value)
+                        float(value)
                     except:
                         fieldType = 'String'
                         break
@@ -506,7 +672,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             if fieldType is None:
                 fieldType = 'String'
 
-            fields[iField]['type'] = fieldType
+            fields[name] = {'src': src, 'name': name, 'type': fieldType}
 
         return fields
 
@@ -527,23 +693,25 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
         stream.writeCharacters(os.path.basename(self.filePath()))
         stream.writeEndElement()
 
-        if self.offset() > 0:
-            stream.writeStartElement("SrcSql")
-            stream.writeAttribute("dialect", "sqlite")
-            stream.writeCharacters(self.sql())
-            stream.writeEndElement()
+        # if self.offset() > 0:
+        stream.writeStartElement("SrcSql")
+        stream.writeAttribute("dialect", "sqlite")
+        stream.writeCharacters(self.sql())
+        stream.writeEndElement()
 
-            fields = self.getFields()
-            for field in fields:
-                stream.writeStartElement("Field")
-                stream.writeAttribute("name", field['name'])
-                stream.writeAttribute("src", field['src'])
-                stream.writeAttribute("type", field['type'])
-                stream.writeEndElement()
-
+        '''
         else:
             stream.writeStartElement("SrcLayer")
             stream.writeCharacters(self.sheet())
+            stream.writeEndElement()
+        '''
+
+        fields = self.getFields()
+        for field in fields.itervalues():
+            stream.writeStartElement("Field")
+            stream.writeAttribute("name", field['name'])
+            stream.writeAttribute("src", field['src'])
+            stream.writeAttribute("type", field['type'])
             stream.writeEndElement()
 
         if (self.geometryBox.isEnabled()
@@ -560,8 +728,8 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
 
             stream.writeStartElement("GeometryField")
             stream.writeAttribute("encoding", "PointFromColumns")
-            stream.writeAttribute("x", self.xField())
-            stream.writeAttribute("y", self.yField())
+            stream.writeAttribute("x", fields[self.xField()]['src'])
+            stream.writeAttribute("y", fields[self.yField()]['src'])
             stream.writeEndElement()
 
         stream.writeEndElement() # OGRVRTLayer
