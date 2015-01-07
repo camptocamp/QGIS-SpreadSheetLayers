@@ -88,22 +88,6 @@ class SpreadsheetLayersPlugin(QtCore.QObject):
         dlg.show()
         if dlg.exec_():
             layer = QgsVectorLayer(dlg.vrtPath(), dlg.layerName(), 'ogr')
-
-            '''
-            layer = QgsVectorLayer("?field=id:integer&field=name", dlg.layerName(), "memory")
-            pr = layer.dataProvider()
-            from qgis.core import QgsField
-            pr.addAttributes([QgsField("name", QVariant.String),
-                                QgsField("age", QVariant.Int),
-                                QgsField("size", QVariant.Double)])
-
-            # add a feature
-            fet = QgsFeature()
-            fet.setGeometry(QgsGeometry.fromPoint(QgsPoint(10, 10)))
-            fet.setAttributes(["Johny", 2, 0.3])
-            pr.addFeatures([fet])
-            '''
-
             if not layer.isValid():
                 print "Layer failed to load"
             else:
