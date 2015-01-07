@@ -28,6 +28,7 @@ from osgeo import ogr
 from qgis.core import QgsVectorDataProvider
 from qgis.gui import QgsMessageBar, QgsGenericProjectionSelector
 from PyQt4 import QtCore, QtGui
+from SpreadsheetLayers.util.gdal_util import GDAL_COMPAT
 from ..ui.ui_SpreadsheetLayersDialog import Ui_SpreadsheetLayersDialog
 
 
@@ -423,6 +424,21 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
                         self.offset())
         return sql
 
+    def updateGeometry(self):
+        if GDAL_COMPAT or self.offset() == 0:
+            self.geometryBox.setEnabled(True)
+            self.geometryBox.setToolTip('')
+        else:
+            self.geometryBox.setEnabled(False)
+            msg = self.tr(u"Used GDAL version doesn't support VRT layers with sqlite dialect"
+                          u" mixed with PointFromColumn functionality.\n"
+                          u"For more informations, consult the plugin documentation.")
+            self.geometryBox.setToolTip(msg)
+
+    def geometry(self):
+        return (self.geometryBox.isEnabled()
+                and self.geometryBox.isChecked())
+
     def xField(self):
         return self.xFieldBox.currentText()
 
@@ -492,9 +508,10 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             self.crsEdit.setText(dlg.selectedAuthId())
 
     def updateSampleView(self):
-        # self.geometryBox.setEnabled(value == 0)
         if self.sampleRefreshDisabled:
             return
+
+        self.updateGeometry()
 
         if self.layer is not None:
             self.writeSampleVrt()
@@ -587,6 +604,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
                     elif stream.name() == "SrcLayer":
                         text = stream.readElementText()
                         self.setSheet(text)
+                        self.setOffset(0)
 
                     elif stream.name() == "SrcSql":
                         text = stream.readElementText()
@@ -633,18 +651,19 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             rows.append(values)
             feature = self.layer.GetNextFeature()
 
-        if self.header():
-            # Select header line
+        # Select header line
+        if self.header() and self.offset() >= 1:
             self.layer.SetNextByIndex(self.offset() - 1)
             feature = self.layer.GetNextFeature()
-            if feature is None:
-                return fields
 
         for iField in xrange(0, self.layerDefn.GetFieldCount()):
             fieldDefn = self.layerDefn.GetFieldDefn(iField)
             src = fieldDefn.GetNameRef().decode('UTF-8')
             if self.header():
-                name = feature.GetFieldAsString(iField).decode('UTF-8')
+                if self.offset() == 0:
+                    name = src
+                else:
+                    name = feature.GetFieldAsString(iField).decode('UTF-8')
             else:
                 name = ''
             if name == '':
@@ -693,18 +712,15 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
         stream.writeCharacters(os.path.basename(self.filePath()))
         stream.writeEndElement()
 
-        # if self.offset() > 0:
-        stream.writeStartElement("SrcSql")
-        stream.writeAttribute("dialect", "sqlite")
-        stream.writeCharacters(self.sql())
-        stream.writeEndElement()
-
-        '''
+        if self.offset() > 0:
+            stream.writeStartElement("SrcSql")
+            stream.writeAttribute("dialect", "sqlite")
+            stream.writeCharacters(self.sql())
+            stream.writeEndElement()
         else:
             stream.writeStartElement("SrcLayer")
             stream.writeCharacters(self.sheet())
             stream.writeEndElement()
-        '''
 
         fields = self.getFields()
         for field in fields.itervalues():
@@ -714,9 +730,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             stream.writeAttribute("type", field['type'])
             stream.writeEndElement()
 
-        if (self.geometryBox.isEnabled()
-            and self.geometryBox.isChecked()
-            and not sample):
+        if (self.geometry() and not sample):
             stream.writeStartElement("GeometryType")
             stream.writeCharacters("wkbPoint")
             stream.writeEndElement()
