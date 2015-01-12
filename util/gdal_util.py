@@ -29,9 +29,10 @@ def testGdal():
     lyr = ds.GetLayerByName( 'test' )
     lyr.SetIgnoredFields(['x', 'y'])
     f = lyr.GetNextFeature()
-    
     result = True
-    if f.GetGeometryRef().ExportToWkt() != 'POINT (2 49)':
+    if f is None:
+        result = False
+    elif f.GetGeometryRef().ExportToWkt() != 'POINT (2 49)':
         result = False
         
     ds = None
