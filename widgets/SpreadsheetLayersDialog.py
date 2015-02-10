@@ -329,6 +329,9 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
         self.setLinesToIgnore(value)
 
     def limit(self):
+        driverName = self.dataSource.GetDriver().GetName()
+        if driverName in ['XLS']:
+            return self._non_empty_rows
         return self.layer.GetFeatureCount() - self.offset()
 
     def sql(self):
@@ -559,11 +562,19 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
         # Load all values to detect types later
         self.layer.SetNextByIndex(self.offset())
         feature = self.layer.GetNextFeature()
+        self._non_empty_rows = 0
         while feature is not None:
             values = []
             for iField in xrange(0, self.layerDefn.GetFieldCount()):
                 values.append(feature.GetFieldAsString(iField).decode('UTF-8'))
             rows.append(values)
+
+            # Manual detect end of xls files
+            for value in values:
+                if value != u'':
+                    self._non_empty_rows = len(rows)
+                    break
+
             feature = self.layer.GetNextFeature()
 
         # Select header line
@@ -627,6 +638,8 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
         stream.writeCharacters(os.path.basename(self.filePath()))
         stream.writeEndElement()
 
+        fields = self.getFields()
+
         if self.offset() > 0:
             stream.writeStartElement("SrcSql")
             stream.writeAttribute("dialect", "sqlite")
@@ -637,7 +650,6 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             stream.writeCharacters(self.sheet())
             stream.writeEndElement()
 
-        fields = self.getFields()
         for field in fields.itervalues():
             stream.writeStartElement("Field")
             stream.writeAttribute("name", field['name'])
