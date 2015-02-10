@@ -90,6 +90,8 @@ compile:
 	@echo "------------------------------"
 	@echo "Compile ui and resources forms"
 	@echo "------------------------------"
+	virtualenv --setuptools .
+	./bin/pip install -q -r requirements.txt
 	make -C ui
 	make -C resources
 
