@@ -29,8 +29,9 @@ from osgeo import ogr
 from qgis.core import QgsVectorDataProvider
 from qgis.gui import QgsMessageBar, QgsGenericProjectionSelector
 from PyQt4 import QtCore, QtGui
+
 from SpreadsheetLayers.util.gdal_util import GDAL_COMPAT
-from ..ui.ui_SpreadsheetLayersDialog import Ui_SpreadsheetLayersDialog
+from SpreadsheetLayers.ui.ui_SpreadsheetLayersDialog import Ui_SpreadsheetLayersDialog
 
 
 class FieldsModel(QtCore.QAbstractListModel):
