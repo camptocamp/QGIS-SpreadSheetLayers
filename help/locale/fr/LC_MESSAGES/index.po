@@ -1,0 +1,208 @@
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: SpreadsheetLayers 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-02-12 16:11+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../source/index.rst:7
+msgid "QGIS-SpreadSheetLayers"
+msgstr ""
+
+#: ../source/index.rst:9
+msgid ""
+"QGIS plugin to load layers from spreadsheet files (\\*.ods, \\*.xls, "
+"\\*.xlsx)"
+msgstr ""
+"Plugin QGIS pour charger des couches depuis des fichiers feuille de calcul "
+"(\\*.ods, \\*.xls, \\*.xlsx)"
+
+#: ../source/index.rst:12
+msgid "Description"
+msgstr ""
+
+
+#: ../source/index.rst:14
+msgid ""
+"This plugin adds a *Add spreadsheet layer* entry in *Layer* / *Add new "
+"Layer* menu and a corresponding button in *Layers* toolbar. These two links "
+"open the same dialog to load a layer from a spreadsheet file with some "
+"options:"
+msgstr ""
+"Ce plugin ajoute une nouvelle entrée *Ajouter une couche feuille de calcul* "
+"dans le menu *Couches* / *Ajouter une couche* et un bouton correspondant dans la "
+"barre d'outils *Couches*. Ces deux liens ouvrent un même boite de dialogue avec quelques options:"
+
+#: ../source/index.rst:18
+msgid "select file"
+msgstr "sélectionner le fichier"
+
+#: ../source/index.rst:19
+msgid "layer name"
+msgstr "nom de la couche"
+
+#: ../source/index.rst:20
+msgid "sheet selection"
+msgstr "sélection de la feuille"
+
+#: ../source/index.rst:21
+msgid "header at first line"
+msgstr "entête en début de fichier"
+
+#: ../source/index.rst:22
+msgid "ignore some rows"
+msgstr "ignorer des lignes"
+
+#: ../source/index.rst:23
+msgid "load geometry from x and y fields"
+msgstr "charger la géométrie depuis les champs x et y"
+
+
+#: ../source/index.rst:25
+msgid ""
+"When dialog is accepted, it creates a new GDAL VRT file in same folder as "
+"the source data file, expanded with a *.vrt* suffix, which is loaded into "
+"QGIS."
+msgstr ""
+"Lorsque la boite de dialogue est acceptée, un fichier GDAL VRT est créé dans"
+" le dossier du fichier source des données, étendu par un suffixe *.vrt*, qui"
+" est lui-même chargé dans QGIS."
+
+#: ../source/index.rst:28
+msgid ""
+"When reusing the same file twice, the dialog loads its values from the "
+"existing *.vrt* file."
+msgstr ""
+"Lorque l'on utilise le même fichier une seconde fois, la boite de dialogue "
+"récupère les valeurs depuis le  fichier *.vrt* existant."
+
+#: ../source/index.rst:32
+msgid "Requirements"
+msgstr "Dépendances"
+
+#: ../source/index.rst:34
+msgid ""
+"With GDAL <= 1.11.1, the plugin works with graceful degradation, geometry "
+"loading is locked when offset is not null, ie:"
+msgstr ""
+"Avec GDAL <= 1.11.1, le plugin fonctionne en mode dégradé, le chargement de "
+"la géométrie est bloqué si le décalage est non nul, c'est à dire:"
+
+#: ../source/index.rst:37
+msgid "if you ignore some lines at start of spreadsheet;"
+msgstr "si vous ignorez des lignes en début de la feuille;"
+
+#: ../source/index.rst:38
+msgid "if you use header line with corresponding GDAL functionality disabled."
+msgstr ""
+"si vous utilisez la ligne d'entête alors que la fonction GDAL correspondante"
+" est désactivée."
+
+#: ../source/index.rst:41
+msgid "Configuration"
+msgstr "Configuration"
+
+#: ../source/index.rst:43
+msgid ""
+"GDAL do not allow to define the presence of header line on a per layer "
+"basis, this choice is made through environment variables for each driver "
+"*OGR_ODS_HEADERS*, *OGR_XLS_HEADERS* and *OGR_XLSX_HEADERS*, with tree "
+"possible values *FORCE*, *DISABLE* and *AUTO*. For more details, consult the"
+" corresponding drivers documentation ie: http://www.gdal.org/drv_ods.html, "
+"http://www.gdal.org/drv_xls.html and http://www.gdal.org/drv_xlsx.html."
+msgstr ""
+"GDAL n'autorise pas la définition de la présente de la ligne d'entête pour "
+"chaque couche, ce choix est fait à travers des variables d'environnement "
+"pour chaque pilote *OGR_ODS_HEADERS*, *OGR_XLS_HEADERS* and "
+"*OGR_XLSX_HEADERS*, avec trois valeurs possibles *FORCE*, *DISABLE* and "
+"*AUTO*. FPour plus de détail, consultez la documentation des pilotes "
+"correspondants: http://www.gdal.org/drv_ods.html, "
+"http://www.gdal.org/drv_xls.html and http://www.gdal.org/drv_xlsx.html."
+
+#: ../source/index.rst:51
+msgid ""
+"For each driver, the default value is *AUTO*, but automatic detection "
+"behavior depends on driver:"
+msgstr ""
+"Pour chaque driver, la valeur par défaut est *AUTO*, mais le comportement de"
+" la détection automatiquedépend du pilote:"
+
+#: ../source/index.rst:54
+msgid "for *ODS* driver: *AUTO* equals to *FORCE*"
+msgstr "pour le pilote *ODS*: *AUTO équivaut à *FORCE*"
+
+#: ../source/index.rst:55
+msgid "for *XLS* and *XLSX* drivers: *AUTO* equals to *DISABLE*"
+msgstr "pour les pilotes *XLS* et *XLSX*: *AUTO* équivaut à *DISABLE*"
+
+#: ../source/index.rst:57
+msgid ""
+"To enable the header checkbox in the plugin dialog, it's necessary that the "
+"corresponding header environnement variable is considered as equal to "
+"*DISABLE*. In other cases, the checkbox is checked and locked."
+msgstr ""
+"Pour activer la case à cocher des entêtes dans la boite de dialogue du "
+"plugin, il est donc nécessaire que la variable d'environnement "
+"correspondante soit considérée comme équivalente à *DISABLE*. Dans le cas "
+"contraire, la case est cochée et bloquée."
+
+#: ../source/index.rst:61
+msgid ""
+"So, to load correctly *.ods* files without headers, you must set "
+"*OGR_ODS_HEADERS* to *DISABLE*."
+msgstr ""
+"Donc, pour charger correctement un fichier *.ods* sans entêtes, vous devez "
+"fixer *OGR_ODS_HEADERS* à *DISABLE*."
+
+#: ../source/index.rst:64
+msgid "You can configure this in QGIS settings:"
+msgstr "Vous pouvez faire ceci dans les préférences de QGIS:"
+
+#: ../source/index.rst:66
+msgid "open *Settings* / *Options* dialog;"
+msgstr "ouvrez la boite de dialogue *Préférences* / *Options*;"
+
+#: ../source/index.rst:67
+msgid "select *System* tab, and go to *Environnement* section;"
+msgstr ""
+"sélectionnez l'onglet *Système*, et allez dans la section *Environnement*;"
+
+#: ../source/index.rst:68
+msgid "check *Use custom variables*."
+msgstr "Cochez la case *Utiliser des variables personnalisées*."
+
+#: ../source/index.rst:69
+msgid "add a new line with values:"
+msgstr "ajoutez une nouvelle ligne avec les valeurs:"
+
+#: ../source/index.rst:71
+msgid "*Overwrite* | *OGR_ODS_HEADERS* | *DISABLE*"
+msgstr "*Ecraser* | *OGR_ODS_HEADERS* | *DISABLE*"
+
+#: ../source/index.rst:73
+msgid "restart QGIS to take this into consideration."
+msgstr ""
+
+#: ../source/index.rst:75
+msgid ""
+"Conversely, if the plugin works with graceful degradation, and you want to "
+"load geometry from a Excel file with headers, you have to set "
+"*OGR_XLS_HEADERS* to *FORCE*."
+msgstr ""
+"A contrario, si le plugin fonctionne en mode dégradé, et que vous souhaitez "
+"charger des géométries à partir d'un fichier Excel avec des entêtes, vous "
+"devez fixer *OGR_XLS_HEADERS* à *FORCE*."
+
+#: ../source/index.rst:80
+msgid "Development install (linux)"
+msgstr "Installation pour le développement (linux)"
+
+#: ../source/index.rst:89
+msgid "run QGIS and activate SpreadSheetLayers plugin."
+msgstr "lancez QGIS et activez le plugin SpreadSheetLayers"

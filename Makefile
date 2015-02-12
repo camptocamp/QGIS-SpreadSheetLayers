@@ -91,9 +91,10 @@ compile:
 	@echo "Compile ui and resources forms"
 	@echo "------------------------------"
 	virtualenv --setuptools .
-	./bin/pip install -q -r requirements.txt
+	./bin/pip install -r requirements.txt
 	make -C ui
 	make -C resources
+	make html -C help
 
 ################CLEAN#######################
 clean:
@@ -102,8 +103,10 @@ clean:
 	@echo "Clean ui and resources forms"
 	@echo "------------------------------"
 	rm -f *.pyc
+	make clean -C help
 	make clean -C ui
 	make clean -C resources
+	rm -rf bin include lib local
 
 ################TESTS#######################
 .ONESHELL:
@@ -128,6 +131,7 @@ updatei18nconf:
 transup:updatei18nconf
 	pylupdate4 -noobsolete i18n/i18n.generatedconf
 	rm -f i18n/i18n.generatedconf
+	make transup -C help
 
 # transcompile: compile translation files into .qm binary format
 transcompile: $(TRANSLATIONS:%.ts=i18n/%.qm)
@@ -153,24 +157,16 @@ package: compile transcompile
 	rm -rf $(PLUGINNAME)/
 	mkdir -p $(PLUGINNAME)/ui/
 	cp ui/*.py $(PLUGINNAME)/ui/
+	mkdir -p $(PLUGINNAME)/help/build
+	cp -r help/build/html $(PLUGINNAME)/help/build/
 	git archive -o $(PLUGINNAME).zip --prefix=$(PLUGINNAME)/ $(HASH)
 	zip -d $(PLUGINNAME).zip $(PLUGINNAME)/\*Makefile
 	zip -d $(PLUGINNAME).zip $(PLUGINNAME)/.gitignore
 	zip -g $(PLUGINNAME).zip $(PLUGINNAME)/*/*
+	zip -g $(PLUGINNAME).zip `find $(PLUGINNAME)/help/build/html`
 	rm -rf $(PLUGINNAME)/
 	mv $(PLUGINNAME).zip $(PLUGINNAME).$(VERSION).zip
 	echo "Created package: $(PLUGINNAME).$(VERSION).zip"
-
-################DEPLOY####################
-# Deploy to plugin repository
-deploy: deploy/localhost
-
-deploy/localhost:
-	cp *.zip ../../geoform/dpfe/plugin/
-
-deploy/dev:
-	scp *.zip \
-			pullymorges-dpfe-dev.gis.internal:/var/www/vhosts/pullymorges-dpfe/private/pullymorges_dpfe/geoform/dpfe/plugin/
 
 ################VALIDATION#######################
 # validate syntax style

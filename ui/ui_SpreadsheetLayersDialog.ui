@@ -378,17 +378,43 @@
     </widget>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QPushButton" name="helpButton">
+       <property name="text">
+        <string>Help</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="buttonBox">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>filePathEdit</tabstop>
+  <tabstop>filePathButton</tabstop>
+  <tabstop>layerNameEdit</tabstop>
+  <tabstop>sheetBox</tabstop>
+  <tabstop>linesToIgnoreBox</tabstop>
+  <tabstop>headerBox</tabstop>
+  <tabstop>geometryBox</tabstop>
+  <tabstop>xFieldBox</tabstop>
+  <tabstop>yFieldBox</tabstop>
+  <tabstop>showGeometryFieldsBox</tabstop>
+  <tabstop>crsEdit</tabstop>
+  <tabstop>crsButton</tabstop>
+  <tabstop>sampleView</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

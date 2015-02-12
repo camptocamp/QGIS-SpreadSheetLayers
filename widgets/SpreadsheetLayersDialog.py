@@ -738,3 +738,14 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             return False
 
         return super(SpreadsheetLayersDialog, self).accept(*args, **kwargs)
+
+    @QtCore.pyqtSlot()
+    def on_helpButton_clicked(self):
+        html_path = os.path.join(os.path.dirname(__file__),
+                                 "..", "help", "build", "html")
+        user_locale = QtCore.QSettings().value("locale/userLocale")[0:2]
+        locale_path = os.path.join(html_path, user_locale)
+        if not os.path.exists(locale_path):
+            locale_path = os.path.join(html_path, 'en')
+        path = os.path.join(locale_path, "index.html")
+        QtGui.QDesktopServices.openUrl(QtCore.QUrl.fromLocalFile(path))

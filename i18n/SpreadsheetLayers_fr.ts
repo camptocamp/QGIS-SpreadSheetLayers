@@ -55,84 +55,89 @@ For more informations, consult the plugin documentation.</source>
         <translation>Veuillez sélectionner un champ y</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="218"/>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="236"/>
         <source>Create a Layer from a Spreadsheet File</source>
         <translation>Créer une couche depuis un fichier feuille de calcul</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="219"/>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="237"/>
         <source>File Name</source>
         <translation>Fichier</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="220"/>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="238"/>
         <source>Browse...</source>
         <translation>Parcourir...</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="221"/>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="239"/>
         <source>Layer name</source>
         <translation>Nom de la couche</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="222"/>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="240"/>
         <source>Sheet</source>
         <translation>Feuille</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="223"/>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="241"/>
         <source>Number of lines to ignore</source>
         <translation>Nombre de lignes à ignorer</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="224"/>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="242"/>
         <source>Header at first line</source>
         <translation>Entête en début de fichier</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="225"/>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="243"/>
         <source>OGR_ODS_HEADERS = None</source>
         <translation>OGR_ODS_HEADERS = None</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="226"/>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="244"/>
         <source>Rows</source>
         <translation>Lignes</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="227"/>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="245"/>
         <source>Geometry</source>
         <translation>Géométrie</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="228"/>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="246"/>
         <source>Fields</source>
         <translation>Champs</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="229"/>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="247"/>
         <source>Reference system</source>
         <translation>Système de référence</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="230"/>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="248"/>
         <source>X field</source>
         <translation>Champ X</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="231"/>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="249"/>
         <source>Y field</source>
         <translation>Champ Y</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="233"/>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="251"/>
         <source>Select</source>
         <translation>Sélectionner</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="232"/>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="250"/>
         <source>Show fields in attribute table</source>
         <translation>Afficher les champs dans la table des attributs</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="252"/>
+        <source>Help</source>
+        <translation>Aide</translation>
     </message>
 </context>
 <context>
