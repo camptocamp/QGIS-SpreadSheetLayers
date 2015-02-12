@@ -32,31 +32,23 @@ from SpreadsheetLayers.util.gdal_util import GDAL_COMPAT
 from ..ui.ui_SpreadsheetLayersDialog import Ui_SpreadsheetLayersDialog
 
 
-class QOgrFieldModel(QtGui.QStandardItemModel):
-    '''QOgrFieldModel provide a ListModel class
-    for displaying OGR layers fields.
-    
-    OGR layer fields are read at creation or by setLayer().
-    All data are stored in parent QtCore.QStandardItemModel object.
-    No reference to any OGR related object is kept.
+class FieldsModel(QtCore.QAbstractListModel):
+    '''FieldsModel provide a ListModel class
+    for displaying fields in QComboBox.
     '''
+    def __init__(self, fields, parent=None):
+        super(FieldsModel, self).__init__(parent)
+        self._fields = fields
 
-    def __init__(self, layer=None, parent=None):
-        super(QOgrFieldModel, self).__init__(parent)
-        self.setLayer(layer)
+    def rowCount(self, parent=QtCore.QModelIndex()):
+        return len(self._fields)
 
-    def setLayer(self, layer):
-        self.clear()
-        if layer is None:
-            return
-
-        layerDefn = layer.GetLayerDefn()
-        rows = layerDefn.GetFieldCount()
-        for row in xrange(0, rows):
-            fieldDefn = layerDefn.GetFieldDefn(row)
-            fieldName = fieldDefn.GetNameRef().decode('UTF-8')
-            item = QtGui.QStandardItem(fieldName)
-            self.appendRow(item)
+    def data(self, index, role=QtCore.Qt.DisplayRole):
+        field = self._fields[index.row()]
+        if role == QtCore.Qt.DisplayRole:
+            return field['name']
+        if role == QtCore.Qt.EditRole:
+            return field['src']
 
 
 class QOgrTableModel(QtGui.QStandardItemModel):
@@ -294,6 +286,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             self.layer = None
         else:
             self.layer = self.sheetBox.itemData(index)
+        self.updateFieldBoxes()
         self.updateSampleView()
 
     def linesToIgnore(self):
@@ -304,6 +297,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
 
     @QtCore.pyqtSlot(int)
     def on_linesToIgnoreBox_valueChanged(self, value):
+        self.updateFieldBoxes()
         self.updateSampleView()
 
     def header(self):
@@ -311,6 +305,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
 
     @QtCore.pyqtSlot(int)
     def on_headerBox_stateChanged(self, state):
+        self.updateFieldBoxes()
         self.updateSampleView()
 
     def offset(self):
@@ -358,36 +353,37 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
                 and self.geometryBox.isChecked())
 
     def xField(self):
-        return self.xFieldBox.currentText()
+        return self.xFieldBox.itemData(self.xFieldBox.currentIndex(), QtCore.Qt.EditRole)
 
     def setXField(self, fieldName):
-        self.xFieldBox.setCurrentIndex(self.xFieldBox.findText(fieldName))
+        self.xFieldBox.setCurrentIndex(self.xFieldBox.findData(fieldName, QtCore.Qt.EditRole))
 
     def yField(self):
-        return self.yFieldBox.currentText()
+        return self.yFieldBox.itemData(self.yFieldBox.currentIndex(), QtCore.Qt.EditRole)
 
     def setYField(self, fieldName):
-        self.yFieldBox.setCurrentIndex(self.yFieldBox.findText(fieldName))
+        self.yFieldBox.setCurrentIndex(self.yFieldBox.findData(fieldName, QtCore.Qt.EditRole))
 
-    def updateFieldBoxes(self, layer):
+    def updateFieldBoxes(self):
         if self.offset() > 0:
             # return
             pass
 
-        if layer is None:
+        if self.layer is None:
             self.xFieldBox.clear()
+            self.yFieldBox.clear()
             return
 
-        model = QOgrFieldModel(layer)
+        model = FieldsModel(self.getFields())
 
         xField = self.xField()
-        yField = self.xField()
+        yField = self.yField()
 
         self.xFieldBox.setModel(model)
         self.yFieldBox.setModel(model)
 
-        self.xFieldBox.setCurrentIndex(self.xFieldBox.findText(xField))
-        self.yFieldBox.setCurrentIndex(self.yFieldBox.findText(yField))
+        self.setXField(xField)
+        self.setYField(yField)
 
         if self.xField() != '' and self.yField() != '':
             return
@@ -410,6 +406,9 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
                 if yField.lower().find(yName.lower()) != -1:
                     self.yFieldBox.setCurrentIndex(i)
                     break;
+
+    def showGeometryFields(self):
+        return self.showGeometryFieldsBox.isChecked()
 
     def crs(self):
         return self.crsEdit.text()
@@ -448,8 +447,6 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
         model = QOgrTableModel(layer, parent=self,
                                maxRowCount=self.sampleRowCount)
         self.sampleView.setModel(model)
-
-        self.updateFieldBoxes(layer)
 
     def validate(self):
         try:
@@ -554,7 +551,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
         stream.skipCurrentElement()
 
     def getFields(self):
-        fields = OrderedDict()
+        fields = []
         rows = []
 
         self.layerDefn = self.layer.GetLayerDefn()
@@ -617,7 +614,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             if fieldType is None:
                 fieldType = 'String'
 
-            fields[name] = {'src': src, 'name': name, 'type': fieldType}
+            fields.append({'src': src, 'name': name, 'type': fieldType})
 
         return fields
 
@@ -650,7 +647,11 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             stream.writeCharacters(self.sheet())
             stream.writeEndElement()
 
-        for field in fields.itervalues():
+        for field in fields:
+            if (self.geometry() and not sample):
+                if field['src'] in (self.xField(), self.yField()):
+                    if not self.showGeometryFields():
+                        continue
             stream.writeStartElement("Field")
             stream.writeAttribute("name", field['name'])
             stream.writeAttribute("src", field['src'])
@@ -669,8 +670,8 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
 
             stream.writeStartElement("GeometryField")
             stream.writeAttribute("encoding", "PointFromColumns")
-            stream.writeAttribute("x", fields[self.xField()]['src'])
-            stream.writeAttribute("y", fields[self.yField()]['src'])
+            stream.writeAttribute("x", self.xField())
+            stream.writeAttribute("y", self.yField())
             stream.writeEndElement()
 
         stream.writeEndElement() # OGRVRTLayer
