@@ -1,12 +1,26 @@
-# QGIS-SpreadSheetLayers
-QGIS plugin to load layers from spreadsheet files (*.ods, *.xls, *.xlsx)
+.. SpreadsheetLayers documentation master file, created by
+   sphinx-quickstart on Thu Jan 15 15:15:55 2015.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
 
-## Description
+QGIS-SpreadSheetLayers
+======================
 
-Adds a "Add spreadsheet layer" entry in *Layer* / *Add new Layer* menu and a
-corresponding button in *Layers* toolbar. These two links open a "Add new
-spreadsheet layer" dialog with some options (select file, layer name, sheet,
-use header, ignore some rows, load geometry and select x and y fields).
+QGIS plugin to load layers from spreadsheet files (\*.ods, \*.xls, \*.xlsx)
+
+Description
+-----------
+
+This plugin adds a *Add spreadsheet layer* entry in *Layer* / *Add new Layer*
+menu and a corresponding button in *Layers* toolbar. These two links open the
+same dialog to load a layer from a spreadsheet file with some options:
+
+* select file
+* layer name
+* sheet selection
+* header at first line
+* ignore some rows
+* load geometry from x and y fields
 
 When dialog is accepted, it creates a new GDAL VRT file in same folder as the
 source data file, expanded with a *.vrt* suffix, which is loaded into QGIS.
@@ -14,7 +28,8 @@ source data file, expanded with a *.vrt* suffix, which is loaded into QGIS.
 When reusing the same file twice, the dialog loads its values from the
 existing *.vrt* file.
 
-## Requirements
+Requirements
+------------
 
 With GDAL <= 1.11.1, the plugin works with graceful degradation, geometry
 loading is locked when offset is not null, ie:
@@ -22,7 +37,8 @@ loading is locked when offset is not null, ie:
 - if you ignore some lines at start of spreadsheet;
 - if you use header line with corresponding GDAL functionality disabled.
 
-## Runtime configuration
+Configuration
+-------------
 
 GDAL do not allow to define the presence of header line on a per layer basis,
 this choice is made through environment variables for each driver
@@ -52,7 +68,7 @@ You can configure this in QGIS settings:
 - check *Use custom variables*.
 - add a new line with values:
 
-   *Append* | *OGR_ODS_HEADERS* | *DISABLE*
+   *Overwrite* | *OGR_ODS_HEADERS* | *DISABLE*
 
 - restart QGIS to take this into consideration.
 
@@ -60,13 +76,14 @@ Conversely, if the plugin works with graceful degradation,
 and you want to load geometry from a Excel file with headers,
 you have to set *OGR_XLS_HEADERS* to *FORCE*.
 
-## Development install (linux):
+Development install (linux)
+---------------------------
 
-```
-git clone git@github.com:camptocamp/QGIS-SpreadSheetLayers.git SpreadSheetLayers
-ln -s SpreadSheetLayers ~/.qgis2/python/plugins/
-cd SpreadSheetLayers
-make
-```
+.. code::
 
-- run QGIS and activate SpreadSheetLayers plugin.
+   git clone git@github.com:camptocamp/QGIS-SpreadSheetLayers.git SpreadsheetLayers
+   ln -s SpreadsheetLayers ~/.qgis2/python/plugins/
+   cd SpreadsheetLayers
+   make
+
+- run QGIS and activate SpreadsheetLayers plugin.
