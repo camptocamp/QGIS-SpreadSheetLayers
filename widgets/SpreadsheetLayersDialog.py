@@ -355,13 +355,19 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
                 and self.geometryBox.isChecked())
 
     def xField(self):
-        return self.xFieldBox.itemData(self.xFieldBox.currentIndex(), QtCore.Qt.EditRole)
+        index = self.xFieldBox.currentIndex()
+        if index == -1:
+            return ''
+        return self.xFieldBox.itemData(index, QtCore.Qt.EditRole)
 
     def setXField(self, fieldName):
         self.xFieldBox.setCurrentIndex(self.xFieldBox.findData(fieldName, QtCore.Qt.EditRole))
 
     def yField(self):
-        return self.yFieldBox.itemData(self.yFieldBox.currentIndex(), QtCore.Qt.EditRole)
+        index = self.yFieldBox.currentIndex()
+        if index == -1:
+            return ''
+        return self.yFieldBox.itemData(index, QtCore.Qt.EditRole)
 
     def setYField(self, fieldName):
         self.yFieldBox.setCurrentIndex(self.yFieldBox.findData(fieldName, QtCore.Qt.EditRole))
