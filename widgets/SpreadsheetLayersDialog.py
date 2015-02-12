@@ -22,6 +22,7 @@
 """
 
 import os
+from tempfile import gettempdir
 from exceptions import NotImplementedError
 from collections import OrderedDict
 from osgeo import ogr
@@ -472,7 +473,8 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
         return '{}.vrt'.format(self.filePath())
 
     def samplePath(self):
-        return '{}.tmp.vrt'.format(self.filePath())
+        filename = '{}.tmp.vrt'.format(os.path.basename(self.filePath()))
+        return os.path.join(gettempdir(), filename)
 
     def readVrt(self):
         if self.dataSource is None:
@@ -631,8 +633,11 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
         stream.writeAttribute("name", self.layerName())
 
         stream.writeStartElement("SrcDataSource")
-        stream.writeAttribute("relativeToVRT", "1")
-        stream.writeCharacters(os.path.basename(self.filePath()))
+        if sample:
+            stream.writeCharacters(self.filePath())
+        else:
+            stream.writeAttribute("relativeToVRT", "1")
+            stream.writeCharacters(os.path.basename(self.filePath()))
         stream.writeEndElement()
 
         fields = self.getFields()
@@ -674,8 +679,8 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             stream.writeAttribute("y", self.yField())
             stream.writeEndElement()
 
-        stream.writeEndElement() # OGRVRTLayer
-        stream.writeEndElement() # OGRVRTDataSource
+        stream.writeEndElement()  # OGRVRTLayer
+        stream.writeEndElement()  # OGRVRTDataSource
         stream.writeEndDocument()
 
         buffer.reset()
