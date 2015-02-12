@@ -4,7 +4,9 @@
 # embedding metadata in __init__.py will 
 # is no longer supported since version 2.0.
 
-# This file should be included when you package your plugin.# Mandatory items:
+# This file should be included when you package your plugin.
+
+# Mandatory items:
 
 [general]
 name=Spreadsheet Layers
@@ -22,12 +24,12 @@ email=info@camptocamp.com
 # changelog=
 
 # Tags are comma separated with spaces allowed
-tags=
+tags=spreadsheet,ods,xls,xlsx,calc,excel
 
-homepage=
-tracker=
+homepage=https://github.com/camptocamp/QGIS-SpreadSheetLayers
+tracker=https://github.com/camptocamp/QGIS-SpreadSheetLayers/issues
 repository=https://github.com/camptocamp/QGIS-SpreadSheetLayers
-icon=resources/icon/icon/mActionAddSpreadsheetLayer.svg
+icon=resources/icon/mActionAddSpreadsheetLayer.svg
 # experimental flag
 experimental=True
 
