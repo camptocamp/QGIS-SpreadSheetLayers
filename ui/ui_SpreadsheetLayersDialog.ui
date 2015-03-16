@@ -146,9 +146,6 @@
          <property name="text">
           <string>Header at first line</string>
          </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
         </widget>
        </item>
        <item>
