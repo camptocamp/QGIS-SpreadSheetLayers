@@ -1,56 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="fr" sourcelanguage="en">
+<!DOCTYPE TS><TS version="2.0" language="fr" sourcelanguage="en">
 <context>
     <name>SpreadsheetLayersDialog</name>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="160"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="162"/>
         <source>Choose a spreadsheet file to open</source>
         <translation>Choisissez un fichier feuille de calcul à ouvrir</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="160"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="162"/>
         <source>Spreadsheet files</source>
         <translation>Fichiers feuille de calcul</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="160"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="162"/>
         <source>GDAL Virtual Format</source>
         <translation>Source de données virtuelle GDAL</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="160"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="162"/>
         <source>All files</source>
         <translation>Tous les fichiers</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="240"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="242"/>
         <source>To enable this checkbox, set environment variable {} to {}</source>
         <translation>Pour activer cette case à cocher, fixez la variable d&apos;environnement {} à {}</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="346"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="348"/>
         <source>Used GDAL version doesn&apos;t support VRT layers with sqlite dialect mixed with PointFromColumn functionality.
 For more informations, consult the plugin documentation.</source>
         <translation>La version courante de GDAL ne supporte pas la combinaison couches VRT utilisant le dialecte sqlite et la geometrie depuis les colonnes.</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="454"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="464"/>
         <source>Please select an input file</source>
         <translation>Veuillez sélectionner un fichier</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="457"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="467"/>
         <source>Please select a sheet</source>
         <translation>Veuillez sélectionner une feuille</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="460"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="470"/>
         <source>Please select an x field</source>
         <translation>Veuillez sélectionner un champ x</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="463"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="473"/>
         <source>Please select an y field</source>
         <translation>Veuillez sélectionner un champ y</translation>
     </message>
