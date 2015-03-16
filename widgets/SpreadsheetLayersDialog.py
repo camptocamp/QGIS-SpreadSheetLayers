@@ -22,6 +22,7 @@
 """
 
 import os
+import datetime
 from tempfile import gettempdir
 from exceptions import NotImplementedError
 from collections import OrderedDict
@@ -35,8 +36,7 @@ from SpreadsheetLayers.ui.ui_SpreadsheetLayersDialog import Ui_SpreadsheetLayers
 
 
 class FieldsModel(QtCore.QAbstractListModel):
-    '''FieldsModel provide a ListModel class
-    for displaying fields in QComboBox.
+    '''FieldsModel provide a ListModel class to display fields in QComboBox.
     '''
     def __init__(self, fields, parent=None):
         super(FieldsModel, self).__init__(parent)
@@ -79,12 +79,7 @@ class QOgrTableModel(QtGui.QStandardItemModel):
         for column in xrange(0, columns):
             fieldDefn = layerDefn.GetFieldDefn(column)
             fieldName = fieldDefn.GetNameRef().decode('UTF-8')
-            if fieldDefn.GetType() == ogr.OFTInteger:
-                fieldType = 'Integer'
-            if fieldDefn.GetType() == ogr.OFTReal:
-                fieldType = 'Real'
-            if fieldDefn.GetType() == ogr.OFTString:
-                fieldType = 'String'
+            fieldType = fieldDefn.GetFieldTypeName(fieldDefn.GetType())
             item = QtGui.QStandardItem(u"{}\n({})".format(fieldName, fieldType))
             self.setHorizontalHeaderItem(column, item)
 
@@ -99,7 +94,12 @@ class QOgrTableModel(QtGui.QStandardItemModel):
 
     def createItem(self, layerDefn, feature, iField):
         fieldDefn = layerDefn.GetFieldDefn(iField)
-        if fieldDefn.GetType() == ogr.OFTInteger:
+
+        if fieldDefn.GetType() == ogr.OFTDate:
+            value = datetime.date(*feature.GetFieldAsDateTime(iField)[:3])
+            hAlign = QtCore.Qt.AlignCenter
+
+        elif fieldDefn.GetType() == ogr.OFTInteger:
             value = feature.GetFieldAsInteger(iField)
             hAlign = QtCore.Qt.AlignRight
 
@@ -382,7 +382,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             self.yFieldBox.clear()
             return
 
-        model = FieldsModel(self.getFields())
+        model = FieldsModel(self.getFields(with_type=False))
 
         xField = self.xField()
         yField = self.yField()
@@ -559,75 +559,26 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
 
         stream.skipCurrentElement()
 
-    def getFields(self):
-        fields = []
-        rows = []
-
-        self.layerDefn = self.layer.GetLayerDefn()
-
-        # Load all values to detect types later
-        self.layer.SetNextByIndex(self.offset())
-        feature = self.layer.GetNextFeature()
-        self._non_empty_rows = 0
-        while feature is not None:
-            values = []
-            for iField in xrange(0, self.layerDefn.GetFieldCount()):
-                values.append(feature.GetFieldAsString(iField).decode('UTF-8'))
-            rows.append(values)
-
-            # Manual detect end of xls files
-            for value in values:
-                if value != u'':
-                    self._non_empty_rows = len(rows)
-                    break
-
-            feature = self.layer.GetNextFeature()
-
+    def getFields(self, with_type=True):
         # Select header line
         if self.header() and self.offset() >= 1:
             self.layer.SetNextByIndex(self.offset() - 1)
             feature = self.layer.GetNextFeature()
 
-        for iField in xrange(0, self.layerDefn.GetFieldCount()):
-            fieldDefn = self.layerDefn.GetFieldDefn(iField)
+        fields = []
+        layerDefn = self.layer.GetLayerDefn()
+        for iField in xrange(0, layerDefn.GetFieldCount()):
+            fieldDefn = layerDefn.GetFieldDefn(iField)
             src = fieldDefn.GetNameRef().decode('UTF-8')
-            if self.header():
-                if self.offset() == 0:
-                    name = src
-                else:
-                    name = feature.GetFieldAsString(iField).decode('UTF-8')
-            else:
-                name = ''
-            if name == '':
-                name = 'Field{}'.format(iField + 1)
-
-            fieldType = 'Integer'
-            for iRow in xrange(0, len(rows)):
-                value = rows[iRow][iField]
-                try:
-                    int(value)
-                except:
-                    fieldType = None
-                    break
-
-            if fieldType is None:
-                fieldType = 'Real'
-                for iRow in xrange(0, len(rows)):
-                    value = rows[iRow][iField]
-                    try:
-                        float(value)
-                    except:
-                        fieldType = 'String'
-                        break
-
-            if fieldType is None:
-                fieldType = 'String'
-
-            fields.append({'src': src, 'name': name, 'type': fieldType})
-
+            name = src
+            if self.header() and self.offset() >= 1:
+                name = feature.GetFieldAsString(iField).decode('UTF-8')
+            fields.append({'src': src,
+                           'name': name,
+                           'type': fieldDefn.GetFieldTypeName(fieldDefn.GetType())})
         return fields
 
-    def prepareVrt(self, sample=False):
+    def prepareVrt(self, sample=False, without_fields=False):
         buffer = QtCore.QBuffer()
         buffer.open(QtCore.QBuffer.ReadWrite)
 
@@ -659,16 +610,18 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             stream.writeCharacters(self.sheet())
             stream.writeEndElement()
 
-        for field in fields:
-            if (self.geometry() and not sample):
-                if field['src'] in (self.xField(), self.yField()):
-                    if not self.showGeometryFields():
-                        continue
-            stream.writeStartElement("Field")
-            stream.writeAttribute("name", field['name'])
-            stream.writeAttribute("src", field['src'])
-            stream.writeAttribute("type", field['type'])
-            stream.writeEndElement()
+        if not without_fields:
+            fields = self.getFields()
+            for field in fields:
+                if (self.geometry() and not sample):
+                    if field['src'] in (self.xField(), self.yField()):
+                        if not self.showGeometryFields():
+                            continue
+                stream.writeStartElement("Field")
+                stream.writeAttribute("name", field['name'])
+                stream.writeAttribute("src", field['src'])
+                stream.writeAttribute("type", field['type'])
+                stream.writeEndElement()
 
         if (self.geometry() and not sample):
             stream.writeStartElement("GeometryType")
@@ -726,8 +679,9 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
         file.close()
         return True
 
-    def writeSampleVrt(self):
-        content = self.prepareVrt(True)
+    def writeSampleVrt(self, without_fields=False):
+        content = self.prepareVrt(sample=True,
+                                  without_fields=without_fields)
 
         vrtPath = self.samplePath()
         file = QtCore.QFile(vrtPath)
