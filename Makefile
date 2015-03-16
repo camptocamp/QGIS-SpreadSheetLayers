@@ -159,11 +159,14 @@ package: compile transcompile
 	cp ui/*.py $(PLUGINNAME)/ui/
 	mkdir -p $(PLUGINNAME)/help/build
 	cp -r help/build/html $(PLUGINNAME)/help/build/
+	mkdir -p $(PLUGINNAME)/i18n/
+	cp i18n/*.qm $(PLUGINNAME)/i18n/
 	git archive -o $(PLUGINNAME).zip --prefix=$(PLUGINNAME)/ $(HASH)
 	zip -d $(PLUGINNAME).zip $(PLUGINNAME)/\*Makefile
 	zip -d $(PLUGINNAME).zip $(PLUGINNAME)/.gitignore
 	zip -g $(PLUGINNAME).zip $(PLUGINNAME)/*/*
 	zip -g $(PLUGINNAME).zip `find $(PLUGINNAME)/help/build/html`
+	zip -g $(PLUGINNAME).zip $(PLUGINNAME)/*.qm
 	rm -rf $(PLUGINNAME)/
 	mv $(PLUGINNAME).zip $(PLUGINNAME).$(VERSION).zip
 	echo "Created package: $(PLUGINNAME).$(VERSION).zip"
