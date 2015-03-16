@@ -288,6 +288,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             self.layer = None
         else:
             self.layer = self.sheetBox.itemData(index)
+        self.countNonEmptyRows()
         self.updateFieldBoxes()
         self.updateSampleView()
 
@@ -326,14 +327,37 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
         self.setLinesToIgnore(value)
 
     def limit(self):
-        driverName = self.dataSource.GetDriver().GetName()
-        if driverName in ['XLS']:
-            return self._non_empty_rows
-        return self.layer.GetFeatureCount() - self.offset()
+        return self._non_empty_rows - self.offset()
+
+    def countNonEmptyRows(self):
+        if self.layer is None:
+            return
+        if self.dataSource.GetDriver().GetName() in ['XLS']:
+            layer = self.layer
+            layerDefn = layer.GetLayerDefn()
+            layer.SetNextByIndex(0)
+            feature = layer.GetNextFeature()
+            self._non_empty_rows = 0
+            rows = []
+            while feature is not None:
+                values = []
+                for iField in xrange(0, layerDefn.GetFieldCount()):
+                    values.append(feature.GetFieldAsString(iField).decode('UTF-8'))
+                rows.append(values)
+
+                # Manual detect end of xls files
+                for value in values:
+                    if value != u'':
+                        self._non_empty_rows = len(rows)
+                        break
+
+                feature = layer.GetNextFeature()
+        else:
+            self._non_empty_rows = self.layer.GetFeatureCount()
 
     def sql(self):
-        sql = ("SELECT * FROM {}"
-               " LIMIT {} OFFSET {}"
+        sql = ('SELECT * FROM "{}"'
+               ' LIMIT {} OFFSET {}'
                ).format(self.sheet(),
                         self.limit(),
                         self.offset())
@@ -598,9 +622,9 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             stream.writeCharacters(os.path.basename(self.filePath()))
         stream.writeEndElement()
 
-        fields = self.getFields()
-
-        if self.offset() > 0:
+        if (self.offset() > 0
+            or self.dataSource.GetDriver().GetName() in ['XLS']
+        ):
             stream.writeStartElement("SrcSql")
             stream.writeAttribute("dialect", "sqlite")
             stream.writeCharacters(self.sql())
