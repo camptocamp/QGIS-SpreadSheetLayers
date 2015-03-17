@@ -3,138 +3,133 @@
 <context>
     <name>SpreadsheetLayersDialog</name>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="162"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="164"/>
         <source>Choose a spreadsheet file to open</source>
         <translation>Choisissez un fichier feuille de calcul à ouvrir</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="162"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="164"/>
         <source>Spreadsheet files</source>
         <translation>Fichiers feuille de calcul</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="162"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="164"/>
         <source>GDAL Virtual Format</source>
         <translation>Source de données virtuelle GDAL</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="162"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="164"/>
         <source>All files</source>
         <translation>Tous les fichiers</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="242"/>
-        <source>To enable this checkbox, set environment variable {} to {}</source>
-        <translation>Pour activer cette case à cocher, fixez la variable d&apos;environnement {} à {}</translation>
-    </message>
-    <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="348"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="338"/>
         <source>Used GDAL version doesn&apos;t support VRT layers with sqlite dialect mixed with PointFromColumn functionality.
 For more informations, consult the plugin documentation.</source>
         <translation>La version courante de GDAL ne supporte pas la combinaison couches VRT utilisant le dialecte sqlite et la geometrie depuis les colonnes.</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="464"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="454"/>
         <source>Please select an input file</source>
         <translation>Veuillez sélectionner un fichier</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="467"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="457"/>
         <source>Please select a sheet</source>
         <translation>Veuillez sélectionner une feuille</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="470"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="460"/>
         <source>Please select an x field</source>
         <translation>Veuillez sélectionner un champ x</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="473"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="463"/>
         <source>Please select an y field</source>
         <translation>Veuillez sélectionner un champ y</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="236"/>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="235"/>
         <source>Create a Layer from a Spreadsheet File</source>
         <translation>Créer une couche depuis un fichier feuille de calcul</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="237"/>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="236"/>
         <source>File Name</source>
         <translation>Fichier</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="238"/>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="237"/>
         <source>Browse...</source>
         <translation>Parcourir...</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="239"/>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="238"/>
         <source>Layer name</source>
         <translation>Nom de la couche</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="240"/>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="239"/>
         <source>Sheet</source>
         <translation>Feuille</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="241"/>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="240"/>
         <source>Number of lines to ignore</source>
         <translation>Nombre de lignes à ignorer</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="242"/>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="241"/>
         <source>Header at first line</source>
         <translation>Entête en début de fichier</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="243"/>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="242"/>
         <source>OGR_ODS_HEADERS = None</source>
         <translation>OGR_ODS_HEADERS = None</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="244"/>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="243"/>
         <source>Rows</source>
         <translation>Lignes</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="245"/>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="244"/>
         <source>Geometry</source>
         <translation>Géométrie</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="246"/>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="245"/>
         <source>Fields</source>
         <translation>Champs</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="247"/>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="246"/>
         <source>Reference system</source>
         <translation>Système de référence</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="248"/>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="247"/>
         <source>X field</source>
         <translation>Champ X</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="249"/>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="248"/>
         <source>Y field</source>
         <translation>Champ Y</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="251"/>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="250"/>
         <source>Select</source>
         <translation>Sélectionner</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="250"/>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="249"/>
         <source>Show fields in attribute table</source>
         <translation>Afficher les champs dans la table des attributs</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="252"/>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.py" line="251"/>
         <source>Help</source>
         <translation>Aide</translation>
     </message>

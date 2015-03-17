@@ -28,14 +28,32 @@ source data file, expanded with a *.vrt* suffix, which is loaded into QGIS.
 When reusing the same file twice, the dialog loads its values from the
 existing *.vrt* file.
 
-Requirements
-------------
+Limitations
+-----------
 
-With GDAL <= 1.11.1, the plugin works with graceful degradation, geometry
-loading is locked when offset is not null, ie:
+Due to a GDAL/OGR lacks of functionalities:
 
-- if you ignore some lines at start of spreadsheet;
-- if you use header line with corresponding GDAL functionality disabled.
+- use of header line on a per file basis ;
+- ignore lines at the beginning of file ;
+- correct end of .xls files detection.
+
+The plugin use an SQLITE select statement with offset and limit parameters
+to extract corresponding data from the source file. When one of this
+functionalities is in use, this could have some side effects.
+
+With GDAL <= 1.11.1, the plugin can't load geometry. With graceful
+degradation, geometry checkbox is then locked. To get the GDAL version in use,
+run this commands in QGIS python console:
+
+.. code::
+
+    import osgeo.gdal
+    print osgeo.gdal.__version__
+
+When opening a spreadsheet file, GDAL/OGR will try to detect the data type of
+columns (Date, Integer, Real, String, ...). This automatic detection occurs
+outside of plugin header and ignore lines functionalities, so when using this,
+GDAL/OGR should be unable to correctly detect data types.
 
 Configuration
 -------------
@@ -48,33 +66,16 @@ For more details, consult the corresponding drivers documentation ie:
 http://www.gdal.org/drv_ods.html, http://www.gdal.org/drv_xls.html
 and http://www.gdal.org/drv_xlsx.html.
 
-For each driver, the default value is *AUTO*, but automatic detection behavior
-depends on driver:
-
-- for *ODS* driver: *AUTO* equals to *FORCE*
-- for *XLS* and *XLSX* drivers: *AUTO* equals to *DISABLE*
-
-To enable the header checkbox in the plugin dialog, it's necessary that the
-corresponding header environnement variable is considered as equal to
-*DISABLE*. In other cases, the checkbox is checked and locked.
-
-So, to load correctly *.ods* files without headers, you must set
-*OGR_ODS_HEADERS* to *DISABLE*.
-
-You can configure this in QGIS settings:
+You can change this values in QGIS settings:
 
 - open *Settings* / *Options* dialog;
 - select *System* tab, and go to *Environnement* section;
 - check *Use custom variables*.
-- add a new line with values:
+- add a new line. Example:
 
-   *Overwrite* | *OGR_ODS_HEADERS* | *DISABLE*
+   *Overwrite* | *OGR_ODS_HEADERS* | *FORCE*
 
 - restart QGIS to take this into consideration.
-
-Conversely, if the plugin works with graceful degradation,
-and you want to load geometry from a Excel file with headers,
-you have to set *OGR_XLS_HEADERS* to *FORCE*.
 
 Development install (linux)
 ---------------------------
