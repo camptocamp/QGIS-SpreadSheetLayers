@@ -134,6 +134,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
         self.dataSource = None
         self.layer = None
         self.sampleDatasource = None
+        self.ogrHeadersLabel.setText('')
 
         self.messageBar = QgsMessageBar(self)
         self.layout().insertWidget(0, self.messageBar)
