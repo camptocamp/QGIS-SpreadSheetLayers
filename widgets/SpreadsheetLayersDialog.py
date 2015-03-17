@@ -23,6 +23,7 @@
 
 import os
 import datetime
+import re
 from tempfile import gettempdir
 from exceptions import NotImplementedError
 from collections import OrderedDict
@@ -267,6 +268,9 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
     def header(self):
         return self.headerBox.checkState() == QtCore.Qt.Checked
 
+    def setHeader(self, value):
+        self.headerBox.setCheckState(QtCore.Qt.Checked if value else QtCore.Qt.Unchecked)
+
     @QtCore.pyqtSlot(int)
     def on_headerBox_stateChanged(self, state):
         self.updateFieldBoxes()
@@ -317,7 +321,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             self._non_empty_rows = self.layer.GetFeatureCount()
 
     def sql(self):
-        sql = ('SELECT * FROM "{}"'
+        sql = ('SELECT * FROM \'{}\''
                ' LIMIT {} OFFSET {}'
                ).format(self.sheet(),
                         self.limit(),
@@ -505,40 +509,50 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             if stream.name() == "OGRVRTLayer":
                 self.setLayerName(stream.attributes().value("name"))
 
-                while stream.readNextStartElement():
-                    if stream.name() == "SrcDataSource":
-                        # do nothing : datasource should be already set
-                        pass
+                while stream.readNext() != QtCore.QXmlStreamReader.EndDocument:
+                    if stream.isComment():
+                        text = stream.text()
+                        pattern = re.compile(r"Header=(\w+)")
+                        match = pattern.search(text)
+                        if match:
+                            self.setHeader(eval(match.group(1)))
 
-                    elif stream.name() == "SrcLayer":
-                        text = stream.readElementText()
-                        self.setSheet(text)
-                        self.setOffset(0)
+                    if stream.isStartElement():
+                        if stream.name() == "SrcDataSource":
+                            # do nothing : datasource should be already set
+                            pass
 
-                    elif stream.name() == "SrcSql":
-                        text = stream.readElementText()
-                        terms = text.split(" ")
-                        previous = ''
-                        for term in terms:
-                            if previous.lower() == 'from':
-                                self.setSheet(term)
-                            if previous.lower() == 'offset':
-                                self.setOffset(term)
-                            previous = term
+                        elif stream.name() == "SrcLayer":
+                            text = stream.readElementText()
+                            self.setSheet(text)
+                            self.setOffset(0)
 
-                    elif stream.name() == "GeometryType":
-                        self.geometryBox.setChecked(True)
+                        elif stream.name() == "SrcSql":
+                            text = stream.readElementText()
 
-                    elif stream.name() == "LayerSRS":
-                        text = stream.readElementText()
-                        self.setCrs(text)
+                            pattern = re.compile(r"FROM '(.+)'")
+                            match = pattern.search(text)
+                            if match:
+                                self.setSheet(match.group(1))
 
-                    elif stream.name() == "GeometryField":
-                        self.setXField(stream.attributes().value("x"))
-                        self.setYField(stream.attributes().value("y"))
+                            pattern = re.compile(r'OFFSET (\d+)')
+                            match = pattern.search(text)
+                            if match:
+                                self.setOffset(int(match.group(1)))
 
-                    if not stream.isEndElement():
-                        stream.skipCurrentElement()
+                        elif stream.name() == "GeometryType":
+                            self.geometryBox.setChecked(True)
+
+                        elif stream.name() == "LayerSRS":
+                            text = stream.readElementText()
+                            self.setCrs(text)
+
+                        elif stream.name() == "GeometryField":
+                            self.setXField(stream.attributes().value("x"))
+                            self.setYField(stream.attributes().value("y"))
+
+                        if not stream.isEndElement():
+                            stream.skipCurrentElement()
 
             stream.skipCurrentElement()
 
@@ -582,6 +596,8 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             stream.writeAttribute("relativeToVRT", "1")
             stream.writeCharacters(os.path.basename(self.filePath()))
         stream.writeEndElement()
+
+        stream.writeComment('Header={}'.format(self.header()))
 
         if (self.offset() > 0
             or self.dataSource.GetDriver().GetName() in ['XLS']
