@@ -11,11 +11,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../source/index.rst:7
+#: ../../README.rst:7
 msgid "QGIS-SpreadSheetLayers"
 msgstr ""
 
-#: ../source/index.rst:9
+#: ../../README.rst:9
 msgid ""
 "QGIS plugin to load layers from spreadsheet files (\\*.ods, \\*.xls, "
 "\\*.xlsx)"
@@ -23,12 +23,11 @@ msgstr ""
 "Plugin QGIS pour charger des couches depuis des fichiers feuille de calcul "
 "(\\*.ods, \\*.xls, \\*.xlsx)"
 
-#: ../source/index.rst:12
+#: ../../README.rst:12
 msgid "Description"
 msgstr ""
 
-
-#: ../source/index.rst:14
+#: ../../README.rst:14
 msgid ""
 "This plugin adds a *Add spreadsheet layer* entry in *Layer* / *Add new "
 "Layer* menu and a corresponding button in *Layers* toolbar. These two links "
@@ -36,35 +35,35 @@ msgid ""
 "options:"
 msgstr ""
 "Ce plugin ajoute une nouvelle entrée *Ajouter une couche feuille de calcul* "
-"dans le menu *Couches* / *Ajouter une couche* et un bouton correspondant dans la "
-"barre d'outils *Couches*. Ces deux liens ouvrent un même boite de dialogue avec quelques options:"
+"dans le menu *Couches* / *Ajouter une couche* et un bouton correspondant "
+"dans la barre d'outils *Couches*. Ces deux liens ouvrent un même boite de "
+"dialogue avec quelques options:"
 
-#: ../source/index.rst:18
+#: ../../README.rst:18
 msgid "select file"
 msgstr "sélectionner le fichier"
 
-#: ../source/index.rst:19
+#: ../../README.rst:19
 msgid "layer name"
 msgstr "nom de la couche"
 
-#: ../source/index.rst:20
+#: ../../README.rst:20
 msgid "sheet selection"
 msgstr "sélection de la feuille"
 
-#: ../source/index.rst:21
+#: ../../README.rst:21
 msgid "header at first line"
 msgstr "entête en début de fichier"
 
-#: ../source/index.rst:22
+#: ../../README.rst:22
 msgid "ignore some rows"
 msgstr "ignorer des lignes"
 
-#: ../source/index.rst:23
+#: ../../README.rst:23
 msgid "load geometry from x and y fields"
 msgstr "charger la géométrie depuis les champs x et y"
 
-
-#: ../source/index.rst:25
+#: ../../README.rst:25
 msgid ""
 "When dialog is accepted, it creates a new GDAL VRT file in same folder as "
 "the source data file, expanded with a *.vrt* suffix, which is loaded into "
@@ -74,7 +73,7 @@ msgstr ""
 " le dossier du fichier source des données, étendu par un suffixe *.vrt*, qui"
 " est lui-même chargé dans QGIS."
 
-#: ../source/index.rst:28
+#: ../../README.rst:28
 msgid ""
 "When reusing the same file twice, the dialog loads its values from the "
 "existing *.vrt* file."
@@ -82,33 +81,66 @@ msgstr ""
 "Lorque l'on utilise le même fichier une seconde fois, la boite de dialogue "
 "récupère les valeurs depuis le  fichier *.vrt* existant."
 
-#: ../source/index.rst:32
-msgid "Requirements"
-msgstr "Dépendances"
+#: ../../README.rst:32
+msgid "Limitations"
+msgstr ""
 
-#: ../source/index.rst:34
+#: ../../README.rst:34
+msgid "Due to a GDAL/OGR lacks of functionalities:"
+msgstr "A cause d'un manque de fonctionnalités dans GDAL/OGR:"
+
+#: ../../README.rst:36
+msgid "use of header line on a per file basis ;"
+msgstr "configuration de la ligne d'entête pour chaque fichier ;"
+
+#: ../../README.rst:37
+msgid "ignore lines at the beginning of file ;"
+msgstr "possibilité d'ignorer des lignes en début de fichier ;"
+
+#: ../../README.rst:38
+msgid "correct end of .xls files detection."
+msgstr "détection correcte de la fin des fichiers .xls."
+
+#: ../../README.rst:40
 msgid ""
-"With GDAL <= 1.11.1, the plugin works with graceful degradation, geometry "
-"loading is locked when offset is not null, ie:"
+"The plugin use an SQLITE select statement with offset and limit parameters "
+"to extract corresponding data from the source file. When one of this "
+"functionalities is in use, this could have some side effects."
 msgstr ""
-"Avec GDAL <= 1.11.1, le plugin fonctionne en mode dégradé, le chargement de "
-"la géométrie est bloqué si le décalage est non nul, c'est à dire:"
+"Le plugin utilise une requête de sélection SQLITE avec des paramètres "
+"décalage et limite pour extraire les données correspondantes. Lorsque l'une "
+"de ces fonctionnalités est utilisée, ceci peut avoir des effets de bord."
 
-#: ../source/index.rst:37
-msgid "if you ignore some lines at start of spreadsheet;"
-msgstr "si vous ignorez des lignes en début de la feuille;"
-
-#: ../source/index.rst:38
-msgid "if you use header line with corresponding GDAL functionality disabled."
+#: ../../README.rst:44
+msgid ""
+"With GDAL <= 1.11.1, the plugin can't load geometry. With graceful "
+"degradation, geometry checkbox is then locked. To get the GDAL version in "
+"use, run this commands in QGIS python console:"
 msgstr ""
-"si vous utilisez la ligne d'entête alors que la fonction GDAL correspondante"
-" est désactivée."
+"Avec GDAL <= 1.11.1, le plugin ne peut charger la géométrie. Dans ce mode "
+"dégradé, la case à chocher geometry est alors bloquée. Pour obtenir la "
+"version de GDAL en cours d'utilisation, lancez ces commandes dans la console"
+" python de QGIS:"
 
-#: ../source/index.rst:41
+#: ../../README.rst:53
+msgid ""
+"When opening a spreadsheet file, GDAL/OGR will try to detect the data type "
+"of columns (Date, Integer, Real, String, ...). This automatic detection "
+"occurs outside of plugin header and ignore lines functionalities, so when "
+"using this, GDAL/OGR should be unable to correctly detect data types."
+msgstr ""
+"Lors de l'ouverture de fichiers feuille de calcul, GDAL/OGR opère une "
+"détection automatique des types de données (Date, Entier, Réel, Chaine de "
+"caractères, ...). Cette détection automatique se produit en dehors des "
+"fonctionnalités d'entête et de lignes ignorées fournies par le plugin, "
+"lorsque vous les utilisez, GDAL/OGR ne pourra donc peut-être pas détecter "
+"correctement les types de données."
+
+#: ../../README.rst:59
 msgid "Configuration"
 msgstr "Configuration"
 
-#: ../source/index.rst:43
+#: ../../README.rst:61
 msgid ""
 "GDAL do not allow to define the presence of header line on a per layer "
 "basis, this choice is made through environment variables for each driver "
@@ -117,92 +149,47 @@ msgid ""
 " corresponding drivers documentation ie: http://www.gdal.org/drv_ods.html, "
 "http://www.gdal.org/drv_xls.html and http://www.gdal.org/drv_xlsx.html."
 msgstr ""
-"GDAL n'autorise pas la définition de la présente de la ligne d'entête pour "
+"GDAL n'autorise pas la définition de la présence de la ligne d'entête pour "
 "chaque couche, ce choix est fait à travers des variables d'environnement "
 "pour chaque pilote *OGR_ODS_HEADERS*, *OGR_XLS_HEADERS* and "
 "*OGR_XLSX_HEADERS*, avec trois valeurs possibles *FORCE*, *DISABLE* and "
-"*AUTO*. FPour plus de détail, consultez la documentation des pilotes "
+"*AUTO*. Pour plus de détail, consultez la documentation des pilotes "
 "correspondants: http://www.gdal.org/drv_ods.html, "
 "http://www.gdal.org/drv_xls.html and http://www.gdal.org/drv_xlsx.html."
 
-#: ../source/index.rst:51
-msgid ""
-"For each driver, the default value is *AUTO*, but automatic detection "
-"behavior depends on driver:"
-msgstr ""
-"Pour chaque driver, la valeur par défaut est *AUTO*, mais le comportement de"
-" la détection automatiquedépend du pilote:"
+#: ../../README.rst:69
+msgid "You can change this values in QGIS settings:"
+msgstr "Vous pouvez changer ces valeurs dans les options de QGIS:"
 
-#: ../source/index.rst:54
-msgid "for *ODS* driver: *AUTO* equals to *FORCE*"
-msgstr "pour le pilote *ODS*: *AUTO équivaut à *FORCE*"
-
-#: ../source/index.rst:55
-msgid "for *XLS* and *XLSX* drivers: *AUTO* equals to *DISABLE*"
-msgstr "pour les pilotes *XLS* et *XLSX*: *AUTO* équivaut à *DISABLE*"
-
-#: ../source/index.rst:57
-msgid ""
-"To enable the header checkbox in the plugin dialog, it's necessary that the "
-"corresponding header environnement variable is considered as equal to "
-"*DISABLE*. In other cases, the checkbox is checked and locked."
-msgstr ""
-"Pour activer la case à cocher des entêtes dans la boite de dialogue du "
-"plugin, il est donc nécessaire que la variable d'environnement "
-"correspondante soit considérée comme équivalente à *DISABLE*. Dans le cas "
-"contraire, la case est cochée et bloquée."
-
-#: ../source/index.rst:61
-msgid ""
-"So, to load correctly *.ods* files without headers, you must set "
-"*OGR_ODS_HEADERS* to *DISABLE*."
-msgstr ""
-"Donc, pour charger correctement un fichier *.ods* sans entêtes, vous devez "
-"fixer *OGR_ODS_HEADERS* à *DISABLE*."
-
-#: ../source/index.rst:64
-msgid "You can configure this in QGIS settings:"
-msgstr "Vous pouvez faire ceci dans les préférences de QGIS:"
-
-#: ../source/index.rst:66
+#: ../../README.rst:71
 msgid "open *Settings* / *Options* dialog;"
 msgstr "ouvrez la boite de dialogue *Préférences* / *Options*;"
 
-#: ../source/index.rst:67
+#: ../../README.rst:72
 msgid "select *System* tab, and go to *Environnement* section;"
 msgstr ""
 "sélectionnez l'onglet *Système*, et allez dans la section *Environnement*;"
 
-#: ../source/index.rst:68
+#: ../../README.rst:73
 msgid "check *Use custom variables*."
 msgstr "Cochez la case *Utiliser des variables personnalisées*."
 
-#: ../source/index.rst:69
-msgid "add a new line with values:"
-msgstr "ajoutez une nouvelle ligne avec les valeurs:"
+#: ../../README.rst:74
+msgid "add a new line. Example:"
+msgstr "ajoutez une nouvelle ligne. Exemple:"
 
-#: ../source/index.rst:71
-msgid "*Overwrite* | *OGR_ODS_HEADERS* | *DISABLE*"
-msgstr "*Ecraser* | *OGR_ODS_HEADERS* | *DISABLE*"
+#: ../../README.rst:76
+msgid "*Overwrite* | *OGR_ODS_HEADERS* | *FORCE*"
+msgstr "*Overwrite* | *OGR_ODS_HEADERS* | *FORCE*"
 
-#: ../source/index.rst:73
+#: ../../README.rst:78
 msgid "restart QGIS to take this into consideration."
-msgstr ""
+msgstr "redémarrer QGIS pour que la modification soit prise en compte."
 
-#: ../source/index.rst:75
-msgid ""
-"Conversely, if the plugin works with graceful degradation, and you want to "
-"load geometry from a Excel file with headers, you have to set "
-"*OGR_XLS_HEADERS* to *FORCE*."
-msgstr ""
-"A contrario, si le plugin fonctionne en mode dégradé, et que vous souhaitez "
-"charger des géométries à partir d'un fichier Excel avec des entêtes, vous "
-"devez fixer *OGR_XLS_HEADERS* à *FORCE*."
-
-#: ../source/index.rst:80
+#: ../../README.rst:81
 msgid "Development install (linux)"
 msgstr "Installation pour le développement (linux)"
 
-#: ../source/index.rst:89
-msgid "run QGIS and activate SpreadSheetLayers plugin."
-msgstr "lancez QGIS et activez le plugin SpreadSheetLayers"
+#: ../../README.rst:90
+msgid "run QGIS and activate SpreadsheetLayers plugin."
+msgstr "lancez QGIS et activez le plugin SpreadsheetLayers"

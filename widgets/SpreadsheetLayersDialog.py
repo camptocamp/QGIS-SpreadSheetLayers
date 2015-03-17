@@ -22,6 +22,8 @@
 """
 
 import os
+import datetime
+import re
 from tempfile import gettempdir
 from exceptions import NotImplementedError
 from collections import OrderedDict
@@ -35,8 +37,7 @@ from SpreadsheetLayers.ui.ui_SpreadsheetLayersDialog import Ui_SpreadsheetLayers
 
 
 class FieldsModel(QtCore.QAbstractListModel):
-    '''FieldsModel provide a ListModel class
-    for displaying fields in QComboBox.
+    '''FieldsModel provide a ListModel class to display fields in QComboBox.
     '''
     def __init__(self, fields, parent=None):
         super(FieldsModel, self).__init__(parent)
@@ -79,12 +80,7 @@ class QOgrTableModel(QtGui.QStandardItemModel):
         for column in xrange(0, columns):
             fieldDefn = layerDefn.GetFieldDefn(column)
             fieldName = fieldDefn.GetNameRef().decode('UTF-8')
-            if fieldDefn.GetType() == ogr.OFTInteger:
-                fieldType = 'Integer'
-            if fieldDefn.GetType() == ogr.OFTReal:
-                fieldType = 'Real'
-            if fieldDefn.GetType() == ogr.OFTString:
-                fieldType = 'String'
+            fieldType = fieldDefn.GetFieldTypeName(fieldDefn.GetType())
             item = QtGui.QStandardItem(u"{}\n({})".format(fieldName, fieldType))
             self.setHorizontalHeaderItem(column, item)
 
@@ -99,7 +95,12 @@ class QOgrTableModel(QtGui.QStandardItemModel):
 
     def createItem(self, layerDefn, feature, iField):
         fieldDefn = layerDefn.GetFieldDefn(iField)
-        if fieldDefn.GetType() == ogr.OFTInteger:
+
+        if fieldDefn.GetType() == ogr.OFTDate:
+            value = datetime.date(*feature.GetFieldAsDateTime(iField)[:3])
+            hAlign = QtCore.Qt.AlignCenter
+
+        elif fieldDefn.GetType() == ogr.OFTInteger:
             value = feature.GetFieldAsInteger(iField)
             hAlign = QtCore.Qt.AlignRight
 
@@ -133,6 +134,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
         self.dataSource = None
         self.layer = None
         self.sampleDatasource = None
+        self.ogrHeadersLabel.setText('')
 
         self.messageBar = QgsMessageBar(self)
         self.layout().insertWidget(0, self.messageBar)
@@ -179,12 +181,6 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
         self.openDataSource()
         self.updateSheetBox()
         self.readVrt()
-        if self.dataSourceHeaders():
-            self.headerBox.setChecked(True)
-            self.headerBox.setEnabled(False)
-            self.headerBox.setToolTip(self.tr(""))
-        else:
-            self.headerBox.setEnabled(True)
 
         self.sampleRefreshDisabled = False
         self.updateSampleView()
@@ -215,39 +211,6 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             self.messageBar.pushMessage('Could not open {}'.format(filePath),
                                         QgsMessageBar.WARNING, 5)
         self.dataSource = dataSource
-
-    def dataSourceHeaders(self):
-        if self.dataSource is None:
-            return False
-        driverName = self.dataSource.GetDriver().GetName()
-        varName = 'OGR_{}_HEADERS'.format(driverName)
-        value = os.environ.get(varName)
-        self.ogrHeadersLabel.setText('{} = {}'.format(varName, value or ''))
-
-        if value == 'FORCE':
-            headers = True
-        elif value == 'DISABLE':
-            headers = False
-        elif value is None or value == 'AUTO':
-            if driverName in ['ODS']:
-                headers = True
-            elif driverName in ['XLS', 'XLSX']:
-                headers = False
-            else:
-                raise NotImplementedError('OGR {} driver not yet implemented'.format(driverName))
-        else:
-            raise NotImplementedError('{} value {} not recognized'.format(varName, value))
-
-        if headers == True:
-            msg = self.tr("To enable this checkbox, set environment variable {} to {}"
-                          .format(varName, 'DISABLE'))
-            self.headerBox.setToolTip(msg)
-            # self.ogrHeadersLabel.setStyleSheet("color: rgb(255, 0, 0)")
-        else:
-            self.headerBox.setToolTip('')
-            # self.ogrHeadersLabel.setStyleSheet("color: rgb(0, 0, 0)")
-
-        return headers
 
     def closeSampleDatasource(self):
         if self.sampleDatasource is not None:
@@ -288,6 +251,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             self.layer = None
         else:
             self.layer = self.sheetBox.itemData(index)
+        self.countNonEmptyRows()
         self.updateFieldBoxes()
         self.updateSampleView()
 
@@ -305,6 +269,9 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
     def header(self):
         return self.headerBox.checkState() == QtCore.Qt.Checked
 
+    def setHeader(self, value):
+        self.headerBox.setCheckState(QtCore.Qt.Checked if value else QtCore.Qt.Unchecked)
+
     @QtCore.pyqtSlot(int)
     def on_headerBox_stateChanged(self, state):
         self.updateFieldBoxes()
@@ -312,7 +279,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
 
     def offset(self):
         offset = self.linesToIgnore()
-        if self.header() and not self.dataSourceHeaders():
+        if self.header():
             offset += 1
         return offset
 
@@ -321,19 +288,42 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             value = int(value)
         except:
             return False
-        if self.header() and not self.dataSourceHeaders():
+        if self.header():
             value -= 1
         self.setLinesToIgnore(value)
 
     def limit(self):
-        driverName = self.dataSource.GetDriver().GetName()
-        if driverName in ['XLS']:
-            return self._non_empty_rows
-        return self.layer.GetFeatureCount() - self.offset()
+        return self._non_empty_rows - self.offset()
+
+    def countNonEmptyRows(self):
+        if self.layer is None:
+            return
+        if self.dataSource.GetDriver().GetName() in ['XLS']:
+            layer = self.layer
+            layerDefn = layer.GetLayerDefn()
+            layer.SetNextByIndex(0)
+            feature = layer.GetNextFeature()
+            self._non_empty_rows = 0
+            rows = []
+            while feature is not None:
+                values = []
+                for iField in xrange(0, layerDefn.GetFieldCount()):
+                    values.append(feature.GetFieldAsString(iField).decode('UTF-8'))
+                rows.append(values)
+
+                # Manual detect end of xls files
+                for value in values:
+                    if value != u'':
+                        self._non_empty_rows = len(rows)
+                        break
+
+                feature = layer.GetNextFeature()
+        else:
+            self._non_empty_rows = self.layer.GetFeatureCount()
 
     def sql(self):
-        sql = ("SELECT * FROM {}"
-               " LIMIT {} OFFSET {}"
+        sql = ('SELECT * FROM \'{}\''
+               ' LIMIT {} OFFSET {}'
                ).format(self.sheet(),
                         self.limit(),
                         self.offset())
@@ -382,7 +372,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             self.yFieldBox.clear()
             return
 
-        model = FieldsModel(self.getFields())
+        model = FieldsModel(self.getFields(with_type=False))
 
         xField = self.xField()
         yField = self.yField()
@@ -520,114 +510,75 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             if stream.name() == "OGRVRTLayer":
                 self.setLayerName(stream.attributes().value("name"))
 
-                while stream.readNextStartElement():
-                    if stream.name() == "SrcDataSource":
-                        # do nothing : datasource should be already set
-                        pass
+                while stream.readNext() != QtCore.QXmlStreamReader.EndDocument:
+                    if stream.isComment():
+                        text = stream.text()
+                        pattern = re.compile(r"Header=(\w+)")
+                        match = pattern.search(text)
+                        if match:
+                            self.setHeader(eval(match.group(1)))
 
-                    elif stream.name() == "SrcLayer":
-                        text = stream.readElementText()
-                        self.setSheet(text)
-                        self.setOffset(0)
+                    if stream.isStartElement():
+                        if stream.name() == "SrcDataSource":
+                            # do nothing : datasource should be already set
+                            pass
 
-                    elif stream.name() == "SrcSql":
-                        text = stream.readElementText()
-                        terms = text.split(" ")
-                        previous = ''
-                        for term in terms:
-                            if previous.lower() == 'from':
-                                self.setSheet(term)
-                            if previous.lower() == 'offset':
-                                self.setOffset(term)
-                            previous = term
+                        elif stream.name() == "SrcLayer":
+                            text = stream.readElementText()
+                            self.setSheet(text)
+                            self.setOffset(0)
 
-                    elif stream.name() == "GeometryType":
-                        self.geometryBox.setChecked(True)
+                        elif stream.name() == "SrcSql":
+                            text = stream.readElementText()
 
-                    elif stream.name() == "LayerSRS":
-                        text = stream.readElementText()
-                        self.setCrs(text)
+                            pattern = re.compile(r"FROM '(.+)'")
+                            match = pattern.search(text)
+                            if match:
+                                self.setSheet(match.group(1))
 
-                    elif stream.name() == "GeometryField":
-                        self.setXField(stream.attributes().value("x"))
-                        self.setYField(stream.attributes().value("y"))
+                            pattern = re.compile(r'OFFSET (\d+)')
+                            match = pattern.search(text)
+                            if match:
+                                self.setOffset(int(match.group(1)))
 
-                    if not stream.isEndElement():
-                        stream.skipCurrentElement()
+                        elif stream.name() == "GeometryType":
+                            self.geometryBox.setChecked(True)
+
+                        elif stream.name() == "LayerSRS":
+                            text = stream.readElementText()
+                            self.setCrs(text)
+
+                        elif stream.name() == "GeometryField":
+                            self.setXField(stream.attributes().value("x"))
+                            self.setYField(stream.attributes().value("y"))
+
+                        if not stream.isEndElement():
+                            stream.skipCurrentElement()
 
             stream.skipCurrentElement()
 
         stream.skipCurrentElement()
 
-    def getFields(self):
-        fields = []
-        rows = []
-
-        self.layerDefn = self.layer.GetLayerDefn()
-
-        # Load all values to detect types later
-        self.layer.SetNextByIndex(self.offset())
-        feature = self.layer.GetNextFeature()
-        self._non_empty_rows = 0
-        while feature is not None:
-            values = []
-            for iField in xrange(0, self.layerDefn.GetFieldCount()):
-                values.append(feature.GetFieldAsString(iField).decode('UTF-8'))
-            rows.append(values)
-
-            # Manual detect end of xls files
-            for value in values:
-                if value != u'':
-                    self._non_empty_rows = len(rows)
-                    break
-
-            feature = self.layer.GetNextFeature()
-
+    def getFields(self, with_type=True):
         # Select header line
         if self.header() and self.offset() >= 1:
             self.layer.SetNextByIndex(self.offset() - 1)
             feature = self.layer.GetNextFeature()
 
-        for iField in xrange(0, self.layerDefn.GetFieldCount()):
-            fieldDefn = self.layerDefn.GetFieldDefn(iField)
+        fields = []
+        layerDefn = self.layer.GetLayerDefn()
+        for iField in xrange(0, layerDefn.GetFieldCount()):
+            fieldDefn = layerDefn.GetFieldDefn(iField)
             src = fieldDefn.GetNameRef().decode('UTF-8')
-            if self.header():
-                if self.offset() == 0:
-                    name = src
-                else:
-                    name = feature.GetFieldAsString(iField).decode('UTF-8')
-            else:
-                name = ''
-            if name == '':
-                name = 'Field{}'.format(iField + 1)
-
-            fieldType = 'Integer'
-            for iRow in xrange(0, len(rows)):
-                value = rows[iRow][iField]
-                try:
-                    int(value)
-                except:
-                    fieldType = None
-                    break
-
-            if fieldType is None:
-                fieldType = 'Real'
-                for iRow in xrange(0, len(rows)):
-                    value = rows[iRow][iField]
-                    try:
-                        float(value)
-                    except:
-                        fieldType = 'String'
-                        break
-
-            if fieldType is None:
-                fieldType = 'String'
-
-            fields.append({'src': src, 'name': name, 'type': fieldType})
-
+            name = src
+            if self.header() and self.offset() >= 1:
+                name = feature.GetFieldAsString(iField).decode('UTF-8')
+            fields.append({'src': src,
+                           'name': name,
+                           'type': fieldDefn.GetFieldTypeName(fieldDefn.GetType())})
         return fields
 
-    def prepareVrt(self, sample=False):
+    def prepareVrt(self, sample=False, without_fields=False):
         buffer = QtCore.QBuffer()
         buffer.open(QtCore.QBuffer.ReadWrite)
 
@@ -647,9 +598,11 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             stream.writeCharacters(os.path.basename(self.filePath()))
         stream.writeEndElement()
 
-        fields = self.getFields()
+        stream.writeComment('Header={}'.format(self.header()))
 
-        if self.offset() > 0:
+        if (self.offset() > 0
+            or self.dataSource.GetDriver().GetName() in ['XLS']
+        ):
             stream.writeStartElement("SrcSql")
             stream.writeAttribute("dialect", "sqlite")
             stream.writeCharacters(self.sql())
@@ -659,16 +612,18 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             stream.writeCharacters(self.sheet())
             stream.writeEndElement()
 
-        for field in fields:
-            if (self.geometry() and not sample):
-                if field['src'] in (self.xField(), self.yField()):
-                    if not self.showGeometryFields():
-                        continue
-            stream.writeStartElement("Field")
-            stream.writeAttribute("name", field['name'])
-            stream.writeAttribute("src", field['src'])
-            stream.writeAttribute("type", field['type'])
-            stream.writeEndElement()
+        if not without_fields:
+            fields = self.getFields()
+            for field in fields:
+                if (self.geometry() and not sample):
+                    if field['src'] in (self.xField(), self.yField()):
+                        if not self.showGeometryFields():
+                            continue
+                stream.writeStartElement("Field")
+                stream.writeAttribute("name", field['name'])
+                stream.writeAttribute("src", field['src'])
+                stream.writeAttribute("type", field['type'])
+                stream.writeEndElement()
 
         if (self.geometry() and not sample):
             stream.writeStartElement("GeometryType")
@@ -726,8 +681,9 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
         file.close()
         return True
 
-    def writeSampleVrt(self):
-        content = self.prepareVrt(True)
+    def writeSampleVrt(self, without_fields=False):
+        content = self.prepareVrt(sample=True,
+                                  without_fields=without_fields)
 
         vrtPath = self.samplePath()
         file = QtCore.QFile(vrtPath)
