@@ -179,12 +179,6 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
         self.openDataSource()
         self.updateSheetBox()
         self.readVrt()
-        if self.dataSourceHeaders():
-            self.headerBox.setChecked(True)
-            self.headerBox.setEnabled(False)
-            self.headerBox.setToolTip(self.tr(""))
-        else:
-            self.headerBox.setEnabled(True)
 
         self.sampleRefreshDisabled = False
         self.updateSampleView()
@@ -215,39 +209,6 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             self.messageBar.pushMessage('Could not open {}'.format(filePath),
                                         QgsMessageBar.WARNING, 5)
         self.dataSource = dataSource
-
-    def dataSourceHeaders(self):
-        if self.dataSource is None:
-            return False
-        driverName = self.dataSource.GetDriver().GetName()
-        varName = 'OGR_{}_HEADERS'.format(driverName)
-        value = os.environ.get(varName)
-        self.ogrHeadersLabel.setText('{} = {}'.format(varName, value or ''))
-
-        if value == 'FORCE':
-            headers = True
-        elif value == 'DISABLE':
-            headers = False
-        elif value is None or value == 'AUTO':
-            if driverName in ['ODS']:
-                headers = True
-            elif driverName in ['XLS', 'XLSX']:
-                headers = False
-            else:
-                raise NotImplementedError('OGR {} driver not yet implemented'.format(driverName))
-        else:
-            raise NotImplementedError('{} value {} not recognized'.format(varName, value))
-
-        if headers == True:
-            msg = self.tr("To enable this checkbox, set environment variable {} to {}"
-                          .format(varName, 'DISABLE'))
-            self.headerBox.setToolTip(msg)
-            # self.ogrHeadersLabel.setStyleSheet("color: rgb(255, 0, 0)")
-        else:
-            self.headerBox.setToolTip('')
-            # self.ogrHeadersLabel.setStyleSheet("color: rgb(0, 0, 0)")
-
-        return headers
 
     def closeSampleDatasource(self):
         if self.sampleDatasource is not None:
@@ -313,7 +274,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
 
     def offset(self):
         offset = self.linesToIgnore()
-        if self.header() and not self.dataSourceHeaders():
+        if self.header():
             offset += 1
         return offset
 
@@ -322,7 +283,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             value = int(value)
         except:
             return False
-        if self.header() and not self.dataSourceHeaders():
+        if self.header():
             value -= 1
         self.setLinesToIgnore(value)
 
