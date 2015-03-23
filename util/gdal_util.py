@@ -15,9 +15,9 @@ def testGdal():
 
     vrt_xml = """
 <OGRVRTDataSource>
-    <OGRVRTLayer name="test">
-        <SrcDataSource relativeToVRT="0">tmp/test.csv</SrcDataSource>
-        <SrcSql dialect="sqlite">SELECT * FROM test</SrcSql>
+    <OGRVRTLayer name="gdal_test">
+        <SrcDataSource relativeToVRT="0">"""+path+"""</SrcDataSource>
+        <SrcSql dialect="sqlite">SELECT * FROM gdal_test</SrcSql>
         <GeometryField encoding="PointFromColumns" x="x" y="y"/>
         <Field name="x" type="Real"/>
         <Field name="y" type="Real"/>
@@ -25,8 +25,8 @@ def testGdal():
 </OGRVRTDataSource>"""
 
     ds = ogr.Open( vrt_xml )
-    
-    lyr = ds.GetLayerByName( 'test' )
+
+    lyr = ds.GetLayer(0)
     lyr.SetIgnoredFields(['x', 'y'])
     f = lyr.GetNextFeature()
     result = True
@@ -34,10 +34,12 @@ def testGdal():
         result = False
     elif f.GetGeometryRef().ExportToWkt() != 'POINT (2 49)':
         result = False
-        
-    ds = None
 
+    f = None
+    lyr = None
+    ds = None
     os.unlink(path)
+
     return result
 
 GDAL_COMPAT = testGdal()
