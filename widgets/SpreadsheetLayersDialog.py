@@ -96,27 +96,40 @@ class QOgrTableModel(QtGui.QStandardItemModel):
     def createItem(self, layerDefn, feature, iField):
         fieldDefn = layerDefn.GetFieldDefn(iField)
 
+        value = None
         if fieldDefn.GetType() == ogr.OFTDate:
-            value = datetime.date(*feature.GetFieldAsDateTime(iField)[:3])
+            if feature.IsFieldSet(iField):
+                value = datetime.date(*feature.GetFieldAsDateTime(iField)[:3])
             hAlign = QtCore.Qt.AlignCenter
 
         elif fieldDefn.GetType() == ogr.OFTInteger:
-            value = feature.GetFieldAsInteger(iField)
+            if feature.IsFieldSet(iField):
+                value = feature.GetFieldAsInteger(iField)
             hAlign = QtCore.Qt.AlignRight
 
         elif fieldDefn.GetType() == ogr.OFTReal:
-            value = feature.GetFieldAsDouble(iField)
+            if feature.IsFieldSet(iField):
+                value = feature.GetFieldAsDouble(iField)
             hAlign = QtCore.Qt.AlignRight
 
         elif fieldDefn.GetType() == ogr.OFTString:
-            value = feature.GetFieldAsString(iField).decode('UTF-8')
+            if feature.IsFieldSet(iField):
+                value = feature.GetFieldAsString(iField).decode('UTF-8')
             hAlign = QtCore.Qt.AlignLeft
 
         else:
-            value = feature.GetFieldAsString(iField).decode('UTF-8')
+            if feature.IsFieldSet(iField):
+                value = feature.GetFieldAsString(iField).decode('UTF-8')
             hAlign = QtCore.Qt.AlignLeft
 
-        item = QtGui.QStandardItem(unicode(value))
+        if value is None:
+            item = QtGui.QStandardItem(u'NULL')
+            item.setForeground(QtGui.QBrush(QtCore.Qt.gray))
+            font = item.font()
+            font.setItalic(True)
+            item.setFont(font)
+        else:
+            item = QtGui.QStandardItem(unicode(value))
         item.setTextAlignment(hAlign | QtCore.Qt.AlignVCenter)
         return item
 
@@ -299,25 +312,23 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
         if self.layer is None:
             return
         if self.dataSource.GetDriver().GetName() in ['XLS']:
+            self._non_empty_rows = 0
+
             layer = self.layer
             layerDefn = layer.GetLayerDefn()
             layer.SetNextByIndex(0)
             feature = layer.GetNextFeature()
-            self._non_empty_rows = 0
-            rows = []
+            current_row = 1
             while feature is not None:
                 values = []
-                for iField in xrange(0, layerDefn.GetFieldCount()):
-                    values.append(feature.GetFieldAsString(iField).decode('UTF-8'))
-                rows.append(values)
 
-                # Manual detect end of xls files
-                for value in values:
-                    if value != u'':
-                        self._non_empty_rows = len(rows)
-                        break
+                for iField in xrange(0, layerDefn.GetFieldCount()):
+                    # values.append(feature.GetFieldAsString(iField).decode('UTF-8'))
+                    if feature.IsFieldSet(iField):
+                        self._non_empty_rows = current_row
 
                 feature = layer.GetNextFeature()
+                current_row += 1
         else:
             self._non_empty_rows = self.layer.GetFeatureCount()
 
@@ -601,7 +612,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
         stream.writeComment('Header={}'.format(self.header()))
 
         if (self.offset() > 0
-            or self.dataSource.GetDriver().GetName() in ['XLS']
+            or self._non_empty_rows != self.layer.GetFeatureCount()
         ):
             stream.writeStartElement("SrcSql")
             stream.writeAttribute("dialect", "sqlite")
