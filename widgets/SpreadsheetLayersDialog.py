@@ -256,7 +256,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
 
         for i in xrange(0, dataSource.GetLayerCount()):
             layer = dataSource.GetLayer(i)
-            self.sheetBox.addItem(layer.GetName(), layer)
+            self.sheetBox.addItem(layer.GetName().decode('UTF-8'), layer)
 
     @QtCore.pyqtSlot(int)
     def on_sheetBox_currentIndexChanged(self, index):
@@ -478,10 +478,10 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
         return True
 
     def vrtPath(self):
-        return '{}.vrt'.format(self.filePath())
+        return u'{}.vrt'.format(self.filePath())
 
     def samplePath(self):
-        filename = '{}.tmp.vrt'.format(os.path.basename(self.filePath()))
+        filename = u'{}.tmp.vrt'.format(os.path.basename(self.filePath()))
         return os.path.join(gettempdir(), filename)
 
     def readVrt(self):
