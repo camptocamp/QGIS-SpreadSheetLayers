@@ -118,7 +118,7 @@ msgid ""
 "use, run this commands in QGIS python console:"
 msgstr ""
 "Avec GDAL <= 1.11.1, le plugin ne peut charger la géométrie. Dans ce mode "
-"dégradé, la case à chocher geometry est alors bloquée. Pour obtenir la "
+"dégradé, la case à cocher geometry est alors bloquée. Pour obtenir la "
 "version de GDAL en cours d'utilisation, lancez ces commandes dans la console"
 " python de QGIS:"
 
