@@ -26,7 +26,6 @@ import datetime
 import re
 from tempfile import gettempdir
 from exceptions import NotImplementedError
-from collections import OrderedDict
 from osgeo import ogr
 from qgis.core import QgsVectorDataProvider
 from qgis.gui import QgsMessageBar, QgsGenericProjectionSelector
@@ -54,18 +53,19 @@ class FieldsModel(QtCore.QAbstractListModel):
             return field['src']
 
 
-class QOgrTableModel(QtGui.QStandardItemModel):
-    '''QOgrTableModel provide a TableModel class
+class OgrTableModel(QtGui.QStandardItemModel):
+    '''OgrTableModel provide a TableModel class
     for displaying OGR layers data.
     
     OGR layer is read at creation or by setLayer().
     All data are stored in parent QtCore.QStandardItemModel object.
     No reference to any OGR related object is kept.
     '''
-    def __init__(self, layer=None, parent=None, maxRowCount=None):
-        super(QOgrTableModel, self).__init__(parent)
+    def __init__(self, layer=None, fields=None, parent=None, maxRowCount=None):
+        super(OgrTableModel, self).__init__(parent)
         self.maxRowCount = maxRowCount
         self.setLayer(layer)
+        self.fields = fields
 
     def setLayer(self, layer):
         self.clear()
@@ -77,21 +77,25 @@ class QOgrTableModel(QtGui.QStandardItemModel):
         rows = min(layer.GetFeatureCount(), self.maxRowCount)
         columns = layerDefn.GetFieldCount()
 
+        self.setRowCount(rows)
+        self.setColumnCount(columns)
+
         for column in xrange(0, columns):
             fieldDefn = layerDefn.GetFieldDefn(column)
             fieldName = fieldDefn.GetNameRef().decode('UTF-8')
-            fieldType = fieldDefn.GetFieldTypeName(fieldDefn.GetType())
-            item = QtGui.QStandardItem(u"{}\n({})".format(fieldName, fieldType))
+            item = QtGui.QStandardItem(fieldName)
             self.setHorizontalHeaderItem(column, item)
 
-        self.setRowCount(rows)
-        self.setColumnCount(columns)
         for row in xrange(0, rows):
             for column in xrange(0, columns):
                 layer.SetNextByIndex(row)
                 feature = layer.GetNextFeature()
                 item = self.createItem(layerDefn, feature, column)
                 self.setItem(row, column, item)
+
+        for column in xrange(0, columns):
+            item = QtGui.QStandardItem("")
+            self.setVerticalHeaderItem(rows, item)
 
     def createItem(self, layerDefn, feature, iField):
         fieldDefn = layerDefn.GetFieldDefn(iField)
@@ -134,6 +138,49 @@ class QOgrTableModel(QtGui.QStandardItemModel):
         return item
 
 
+ogrFieldTypes = []
+for fieldType in [
+    ogr.OFTInteger,
+    ogr.OFTIntegerList,
+    ogr.OFTReal,
+    ogr.OFTRealList,
+    ogr.OFTString,
+    ogr.OFTStringList,
+    #ogr.OFTWideString,
+    #ogr.OFTWideStringList,
+    ogr.OFTBinary,
+    ogr.OFTDate,
+    ogr.OFTTime,
+    ogr.OFTDateTime]:
+    #ogr.OFTInteger64,
+    #ogr.OFTInteger64List
+    ogrFieldTypes.append((fieldType, ogr.GetFieldTypeName(fieldType)))
+
+
+class OgrFieldTypeDelegate(QtGui.QStyledItemDelegate):
+    def __init__(self, parent=None):
+        super(OgrFieldTypeDelegate, self).__init__(parent)
+
+    def createEditor(self, parent, option, index):
+        editor = QtGui.QComboBox(parent)
+        for value, text in ogrFieldTypes:
+            editor.addItem(text, value)
+        editor.setAutoFillBackground(True)
+        return editor
+
+    def setEditorData(self, editor, index):
+        if not editor:
+            return
+        type = index.model().fields[index.column()]['type']
+        editor.setCurrentIndex(editor.findData(type))
+
+    def setModelData(self, editor, model, index):
+        if not editor:
+            return
+        type = editor.itemData(editor.currentIndex())
+        model.fields[index.column()]['type'] = type
+
+
 class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
 
     pluginKey = 'SpreadsheetLayers'
@@ -146,6 +193,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
 
         self.dataSource = None
         self.layer = None
+        self.fields = None
         self.sampleDatasource = None
         self.ogrHeadersLabel.setText('')
 
@@ -154,6 +202,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
 
         self.geometryBox.setChecked(False)
         self.sampleRefreshDisabled = False
+        self.sampleView.setItemDelegate(OgrFieldTypeDelegate())
 
     def info(self, msg):
         self.messageBar.pushMessage(msg, QgsMessageBar.INFO, 5)
@@ -265,6 +314,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
         else:
             self.layer = self.sheetBox.itemData(index)
         self.countNonEmptyRows()
+        self.updateFields()
         self.updateFieldBoxes()
         self.updateSampleView()
 
@@ -276,6 +326,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
 
     @QtCore.pyqtSlot(int)
     def on_linesToIgnoreBox_valueChanged(self, value):
+        self.updateFields()
         self.updateFieldBoxes()
         self.updateSampleView()
 
@@ -287,6 +338,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
 
     @QtCore.pyqtSlot(int)
     def on_headerBox_stateChanged(self, state):
+        self.updateFields()
         self.updateFieldBoxes()
         self.updateSampleView()
 
@@ -383,7 +435,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             self.yFieldBox.clear()
             return
 
-        model = FieldsModel(self.getFields(with_type=False))
+        model = FieldsModel(self.fields)
 
         xField = self.xField()
         yField = self.yField()
@@ -453,9 +505,16 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             self.sampleView.setModel(None)
             return
 
-        model = QOgrTableModel(layer, parent=self,
-                               maxRowCount=self.sampleRowCount)
+        model = OgrTableModel(layer,
+                              self.fields,
+                              parent=self,
+                              maxRowCount=self.sampleRowCount)
         self.sampleView.setModel(model)
+
+        for column in xrange(0, model.columnCount()):
+            self.sampleView.openPersistentEditor(model.index(model.rowCount()-1, column))
+        self.sampleView.verticalHeader().moveSection(model.rowCount()-1, 0)
+
 
     def validate(self):
         try:
@@ -570,9 +629,9 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
 
         stream.skipCurrentElement()
 
-    def getFields(self, with_type=True):
+    def updateFields(self):
         # Select header line
-        if self.header() and self.offset() >= 1:
+        if self.header() or self.offset() >= 1:
             self.layer.SetNextByIndex(self.offset() - 1)
             feature = self.layer.GetNextFeature()
 
@@ -582,12 +641,13 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             fieldDefn = layerDefn.GetFieldDefn(iField)
             src = fieldDefn.GetNameRef().decode('UTF-8')
             name = src
-            if self.header() and self.offset() >= 1:
-                name = feature.GetFieldAsString(iField).decode('UTF-8')
+            if self.header() or self.offset() >= 1:
+                name = feature.GetFieldAsString(iField).decode('UTF-8') or name
             fields.append({'src': src,
                            'name': name,
-                           'type': fieldDefn.GetFieldTypeName(fieldDefn.GetType())})
-        return fields
+                           'type': fieldDefn.GetType()
+                           })
+        self.fields = fields
 
     def prepareVrt(self, sample=False, without_fields=False):
         buffer = QtCore.QBuffer()
@@ -624,8 +684,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             stream.writeEndElement()
 
         if not without_fields:
-            fields = self.getFields()
-            for field in fields:
+            for field in self.fields:
                 if (self.geometry() and not sample):
                     if field['src'] in (self.xField(), self.yField()):
                         if not self.showGeometryFields():
@@ -633,7 +692,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
                 stream.writeStartElement("Field")
                 stream.writeAttribute("name", field['name'])
                 stream.writeAttribute("src", field['src'])
-                stream.writeAttribute("type", field['type'])
+                stream.writeAttribute("type", ogr.GetFieldTypeName(field['type']))
                 stream.writeEndElement()
 
         if (self.geometry() and not sample):

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>431</height>
+    <height>665</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -410,7 +410,6 @@
   <tabstop>showGeometryFieldsBox</tabstop>
   <tabstop>crsEdit</tabstop>
   <tabstop>crsButton</tabstop>
-  <tabstop>sampleView</tabstop>
  </tabstops>
  <resources/>
  <connections>
