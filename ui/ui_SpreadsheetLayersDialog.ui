@@ -162,6 +162,13 @@
         </spacer>
        </item>
        <item>
+        <widget class="QCheckBox" name="eofDetectionBox">
+         <property name="text">
+          <string>End of file detection</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QLabel" name="ogrHeadersLabel">
          <property name="text">
           <string>OGR_ODS_HEADERS = None</string>

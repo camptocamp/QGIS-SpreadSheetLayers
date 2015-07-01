@@ -277,6 +277,11 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
                                         QgsMessageBar.WARNING, 5)
         self.dataSource = dataSource
 
+        if self.dataSource and self.dataSource.GetDriver().GetName() in ['XLS']:
+            self.setEofDetection(True)
+        else:
+            self.setEofDetection(False)
+
     def closeSampleDatasource(self):
         if self.sampleDatasource is not None:
             self.sampleDatasource = None
@@ -363,10 +368,21 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
     def limit(self):
         return self._non_empty_rows - self.offset()
 
+    def eofDetection(self):
+        return self.eofDetectionBox.checkState() == QtCore.Qt.Checked
+
+    def setEofDetection(self, value):
+        self.eofDetectionBox.setCheckState(QtCore.Qt.Checked if value else QtCore.Qt.Unchecked)
+
+    @QtCore.pyqtSlot(int)
+    def on_eofDetectionBox_stateChanged(self, state):
+        self.countNonEmptyRows()
+        self.updateSampleView()
+
     def countNonEmptyRows(self):
         if self.layer is None:
             return
-        if self.dataSource.GetDriver().GetName() in ['XLS']:
+        if self.eofDetection():
             self._non_empty_rows = 0
 
             layer = self.layer
@@ -642,6 +658,10 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
         stream.skipCurrentElement()
 
     def updateFields(self):
+        if self.layer is None:
+            self.fields = []
+            return
+
         # Select header line
         if self.header() or self.offset() >= 1:
             self.layer.SetNextByIndex(self.offset() - 1)
