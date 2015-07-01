@@ -88,6 +88,7 @@ class SpreadsheetLayersPlugin(QtCore.QObject):
         dlg.show()
         if dlg.exec_():
             layer = QgsVectorLayer(dlg.vrtPath(), dlg.layerName(), 'ogr')
+            layer.setProviderEncoding('UTF-8')
             if not layer.isValid():
                 print "Layer failed to load"
             else:
