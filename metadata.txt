@@ -12,17 +12,12 @@
 name=Spreadsheet Layers
 qgisMinimumVersion=2.4
 description=Load layers from spreadsheet files (*.ods, *.xls, *.xlsx)
-about=This plugin adds a "Add spreadsheet layer" entry in "Layer" /
-    "Add new Layer" menu and a corresponding button in the "Layers" toolbar.
-    These two links open the same dialog to load a layer from a spreadsheet
-    file (*.ods, *.xls, *.xlsx) with some options (use header at first line,
-    ignore some rows and optionally load geometry from x and y fields).
-    When this dialog is accepted, it creates a new GDAL VRT file in same
-    folder as the source data file, expanded with a .vrt suffix which is
-    loaded into QGIS using OGR VRT driver. When reusing the same file twice,
-    the dialog loads its values from the existing .vrt file. No need to
-    install additional dependencies.
-version=0.8
+about=This plugin adds a "Add spreadsheet layer" entry in "Layer" / "Add new Layer" menu and a corresponding button in the "Layers" toolbar.
+    These two links open the same dialog to load a layer from a spreadsheet file (*.ods, *.xls, *.xlsx) with some options (use header at first line, ignore some rows and optionally load geometry from x and y fields).
+    When this dialog is accepted, it creates a new GDAL VRT file in same folder as the source data file, expanded with a .vrt suffix which is loaded into QGIS using OGR VRT driver.
+    When reusing the same file twice, the dialog loads its values from the existing .vrt file.
+    No need to install additional dependencies.
+version=1.0
 author=Camptocamp
 email=info@camptocamp.com
 
@@ -41,7 +36,7 @@ tracker=https://github.com/camptocamp/QGIS-SpreadSheetLayers/issues
 repository=https://github.com/camptocamp/QGIS-SpreadSheetLayers
 icon=resources/icon/mActionAddSpreadsheetLayer.svg
 # experimental flag
-experimental=True
+experimental=False
 
 # deprecated flag (applies to the whole plugin, not just a single version)
 deprecated=False
