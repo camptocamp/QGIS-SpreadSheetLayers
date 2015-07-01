@@ -56,7 +56,7 @@ class FieldsModel(QtCore.QAbstractListModel):
 class OgrTableModel(QtGui.QStandardItemModel):
     '''OgrTableModel provide a TableModel class
     for displaying OGR layers data.
-    
+
     OGR layer is read at creation or by setLayer().
     All data are stored in parent QtCore.QStandardItemModel object.
     No reference to any OGR related object is kept.
@@ -80,12 +80,14 @@ class OgrTableModel(QtGui.QStandardItemModel):
         self.setRowCount(rows)
         self.setColumnCount(columns)
 
+        # Headers
         for column in xrange(0, columns):
             fieldDefn = layerDefn.GetFieldDefn(column)
             fieldName = fieldDefn.GetNameRef().decode('UTF-8')
             item = QtGui.QStandardItem(fieldName)
             self.setHorizontalHeaderItem(column, item)
 
+        # Lines
         for row in xrange(0, rows):
             for column in xrange(0, columns):
                 layer.SetNextByIndex(row)
@@ -93,6 +95,7 @@ class OgrTableModel(QtGui.QStandardItemModel):
                 item = self.createItem(layerDefn, feature, column)
                 self.setItem(row, column, item)
 
+        # No header for column format line
         for column in xrange(0, columns):
             item = QtGui.QStandardItem("")
             self.setVerticalHeaderItem(rows, item)
@@ -505,15 +508,24 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             self.sampleView.setModel(None)
             return
 
+        self.sampleView.reset()
         model = OgrTableModel(layer,
                               self.fields,
                               parent=self,
                               maxRowCount=self.sampleRowCount)
         self.sampleView.setModel(model)
 
+        # Open persistent editor on last line (column format)
         for column in xrange(0, model.columnCount()):
             self.sampleView.openPersistentEditor(model.index(model.rowCount()-1, column))
-        self.sampleView.verticalHeader().moveSection(model.rowCount()-1, 0)
+        # Restore rows initial order
+        vheader = self.sampleView.verticalHeader()
+        for row in xrange(0, model.rowCount()):
+            position = vheader.sectionPosition(row)
+            if position != row:
+                vheader.moveSection(position, row)
+        # Move column format line at first
+        vheader.moveSection(model.rowCount()-1, 0)
 
 
     def validate(self):
