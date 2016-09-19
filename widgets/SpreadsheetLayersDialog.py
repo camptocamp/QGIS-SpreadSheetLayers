@@ -565,7 +565,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
         return True
 
     def vrtPath(self):
-        return u'{}.vrt'.format(self.filePath())
+        return u'{}.{}.vrt'.format(self.filePath(), self.sheet())
 
     def samplePath(self):
         filename = u'{}.tmp.vrt'.format(os.path.basename(self.filePath()))
