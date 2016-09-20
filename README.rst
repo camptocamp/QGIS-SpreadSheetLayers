@@ -23,7 +23,8 @@ same dialog to load a layer from a spreadsheet file with some options:
 * load geometry from x and y fields
 
 When dialog is accepted, it creates a new GDAL VRT file in same folder as the
-source data file, expanded with a *.vrt* suffix, which is loaded into QGIS.
+source data file and layer name, expanded with a *.vrt* suffix, which is
+loaded into QGIS.
 
 When reusing the same file twice, the dialog loads its values from the
 existing *.vrt* file.
@@ -69,7 +70,7 @@ and http://www.gdal.org/drv_xlsx.html.
 You can change this values in QGIS settings:
 
 - open *Settings* / *Options* dialog;
-- select *System* tab, and go to *Environnement* section;
+- select *System* tab, and go to *Environment* section;
 - check *Use custom variables*.
 - add a new line. Example:
 
