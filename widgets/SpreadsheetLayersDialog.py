@@ -273,7 +273,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
 
         dataSource = ogr.Open(filePath, 0)
         if dataSource is None:
-            self.messageBar.pushMessage('Could not open {}'.format(filePath),
+            self.messageBar.pushMessage(u"Could not open {}".format(filePath),
                                         QgsMessageBar.WARNING, 5)
         self.dataSource = dataSource
 
@@ -295,7 +295,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             return False
         dataSource = ogr.Open(filePath, 0)
         if dataSource is None:
-            self.messageBar.pushMessage('Could not open {}'.format(filePath),
+            self.messageBar.pushMessage(u"Could not open {}".format(filePath),
                                         QgsMessageBar.WARNING, 5)
         self.sampleDatasource = dataSource
 
@@ -581,7 +581,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
 
         file = QtCore.QFile(vrtPath)
         if not file.open(QtCore.QIODevice.ReadOnly | QtCore. QIODevice.Text):
-            self.warning("Impossible to open VRT file {}".format(vrtPath))
+            self.warning(u"Impossible to open VRT file {}".format(vrtPath))
             return False
 
         self.geometryBox.setChecked(False)
@@ -766,8 +766,8 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
                     return True
 
             msgBox = QtGui.QMessageBox()
-            msgBox.setText("The file {} already exist.".format(vrtPath))
-            msgBox.setInformativeText("Do you want to overwrite ?");
+            msgBox.setText(u"The file {} already exist.".format(vrtPath))
+            msgBox.setInformativeText(u"Do you want to overwrite ?");
             msgBox.setStandardButtons(QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel)
             msgBox.setDefaultButton(QtGui.QMessageBox.Cancel)
             ret = msgBox.exec_()
@@ -776,7 +776,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             QtCore.QFile.remove(vrtPath)
 
         if not file.open(QtCore.QIODevice.ReadWrite | QtCore. QIODevice.Text):
-            self.warning("Impossible to open VRT file {}".format(vrtPath))
+            self.warning(u"Impossible to open VRT file {}".format(vrtPath))
             return False
 
         file.write(content)
@@ -793,7 +793,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
             QtCore.QFile.remove(vrtPath)
 
         if not file.open(QtCore.QIODevice.ReadWrite | QtCore. QIODevice.Text):
-            self.warning("Impossible to open VRT file {}".format(vrtPath))
+            self.warning(u"Impossible to open VRT file {}".format(vrtPath))
             return False
 
         file.write(content)
