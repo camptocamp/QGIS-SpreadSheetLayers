@@ -92,7 +92,6 @@ compile:
 	@echo "------------------------------"
 	virtualenv --setuptools .
 	./bin/pip install -r requirements.txt
-	make -C ui
 	make -C resources
 	make transcompile
 	make html -C help

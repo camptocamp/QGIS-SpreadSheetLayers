@@ -29,10 +29,9 @@ from exceptions import NotImplementedError
 from osgeo import ogr
 from qgis.core import QgsVectorDataProvider
 from qgis.gui import QgsMessageBar, QgsGenericProjectionSelector
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore, QtGui, uic
 
 from SpreadsheetLayers.util.gdal_util import GDAL_COMPAT
-from SpreadsheetLayers.ui.ui_SpreadsheetLayersDialog import Ui_SpreadsheetLayersDialog
 
 
 class FieldsModel(QtCore.QAbstractListModel):
@@ -184,7 +183,11 @@ class OgrFieldTypeDelegate(QtGui.QStyledItemDelegate):
         model.fields[index.column()]['type'] = type
 
 
-class SpreadsheetLayersDialog(QtGui.QDialog, Ui_SpreadsheetLayersDialog):
+FORM_CLASS, _ = uic.loadUiType(os.path.join(
+    os.path.dirname(__file__), '..', 'ui', 'ui_SpreadsheetLayersDialog.ui'))
+
+
+class SpreadsheetLayersDialog(QtGui.QDialog, FORM_CLASS):
 
     pluginKey = 'SpreadsheetLayers'
     sampleRowCount = 20
