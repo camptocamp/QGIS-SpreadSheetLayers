@@ -407,8 +407,8 @@ class SpreadsheetLayersDialog(QtGui.QDialog, FORM_CLASS):
             self._non_empty_rows = self.layer.GetFeatureCount()
 
     def sql(self):
-        sql = ('SELECT * FROM \'{}\''
-               ' LIMIT {} OFFSET {}'
+        sql = (u'SELECT * FROM \'{}\''
+               u' LIMIT {} OFFSET {}'
                ).format(self.sheet(),
                         self.limit(),
                         self.offset())
