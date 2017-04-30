@@ -81,6 +81,29 @@
       </layout>
      </item>
      <item row="1" column="0">
+      <widget class="QLabel" name="sheetLabel">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Sheet</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QComboBox" name="sheetBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
       <widget class="QLabel" name="layerNameLabel">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -93,7 +116,7 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
+     <item row="2" column="1">
       <layout class="QHBoxLayout" name="layerNameLayout">
        <property name="topMargin">
         <number>0</number>
@@ -116,16 +139,10 @@
        </item>
       </layout>
      </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="sheetLabel">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
+     <item row="3" column="0">
+      <widget class="QLabel" name="rowsLabel">
        <property name="text">
-        <string>Sheet</string>
+        <string>Rows</string>
        </property>
       </widget>
      </item>
@@ -172,27 +189,6 @@
         <widget class="QLabel" name="ogrHeadersLabel">
          <property name="text">
           <string>OGR_ODS_HEADERS = None</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="rowsLabel">
-       <property name="text">
-        <string>Rows</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="QComboBox" name="sheetBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
          </property>
         </widget>
        </item>
@@ -407,16 +403,20 @@
  <tabstops>
   <tabstop>filePathEdit</tabstop>
   <tabstop>filePathButton</tabstop>
-  <tabstop>layerNameEdit</tabstop>
   <tabstop>sheetBox</tabstop>
+  <tabstop>layerNameEdit</tabstop>
   <tabstop>linesToIgnoreBox</tabstop>
   <tabstop>headerBox</tabstop>
+  <tabstop>eofDetectionBox</tabstop>
   <tabstop>geometryBox</tabstop>
   <tabstop>xFieldBox</tabstop>
   <tabstop>yFieldBox</tabstop>
   <tabstop>showGeometryFieldsBox</tabstop>
   <tabstop>crsEdit</tabstop>
   <tabstop>crsButton</tabstop>
+  <tabstop>sampleView</tabstop>
+  <tabstop>helpButton</tabstop>
+  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>

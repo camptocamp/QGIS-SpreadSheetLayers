@@ -268,11 +268,9 @@ class SpreadsheetLayersDialog(QtGui.QDialog, FORM_CLASS):
         self.closeDataSource()
 
         filePath = self.filePath()
-        finfo = QtCore.QFileInfo(filePath)
-        if not finfo.exists():
+        self.finfo = QtCore.QFileInfo(filePath)
+        if not self.finfo.exists():
             return
-
-        self.layerNameEdit.setText(finfo.completeBaseName())
 
         dataSource = ogr.Open(filePath, 0)
         if dataSource is None:
@@ -324,6 +322,9 @@ class SpreadsheetLayersDialog(QtGui.QDialog, FORM_CLASS):
             self.layer = None
         else:
             self.layer = self.sheetBox.itemData(index)
+            self.setLayerName(u"{}-{}".format(self.finfo.completeBaseName(),
+                                              self.sheetBox.itemText(index)))
+
         self.countNonEmptyRows()
         self.updateFields()
         self.updateFieldBoxes()
