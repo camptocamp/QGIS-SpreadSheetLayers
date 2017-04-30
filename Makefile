@@ -90,8 +90,9 @@ compile:
 	@echo "------------------------------"
 	@echo "Compile ui and resources forms"
 	@echo "------------------------------"
-	virtualenv --setuptools .
-	./bin/pip install -r requirements.txt
+	mkdir -p .build
+	virtualenv --setuptools .build/venv
+	.build/venv/bin/pip install -r requirements.txt
 	make -C resources
 	make transcompile
 	make html -C help
@@ -102,11 +103,11 @@ clean:
 	@echo "------------------------------"
 	@echo "Clean ui and resources forms"
 	@echo "------------------------------"
+	rm -rf ./build
 	rm -f *.pyc
 	make clean -C help
 	make clean -C ui
 	make clean -C resources
-	rm -rf bin include lib local
 
 ################TESTS#######################
 .ONESHELL:

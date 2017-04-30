@@ -1,10 +1,6 @@
 # python byte code files
 *.pyc
-
-/bin
-/include
-/lib
-/local
+.build
 /ui/resources_rc.py
 /ui/ui_*.py
 
