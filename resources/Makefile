@@ -18,4 +18,4 @@ resources: $(COMPILED_RESOURCES)
 # Conversion rules
 
 %_rc.py : %.qrc
-	pyrcc4 -o $@ $<
+	pyrcc5 -o $@ $<

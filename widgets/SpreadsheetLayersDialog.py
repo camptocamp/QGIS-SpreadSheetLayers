@@ -20,16 +20,17 @@
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import str
+from builtins import range
 
 import os
 import datetime
 import re
 from tempfile import gettempdir
-from exceptions import NotImplementedError
 from osgeo import ogr
-from qgis.core import QgsVectorDataProvider
-from qgis.gui import QgsMessageBar, QgsGenericProjectionSelector
-from PyQt4 import QtCore, QtGui, uic
+from qgis.core import QgsVectorDataProvider, QgsCoordinateReferenceSystem
+from qgis.gui import QgsMessageBar
+from qgis.PyQt import QtCore, QtGui, QtWidgets, uic
 
 from SpreadsheetLayers.util.gdal_util import GDAL_COMPAT
 
@@ -80,22 +81,22 @@ class OgrTableModel(QtGui.QStandardItemModel):
         self.setColumnCount(columns)
 
         # Headers
-        for column in xrange(0, columns):
+        for column in range(0, columns):
             fieldDefn = layerDefn.GetFieldDefn(column)
-            fieldName = fieldDefn.GetNameRef().decode('UTF-8')
+            fieldName = fieldDefn.GetNameRef()
             item = QtGui.QStandardItem(fieldName)
             self.setHorizontalHeaderItem(column, item)
 
         # Lines
-        for row in xrange(0, rows):
-            for column in xrange(0, columns):
+        for row in range(0, rows):
+            for column in range(0, columns):
                 layer.SetNextByIndex(row)
                 feature = layer.GetNextFeature()
                 item = self.createItem(layerDefn, feature, column)
                 self.setItem(row, column, item)
 
         # No header for column format line
-        for column in xrange(0, columns):
+        for column in range(0, columns):
             item = QtGui.QStandardItem("")
             self.setVerticalHeaderItem(rows, item)
 
@@ -120,12 +121,12 @@ class OgrTableModel(QtGui.QStandardItemModel):
 
         elif fieldDefn.GetType() == ogr.OFTString:
             if feature.IsFieldSet(iField):
-                value = feature.GetFieldAsString(iField).decode('UTF-8')
+                value = feature.GetFieldAsString(iField)
             hAlign = QtCore.Qt.AlignLeft
 
         else:
             if feature.IsFieldSet(iField):
-                value = feature.GetFieldAsString(iField).decode('UTF-8')
+                value = feature.GetFieldAsString(iField)
             hAlign = QtCore.Qt.AlignLeft
 
         if value is None:
@@ -135,7 +136,7 @@ class OgrTableModel(QtGui.QStandardItemModel):
             font.setItalic(True)
             item.setFont(font)
         else:
-            item = QtGui.QStandardItem(unicode(value))
+            item = QtGui.QStandardItem(str(value))
         item.setTextAlignment(hAlign | QtCore.Qt.AlignVCenter)
         return item
 
@@ -159,12 +160,12 @@ for fieldType in [
     ogrFieldTypes.append((fieldType, ogr.GetFieldTypeName(fieldType)))
 
 
-class OgrFieldTypeDelegate(QtGui.QStyledItemDelegate):
+class OgrFieldTypeDelegate(QtWidgets.QStyledItemDelegate):
     def __init__(self, parent=None):
         super(OgrFieldTypeDelegate, self).__init__(parent)
 
     def createEditor(self, parent, option, index):
-        editor = QtGui.QComboBox(parent)
+        editor = QtWidgets.QComboBox(parent)
         for value, text in ogrFieldTypes:
             editor.addItem(text, value)
         editor.setAutoFillBackground(True)
@@ -187,7 +188,7 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), '..', 'ui', 'ui_SpreadsheetLayersDialog.ui'))
 
 
-class SpreadsheetLayersDialog(QtGui.QDialog, FORM_CLASS):
+class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
 
     pluginKey = 'SpreadsheetLayers'
     sampleRowCount = 20
@@ -229,7 +230,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, FORM_CLASS):
     @QtCore.pyqtSlot(name='on_filePathButton_clicked')
     def on_filePathButton_clicked(self):
         settings = QtCore.QSettings()
-        s = QtGui.QFileDialog.getOpenFileName(
+        s, filter = QtWidgets.QFileDialog.getOpenFileName(
             self,
             self.tr("Choose a spreadsheet file to open"),
             settings.value(self.pluginKey + "/directory", "./"),
@@ -312,9 +313,9 @@ class SpreadsheetLayersDialog(QtGui.QDialog, FORM_CLASS):
         if dataSource is None:
             return
 
-        for i in xrange(0, dataSource.GetLayerCount()):
+        for i in range(0, dataSource.GetLayerCount()):
             layer = dataSource.GetLayer(i)
-            self.sheetBox.addItem(layer.GetName().decode('UTF-8'), layer)
+            self.sheetBox.addItem(layer.GetName(), layer)
 
     @QtCore.pyqtSlot(int)
     def on_sheetBox_currentIndexChanged(self, index):
@@ -397,8 +398,8 @@ class SpreadsheetLayersDialog(QtGui.QDialog, FORM_CLASS):
             while feature is not None:
                 values = []
 
-                for iField in xrange(0, layerDefn.GetFieldCount()):
-                    # values.append(feature.GetFieldAsString(iField).decode('UTF-8'))
+                for iField in range(0, layerDefn.GetFieldCount()):
+                    # values.append(feature.GetFieldAsString(iField))
                     if feature.IsFieldSet(iField):
                         self._non_empty_rows = current_row
 
@@ -478,14 +479,14 @@ class SpreadsheetLayersDialog(QtGui.QDialog, FORM_CLASS):
 
     def tryFields(self, xName, yName):
         if self.xField() == '':
-            for i in xrange(0, self.xFieldBox.count()):
+            for i in range(0, self.xFieldBox.count()):
                 xField = self.xFieldBox.itemText(i)
                 if xField.lower().find(xName.lower()) != -1:
                     self.xFieldBox.setCurrentIndex(i)
                     break;
 
         if self.yField() == '':
-            for i in xrange(0, self.yFieldBox.count()):
+            for i in range(0, self.yFieldBox.count()):
                 yField = self.yFieldBox.itemText(i)
                 if yField.lower().find(yName.lower()) != -1:
                     self.yFieldBox.setCurrentIndex(i)
@@ -495,18 +496,12 @@ class SpreadsheetLayersDialog(QtGui.QDialog, FORM_CLASS):
         return self.showGeometryFieldsBox.isChecked()
 
     def crs(self):
-        return self.crsEdit.text()
+        return self.crsWidget.crs().authid()
 
-    def setCrs(self, crs):
-        self.crsEdit.setText(crs)
-
-    @QtCore.pyqtSlot(name='on_crsButton_clicked')
-    def on_crsButton_clicked(self):
-        dlg = QgsGenericProjectionSelector(self)
-        dlg.setMessage('Select CRS')
-        dlg.setSelectedAuthId(self.crsEdit.text())
-        if dlg.exec_():
-            self.crsEdit.setText(dlg.selectedAuthId())
+    def setCrs(self, authid):
+        crs = QgsCoordinateReferenceSystem()
+        crs.createFromString(authid)
+        self.crsWidget.setCrs(crs)
 
     def updateSampleView(self):
         if self.sampleRefreshDisabled:
@@ -521,7 +516,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, FORM_CLASS):
         layer = None
         dataSource = self.sampleDatasource
         if dataSource is not None:
-            for i in xrange(0, dataSource.GetLayerCount()):
+            for i in range(0, dataSource.GetLayerCount()):
                 layer = dataSource.GetLayer(i)
 
         if layer is None:
@@ -536,11 +531,11 @@ class SpreadsheetLayersDialog(QtGui.QDialog, FORM_CLASS):
         self.sampleView.setModel(model)
 
         # Open persistent editor on last line (column format)
-        for column in xrange(0, model.columnCount()):
+        for column in range(0, model.columnCount()):
             self.sampleView.openPersistentEditor(model.index(model.rowCount()-1, column))
         # Restore rows initial order
         vheader = self.sampleView.verticalHeader()
-        for row in xrange(0, model.rowCount()):
+        for row in range(0, model.rowCount()):
             position = vheader.sectionPosition(row)
             if position != row:
                 vheader.moveSection(position, row)
@@ -563,7 +558,7 @@ class SpreadsheetLayersDialog(QtGui.QDialog, FORM_CLASS):
                 raise ValueError(self.tr("Please select an y field"))
 
         except ValueError as e:
-            self.messageBar.pushMessage(unicode(e), QgsMessageBar.WARNING, 5)
+            self.messageBar.pushMessage(str(e), QgsMessageBar.WARNING, 5)
             return False
 
         return True
@@ -673,12 +668,12 @@ class SpreadsheetLayersDialog(QtGui.QDialog, FORM_CLASS):
 
         fields = []
         layerDefn = self.layer.GetLayerDefn()
-        for iField in xrange(0, layerDefn.GetFieldCount()):
+        for iField in range(0, layerDefn.GetFieldCount()):
             fieldDefn = layerDefn.GetFieldDefn(iField)
-            src = fieldDefn.GetNameRef().decode('UTF-8')
+            src = fieldDefn.GetNameRef()
             name = src
             if self.header() or self.offset() >= 1:
-                name = feature.GetFieldAsString(iField).decode('UTF-8') or name
+                name = feature.GetFieldAsString(iField) or name
             fields.append({'src': src,
                            'name': name,
                            'type': fieldDefn.GetType()
@@ -769,13 +764,13 @@ class SpreadsheetLayersDialog(QtGui.QDialog, FORM_CLASS):
                 if content == oldContent:
                     return True
 
-            msgBox = QtGui.QMessageBox()
+            msgBox = QtWidgets.QMessageBox()
             msgBox.setText(u"The file {} already exist.".format(vrtPath))
             msgBox.setInformativeText(u"Do you want to overwrite ?");
-            msgBox.setStandardButtons(QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel)
-            msgBox.setDefaultButton(QtGui.QMessageBox.Cancel)
+            msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
+            msgBox.setDefaultButton(QtWidgets.QMessageBox.Cancel)
             ret = msgBox.exec_()
-            if ret == QtGui.QMessageBox.Cancel:
+            if ret == QtWidgets.QMessageBox.Cancel:
                 return False
             QtCore.QFile.remove(vrtPath)
 
