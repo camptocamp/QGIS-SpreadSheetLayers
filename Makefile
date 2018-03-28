@@ -91,7 +91,7 @@ compile:
 	@echo "Compile ui and resources forms"
 	@echo "------------------------------"
 	mkdir -p .build
-	virtualenv --setuptools .build/venv
+	virtualenv -p python3 .build/venv
 	.build/venv/bin/pip install -r requirements.txt
 	make -C resources
 	make transcompile
@@ -103,7 +103,7 @@ clean:
 	@echo "------------------------------"
 	@echo "Clean ui and resources forms"
 	@echo "------------------------------"
-	rm -rf ./build
+	rm -rf .build
 	rm -f *.pyc
 	make clean -C help
 	make clean -C ui
@@ -130,7 +130,7 @@ updatei18nconf:
 
 # transup: update .ts translation files
 transup:updatei18nconf
-	pylupdate4 -noobsolete i18n/i18n.generatedconf
+	pylupdate5 -noobsolete i18n/i18n.generatedconf
 	rm -f i18n/i18n.generatedconf
 	make transup -C help
 

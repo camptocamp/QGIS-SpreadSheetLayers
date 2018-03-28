@@ -343,24 +343,7 @@
       <item row="1" column="1">
        <layout class="QHBoxLayout" name="crsLayout">
         <item>
-         <widget class="QLineEdit" name="crsEdit">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="inputMask">
-           <string/>
-          </property>
-          <property name="readOnly">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="crsButton">
-          <property name="text">
-           <string>Select</string>
-          </property>
-         </widget>
+         <widget class="QgsProjectionSelectionWidget" name="crsWidget"/>
         </item>
        </layout>
       </item>
@@ -412,12 +395,17 @@
   <tabstop>xFieldBox</tabstop>
   <tabstop>yFieldBox</tabstop>
   <tabstop>showGeometryFieldsBox</tabstop>
-  <tabstop>crsEdit</tabstop>
-  <tabstop>crsButton</tabstop>
   <tabstop>sampleView</tabstop>
   <tabstop>helpButton</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
+ <customwidgets>
+  <customwidget>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgis.gui</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

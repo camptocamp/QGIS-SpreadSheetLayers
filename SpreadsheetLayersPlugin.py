@@ -20,9 +20,10 @@
  *                                                                         *
  ***************************************************************************/
 """
+from __future__ import print_function
 import os.path
-from qgis.core import QGis, QgsVectorLayer, QgsMapLayerRegistry
-from PyQt4 import QtCore, QtGui
+from qgis.core import Qgis, QgsVectorLayer, QgsProject
+from qgis.PyQt import QtCore, QtGui, QtWidgets
 # Initialize Qt resources from file resources.py
 from .ui import resources_rc
 # Import the code for the dialog
@@ -60,12 +61,12 @@ class SpreadsheetLayersPlugin(QtCore.QObject):
                 QtCore.QCoreApplication.installTranslator(self.translator)
 
     def initGui(self):
-        self.action = QtGui.QAction(
+        self.action = QtWidgets.QAction(
             QtGui.QIcon(':/plugins/SpreadsheetLayers/icon/mActionAddSpreadsheetLayer.svg'),
             self.tr("Add spreadsheet layer"),
             self)
         self.action.triggered.connect(self.showDialog)
-        if QGis.QGIS_VERSION_INT > 20400:
+        if Qgis.QGIS_VERSION_INT > 20400:
             self.iface.addLayerMenu().addAction(self.action)
         else:
             menu = self.iface.layerMenu()
@@ -77,7 +78,7 @@ class SpreadsheetLayersPlugin(QtCore.QObject):
 
     def unload(self):
         if hasattr(self, 'action'):
-            if QGis.QGIS_VERSION_INT > 20400:
+            if Qgis.QGIS_VERSION_INT > 20400:
                 self.iface.addLayerMenu().removeAction(self.action)
             else:
                 self.iface.layerMenu().removeAction(self.action)
@@ -90,7 +91,8 @@ class SpreadsheetLayersPlugin(QtCore.QObject):
             layer = QgsVectorLayer(dlg.vrtPath(), dlg.layerName(), 'ogr')
             layer.setProviderEncoding('UTF-8')
             if not layer.isValid():
-                print "Layer failed to load"
+                # fix_print_with_import
+                print("Layer failed to load")
             else:
-                QgsMapLayerRegistry.instance().addMapLayer(layer)
+                QgsProject.instance().addMapLayer(layer)
         dlg.deleteLater()
