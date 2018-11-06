@@ -28,7 +28,7 @@ import datetime
 import re
 from tempfile import gettempdir
 from osgeo import ogr
-from qgis.core import QgsVectorDataProvider, QgsCoordinateReferenceSystem
+from qgis.core import Qgis, QgsVectorDataProvider, QgsCoordinateReferenceSystem
 from qgis.gui import QgsMessageBar
 from qgis.PyQt import QtCore, QtGui, QtWidgets, uic
 
@@ -212,10 +212,10 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
         self.sampleView.setItemDelegate(OgrFieldTypeDelegate())
 
     def info(self, msg):
-        self.messageBar.pushMessage(msg, QgsMessageBar.INFO, 5)
+        self.messageBar.pushMessage(msg, Qgis.Info, 5)
 
     def warning(self, msg):
-        self.messageBar.pushMessage(msg, QgsMessageBar.WARNING, 5)
+        self.messageBar.pushMessage(msg, Qgis.Warning, 5)
 
     def filePath(self):
         return self.filePathEdit.text()
@@ -276,7 +276,7 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
         dataSource = ogr.Open(filePath, 0)
         if dataSource is None:
             self.messageBar.pushMessage(u"Could not open {}".format(filePath),
-                                        QgsMessageBar.WARNING, 5)
+                                        Qgis.Warning, 5)
         self.dataSource = dataSource
 
         if self.dataSource and self.dataSource.GetDriver().GetName() in ['XLS']:
@@ -298,7 +298,7 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
         dataSource = ogr.Open(filePath, 0)
         if dataSource is None:
             self.messageBar.pushMessage(u"Could not open {}".format(filePath),
-                                        QgsMessageBar.WARNING, 5)
+                                       Qgis.Warning, 5)
         self.sampleDatasource = dataSource
 
     def sheet(self):
@@ -558,7 +558,7 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
                 raise ValueError(self.tr("Please select an y field"))
 
         except ValueError as e:
-            self.messageBar.pushMessage(str(e), QgsMessageBar.WARNING, 5)
+            self.messageBar.pushMessage(str(e), Qgis.Warning, 5)
             return False
 
         return True
