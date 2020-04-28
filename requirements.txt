@@ -1,3 +1,2 @@
-setuptools == 5.7
-sphinx == 1.2.2
-sphinx-intl == 0.9.5
+sphinx
+sphinx-intl
