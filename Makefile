@@ -27,7 +27,10 @@ TRANSLATIONS = SpreadsheetLayers_fr.ts
 #this can be overiden by calling QGIS_PREFIX_PATH=/my/path make
 # DEFAULT_QGIS_PREFIX_PATH=/usr/local/qgis-master
 DEFAULT_QGIS_PREFIX_PATH=/usr
+QGISDIR ?= .local/share/QGIS/QGIS3/profiles/default
 ###################END CONFIGURE#########################
+
+PLUGIN_UPLOAD = ./plugin_upload.py
 
 PACKAGESSOURCES := $(shell find $(PACKAGES) -name "*.py")
 SOURCES := SpreadsheetLayersPlugin.py $(PACKAGESSOURCES)
@@ -144,14 +147,17 @@ transclean:
 %.qm : %.ts
 	lrelease $<
 
+deploy: ## Deploy plugin to your QGIS plugin directory (to test zip archive)
+deploy: package derase
+	unzip $(PLUGINNAME).zip -d $(HOME)/$(QGISDIR)/python/plugins/
+
+derase: ## Remove deployed plugin from your QGIS plugin directory
+	rm -Rf $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)
+
 ################PACKAGE############################
 # Create a zip package of the plugin named $(PLUGINNAME).zip.
 # This requires use of git (your plugin development directory must be a
 # git repository).
-# To use, pass a valid commit or tag as follows:
-#   make package VERSION=0.3.2 HASH=release-0.3.2
-#   make package VERSION=0.3.2 HASH=master
-#   make package VERSION=0.3.2 HASH=83c34c7d
 
 package: compile transcompile
 	rm -f $(PLUGINNAME).zip
@@ -162,15 +168,19 @@ package: compile transcompile
 	cp -r help/build/html $(PLUGINNAME)/help/build/
 	mkdir -p $(PLUGINNAME)/i18n/
 	cp i18n/*.qm $(PLUGINNAME)/i18n/
-	git archive -o $(PLUGINNAME).zip --prefix=$(PLUGINNAME)/ $(HASH)
+	git archive -o $(PLUGINNAME).zip --prefix=$(PLUGINNAME)/ HEAD
 	zip -d $(PLUGINNAME).zip $(PLUGINNAME)/\*Makefile
 	zip -d $(PLUGINNAME).zip $(PLUGINNAME)/.gitignore
 	zip -g $(PLUGINNAME).zip $(PLUGINNAME)/*/*
 	zip -g $(PLUGINNAME).zip `find $(PLUGINNAME)/help/build/html`
 	zip -g $(PLUGINNAME).zip $(PLUGINNAME)/*.qm
 	rm -rf $(PLUGINNAME)/
-	mv $(PLUGINNAME).zip $(PLUGINNAME).$(VERSION).zip
-	echo "Created package: $(PLUGINNAME).$(VERSION).zip"
+	echo "Created package: $(PLUGINNAME).zip"
+
+.PHONY: upload
+upload: ## Upload plugin to QGIS Plugin repo
+upload: package
+	$(PLUGIN_UPLOAD) $(PLUGINNAME).zip
 
 ################VALIDATION#######################
 # validate syntax style
@@ -195,3 +205,8 @@ pep8:
 	@echo "-----------"
 	@./bin/pip install -q pep8
 	@./bin/pep8 --repeat --ignore=E501 --exclude ui,lib,doc resources . || true
+
+.PHONY: link
+link: ## Create symbolic link to this folder in your QGIS plugins folder (for development)
+link: derase
+	ln -s $(shell pwd) $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)
