@@ -63,7 +63,7 @@ class SpreadsheetLayersPlugin(QtCore.QObject):
     def initGui(self):
         self.action = QtWidgets.QAction(
             QtGui.QIcon(':/plugins/SpreadsheetLayers/icon/mActionAddSpreadsheetLayer.svg'),
-            self.tr("Add Spreadsheet Layer"),
+            self.tr("Add Spreadsheet Layer…"),
             self)
         self.action.triggered.connect(self.showDialog)
         if Qgis.QGIS_VERSION_INT > 20400:

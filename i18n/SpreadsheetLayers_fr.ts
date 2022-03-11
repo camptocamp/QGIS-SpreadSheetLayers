@@ -144,7 +144,7 @@ For more informations, consult the plugin documentation.</source>
     <name>SpreadsheetLayersPlugin</name>
     <message>
         <location filename="../SpreadsheetLayersPlugin.py" line="63"/>
-        <source>Add spreadsheet layer</source>
+        <source>Add spreadsheet layer…</source>
         <translation>Ajouter une couche feuille de calcul</translation>
     </message>
 </context>

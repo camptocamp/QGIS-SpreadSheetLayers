@@ -145,7 +145,7 @@ For more informations, consult the plugin documentation.</source>
     <name>SpreadsheetLayersPlugin</name>
     <message>
         <location filename="../SpreadsheetLayersPlugin.py" line="63"/>
-        <source>Add spreadsheet layer</source>
+        <source>Add spreadsheet layer…</source>
         <translation>Добавить слой из таблицы</translation>
     </message>
 </context>
