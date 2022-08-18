@@ -22,7 +22,8 @@
 PLUGINNAME = SpreadsheetLayers
 PACKAGES_NO_UI = widgets
 PACKAGES = $(PACKAGES_NO_UI) ui
-TRANSLATIONS = SpreadsheetLayers_fr.ts
+LANGUAGES = de fr ru
+TRANSLATIONS = $(addprefix SpreadsheetLayers_, $(addsuffix .ts, $(LANGUAGES) ) )
 
 #this can be overiden by calling QGIS_PREFIX_PATH=/my/path make
 # DEFAULT_QGIS_PREFIX_PATH=/usr/local/qgis-master
@@ -35,6 +36,8 @@ PLUGIN_UPLOAD = ./plugin_upload.py
 PACKAGESSOURCES := $(shell find $(PACKAGES) -name "*.py")
 SOURCES := SpreadsheetLayersPlugin.py $(PACKAGESSOURCES)
 SOURCES_FOR_I18N = $(SOURCES:%=../%)
+FORMS = $(shell find $(PACKAGES) -name "*.ui")
+FORMS_FOR_I18N = $(FORMS:%=../%)
 
 # QGIS PATHS
 ifndef QGIS_PREFIX_PATH
@@ -126,13 +129,14 @@ tests:
 
 ################TRANSLATION#######################
 updatei18nconf:
-	echo "SOURCES = " $(SOURCES_FOR_I18N) > i18n/i18n.generatedconf
-	echo "TRANSLATIONS = " $(TRANSLATIONS) >> i18n/i18n.generatedconf
-	echo "CODECFORTR = UTF-8"  >> i18n/i18n.generatedconf
-	echo "CODECFORSRC = UTF-8"  >> i18n/i18n.generatedconf
+	echo "SOURCES = $(SOURCES_FOR_I18N)" > i18n/i18n.generatedconf
+	echo "FORMS = $(FORMS_FOR_I18N)" >> i18n/i18n.generatedconf
+	echo "TRANSLATIONS = $(TRANSLATIONS)" >> i18n/i18n.generatedconf
+	echo "CODECFORTR = UTF-8" >> i18n/i18n.generatedconf
+	echo "CODECFORSRC = UTF-8" >> i18n/i18n.generatedconf
 
 # transup: update .ts translation files
-transup:updatei18nconf
+transup: updatei18nconf
 	pylupdate5 -noobsolete i18n/i18n.generatedconf
 	rm -f i18n/i18n.generatedconf
 	make transup -C help
