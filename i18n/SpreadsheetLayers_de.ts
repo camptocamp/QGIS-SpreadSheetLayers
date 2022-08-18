@@ -26,26 +26,26 @@
         <location filename="../widgets/SpreadsheetLayersDialog.py" line="425"/>
         <source>Used GDAL version doesn&apos;t support VRT layers with sqlite dialect mixed with PointFromColumn functionality.
 For more informations, consult the plugin documentation.</source>
-<translation type="unfinished">Die verwendete GDAL-Version unterstützt keine VRT-Layer mit SQLite in Verbindung mit PointFromColumn-Funktionalität.
+        <translation type="unfinished">Die verwendete GDAL-Version unterstützt keine VRT-Layer mit SQLite in Verbindung mit PointFromColumn-Funktionalität.
 Für weitere Informationen bitte die Plugin-Dokumentation lesen.</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="551"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="549"/>
         <source>Please select an input file</source>
         <translation>Bitte eine Eingabedatei auswählen</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="554"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="552"/>
         <source>Please select a sheet</source>
         <translation>Bitte ein Arbeitsblatt auswählen</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="557"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="555"/>
         <source>Please select an x field</source>
         <translation>Bitte ein X-Feld auswählen</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="560"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="558"/>
         <source>Please select an y field</source>
         <translation>Bitte ein Y-Feld auswählen</translation>
     </message>
@@ -135,9 +135,9 @@ Für weitere Informationen bitte die Plugin-Dokumentation lesen.</translation>
         <translation>Hilfe</translation>
     </message>
 </context>
-<context>
+<context encoding="UTF-8">
     <name>SpreadsheetLayersPlugin</name>
-    <message>
+    <message encoding="UTF-8">
         <location filename="../SpreadsheetLayersPlugin.py" line="64"/>
         <source>Add Spreadsheet Layer…</source>
         <translation>Tabellenkalkulations-Layer hinzufügen…</translation>
