@@ -22,7 +22,7 @@
 PLUGINNAME = SpreadsheetLayers
 PACKAGES_NO_UI = widgets
 PACKAGES = $(PACKAGES_NO_UI) ui
-LANGUAGES = de fr ru
+LANGUAGES = de fr ja ru
 TRANSLATIONS = $(addprefix SpreadsheetLayers_, $(addsuffix .ts, $(LANGUAGES) ) )
 
 #this can be overiden by calling QGIS_PREFIX_PATH=/my/path make
