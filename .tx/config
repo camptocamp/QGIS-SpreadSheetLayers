@@ -1,0 +1,16 @@
+[main]
+host = https://www.transifex.com
+
+[QGIS-SpreadSheetLayers.SpreadsheetLayers]
+file_filter = SpreadsheetLayers/i18n/SpreadsheetLayers_<lang>.ts
+minimum_perc = 0
+source_file = SpreadsheetLayers/i18n/SpreadsheetLayers_en.ts
+source_lang = en
+type = QT
+
+[QGIS-SpreadSheetLayers.help]
+file_filter = help/locale/<lang>/LC_MESSAGES/index.po
+minimum_perc = 0
+source_file = help/locale/index.pot
+source_lang = en
+type = PO
