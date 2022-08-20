@@ -26,6 +26,7 @@ from builtins import range
 import os
 import datetime
 import re
+from pkg_resources import resource_filename
 from tempfile import gettempdir
 from osgeo import ogr
 from qgis.core import Qgis, QgsVectorDataProvider, QgsCoordinateReferenceSystem
@@ -810,11 +811,10 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
 
     @QtCore.pyqtSlot()
     def on_helpButton_clicked(self):
-        html_path = os.path.join(os.path.dirname(__file__),
-                                 "..", "help", "build", "html")
+        help_path = resource_filename("SpreadsheetLayers", "help")
         user_locale = QtCore.QSettings().value("locale/userLocale")[0:2]
-        locale_path = os.path.join(html_path, user_locale)
+        locale_path = os.path.join(help_path, user_locale)
         if not os.path.exists(locale_path):
-            locale_path = os.path.join(html_path, 'en')
+            locale_path = os.path.join(help_path, 'en')
         path = os.path.join(locale_path, "index.html")
         QtGui.QDesktopServices.openUrl(QtCore.QUrl.fromLocalFile(path))

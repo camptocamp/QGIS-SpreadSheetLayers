@@ -1,50 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="fr" sourcelanguage="en">
+<!DOCTYPE TS>
+<TS version="2.1" language="fr" sourcelanguage="en">
 <context>
     <name>SpreadsheetLayersDialog</name>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="233"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="234"/>
         <source>Choose a spreadsheet file to open</source>
         <translation>Choisissez un fichier feuille de calcul à ouvrir</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="233"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="234"/>
         <source>Spreadsheet files</source>
         <translation>Fichiers feuille de calcul</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="233"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="234"/>
         <source>GDAL Virtual Format</source>
         <translation>Source de données virtuelle GDAL</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="233"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="234"/>
         <source>All files</source>
         <translation>Tous les fichiers</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="425"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="426"/>
         <source>Used GDAL version doesn&apos;t support VRT layers with sqlite dialect mixed with PointFromColumn functionality.
 For more informations, consult the plugin documentation.</source>
         <translation>La version courante de GDAL ne supporte pas la combinaison couches VRT utilisant le dialecte sqlite et la geometrie depuis les colonnes.</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="549"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="550"/>
         <source>Please select an input file</source>
         <translation>Veuillez sélectionner un fichier</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="552"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="553"/>
         <source>Please select a sheet</source>
         <translation>Veuillez sélectionner une feuille</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="555"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="556"/>
         <source>Please select an x field</source>
         <translation>Veuillez sélectionner un champ x</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="558"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="559"/>
         <source>Please select an y field</source>
         <translation>Veuillez sélectionner un champ y</translation>
     </message>

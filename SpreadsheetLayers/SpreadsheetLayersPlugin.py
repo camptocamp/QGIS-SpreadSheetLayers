@@ -20,12 +20,12 @@
  *                                                                         *
  ***************************************************************************/
 """
-from __future__ import print_function
+
 import os.path
+from pkg_resources import resource_filename
+
 from qgis.core import Qgis, QgsVectorLayer, QgsProject
 from qgis.PyQt import QtCore, QtGui, QtWidgets
-# Initialize Qt resources from file resources.py
-from .ui import resources_rc
 # Import the code for the dialog
 from .widgets.SpreadsheetLayersDialog import SpreadsheetLayersDialog
 
@@ -62,7 +62,7 @@ class SpreadsheetLayersPlugin(QtCore.QObject):
 
     def initGui(self):
         self.action = QtWidgets.QAction(
-            QtGui.QIcon(':/plugins/SpreadsheetLayers/icon/mActionAddSpreadsheetLayer.svg'),
+            QtGui.QIcon(resource_filename("SpreadsheetLayers", "resources/icon/mActionAddSpreadsheetLayer.svg")),
             self.tr("Add Spreadsheet Layer…"),
             self)
         self.action.triggered.connect(self.showDialog)

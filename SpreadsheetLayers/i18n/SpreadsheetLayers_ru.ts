@@ -1,138 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0">
+<!DOCTYPE TS>
+<TS version="2.1" language="ru" sourcelanguage="en">
 <context>
     <name>SpreadsheetLayersDialog</name>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="233"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="234"/>
         <source>Choose a spreadsheet file to open</source>
-        <translation>Tabellendatei zum Öffnen auswählen</translation>
+        <translation>Выберите табличный файл для открытия</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="233"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="234"/>
         <source>Spreadsheet files</source>
-        <translation>Tabellendateien</translation>
+        <translation>Табличные файлы</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="233"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="234"/>
         <source>GDAL Virtual Format</source>
-        <translation>GDAL Virtuell Format</translation>
+        <translation>Виртуальный формат GDAL</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="233"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="234"/>
         <source>All files</source>
-        <translation>Alle Dateien</translation>
+        <translation>Все файлы</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="425"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="426"/>
         <source>Used GDAL version doesn&apos;t support VRT layers with sqlite dialect mixed with PointFromColumn functionality.
 For more informations, consult the plugin documentation.</source>
-        <translation type="unfinished">Die verwendete GDAL-Version unterstützt keine VRT-Layer mit SQLite in Verbindung mit PointFromColumn-Funktionalität.
-Für weitere Informationen bitte die Plugin-Dokumentation lesen.</translation>
+        <translation>Используемая версия GDAL не поддерживает слои VRT с диалектом sqlite и функциональностью PointFromColumn.
+Для более подробной информации обратитесь к документации модуля.</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="549"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="550"/>
         <source>Please select an input file</source>
-        <translation>Bitte eine Eingabedatei auswählen</translation>
+        <translation>Выберите исходный файл</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="552"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="553"/>
         <source>Please select a sheet</source>
-        <translation>Bitte ein Arbeitsblatt auswählen</translation>
+        <translation>Выберите лист</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="555"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="556"/>
         <source>Please select an x field</source>
-        <translation>Bitte ein X-Feld auswählen</translation>
+        <translation>Выберите поле x</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="558"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="559"/>
         <source>Please select an y field</source>
-        <translation>Bitte ein Y-Feld auswählen</translation>
+        <translation>Выберите поле y</translation>
     </message>
     <message>
         <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="14"/>
         <source>Create a Layer from a Spreadsheet File</source>
-        <translation>Layer aus einer Tabellenkalkulationsdatei erstellen</translation>
+        <translation>Создать слой из табличного файла</translation>
     </message>
     <message>
         <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="31"/>
         <source>File Name</source>
-        <translation>Dateiname</translation>
+        <translation>Имя файла</translation>
     </message>
     <message>
         <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="74"/>
         <source>Browse...</source>
-        <translation>Durchsuchen…</translation>
-    </message>
-    <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="92"/>
-        <source>Sheet</source>
-        <translation>Arbeitsblatt</translation>
+        <translation>Выбрать...</translation>
     </message>
     <message>
         <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="115"/>
         <source>Layer name</source>
-        <translation>Layername</translation>
+        <translation>Имя слоя</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="145"/>
-        <source>Rows</source>
-        <translation>Zeilen</translation>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="92"/>
+        <source>Sheet</source>
+        <translation>Лист</translation>
     </message>
     <message>
         <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="154"/>
         <source>Number of lines to ignore</source>
-        <translation>Anzahl zu überspringender Zeilen</translation>
+        <translation>Сколько строк пропустить</translation>
     </message>
     <message>
         <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="164"/>
         <source>Header at first line</source>
-        <translation>Überschrift in der ersten Zeile</translation>
-    </message>
-    <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="184"/>
-        <source>End of file detection</source>
-        <translation>Dateiende erkennen</translation>
+        <translation>Заголовок из первой строки</translation>
     </message>
     <message>
         <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="191"/>
         <source>OGR_ODS_HEADERS = None</source>
-        <translation type="unfinished"></translation>
+        <translation>OGR_ODS_HEADERS = None</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="145"/>
+        <source>Rows</source>
+        <translation>Строки</translation>
     </message>
     <message>
         <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="202"/>
         <source>Geometry</source>
-        <translation>Geometrie</translation>
+        <translation>Геометрия</translation>
     </message>
     <message>
         <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="217"/>
         <source>Fields</source>
-        <translation>Felder</translation>
+        <translation>Поля</translation>
     </message>
     <message>
         <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="233"/>
         <source>Reference system</source>
-        <translation>Koordinatenbezugssystem</translation>
+        <translation>Система координат</translation>
     </message>
     <message>
         <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="245"/>
         <source>X field</source>
-        <translation>X-Feld</translation>
+        <translation>Поле X</translation>
     </message>
     <message>
         <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="286"/>
         <source>Y field</source>
-        <translation>Y-Feld</translation>
+        <translation>Поле Y</translation>
     </message>
     <message>
         <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="324"/>
         <source>Show fields in attribute table</source>
-        <translation>Felder in Attributtabelle anzeigen</translation>
+        <translation>Показать поля в таблице атрибутов</translation>
     </message>
     <message>
         <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="368"/>
         <source>Help</source>
-        <translation>Hilfe</translation>
+        <translation>Помощь</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="184"/>
+        <source>End of file detection</source>
+        <translation>Обнаружение конца файла</translation>
     </message>
 </context>
 <context encoding="UTF-8">
@@ -140,7 +141,7 @@ Für weitere Informationen bitte die Plugin-Dokumentation lesen.</translation>
     <message encoding="UTF-8">
         <location filename="../SpreadsheetLayersPlugin.py" line="64"/>
         <source>Add Spreadsheet Layer…</source>
-        <translation>Tabellenkalkulations-Layer hinzufügen…</translation>
+        <translation>Добавить слой из таблицы</translation>
     </message>
 </context>
 </TS>
