@@ -20,10 +20,6 @@
 
 ###################CONFIGURE HERE########################
 PLUGINNAME = SpreadsheetLayers
-PACKAGES_NO_UI = widgets
-PACKAGES = $(PACKAGES_NO_UI) ui
-LANGUAGES = de fr ja ru
-TRANSLATIONS = $(addprefix SpreadsheetLayers_, $(addsuffix .ts, $(LANGUAGES) ) )
 
 #this can be overiden by calling QGIS_PREFIX_PATH=/my/path make
 # DEFAULT_QGIS_PREFIX_PATH=/usr/local/qgis-master
@@ -35,12 +31,8 @@ QGISDIR ?= .local/share/QGIS/QGIS3/profiles/default
 # QGISDIR ?= .local/share/QGIS/QGIS3/profiles/russian
 ###################END CONFIGURE#########################
 
-SOURCES := $(shell (cd $(PLUGINNAME)/i18n && find .. -name "*.py") )
-FORMS = $(shell (cd $(PLUGINNAME)/i18n && find .. -name "*.ui") )
-
-toto:
-	@echo $(SOURCES)
-	@echo $(SOURCES_FOR_I18N)
+SOURCES := $(shell (cd $(PLUGINNAME) && find . -name "*.py") )
+FORMS = $(shell (cd $(PLUGINNAME) && find . -name "*.ui") )
 
 # QGIS PATHS
 ifndef QGIS_PREFIX_PATH
@@ -68,59 +60,73 @@ help: ## Display this help message
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "    %-20s%s\n", $$1, $$2}'
 
 
+################
+# MAIN TARGETS
+################
+
 .PHONY: compile
 compile: ## Create all runtime files
 compile: doc transcompile
 
 .PHONY: clean
 clean: ## Delete generated files
-	@echo
-	@echo "------------------------------"
-	@echo "Clean ui and resources forms"
-	@echo "------------------------------"
-	rm -rf .build
-	make clean -C help
-	rm -f $(PLUGINNAME)/*.pyc
-	rm -rf $(PLUGINNAME)/help
-	rm -f $(PLUGINNAME)/i18n/*.qm
+	git clean -dfX
 
+
+#################
+# DOCUMENTATION
+#################
 
 doc: ## Generate documentation files
-doc: .build/requirements-dev.timestamp
+doc: venv tx-pull
 	make -C help html
-	cp -r help/build/html $(PLUGINNAME)/help
+	mkdir -p $(PLUGINNAME)/help/
+	cp -r help/build/html/* $(PLUGINNAME)/help/
 
 
-################TRANSLATION#######################
+###############
+# TRANSLATION
+###############
 
-.PHONY: updatei18nconf
-updatei18nconf:
-	echo "SOURCES = $(SOURCES)" > $(PLUGINNAME)/i18n/i18n.generatedconf
-	echo "FORMS = $(FORMS)" >> $(PLUGINNAME)/i18n/i18n.generatedconf
-	echo "TRANSLATIONS = $(TRANSLATIONS)" >> $(PLUGINNAME)/i18n/i18n.generatedconf
-	echo "CODECFORTR = UTF-8" >> $(PLUGINNAME)/i18n/i18n.generatedconf
-	echo "CODECFORSRC = UTF-8" >> $(PLUGINNAME)/i18n/i18n.generatedconf
+tx-pull: ## Pull translations from transifex using tx client
+tx-pull: venv
+	mkdir -p $(PLUGINNAME)/i18n
+	.build/venv/bin/tx pull --all || true
 
-transup: ## Update .ts translation files
-transup: updatei18nconf
-	pylupdate5 -noobsolete $(PLUGINNAME)/i18n/i18n.generatedconf
-	rm -f $(PLUGINNAME)/i18n/i18n.generatedconf
-	make -C help transup
+tx-push: ## Push translations on transifex using tx client
+tx-push: venv gettext
+	.build/venv/bin/tx -d push -s
 
-transcompile: ## Compile translation files into .qm binary format
-transcompile: $(TRANSLATIONS:%.ts=$(PLUGINNAME)/i18n/%.qm)
+gettext: ## Update translation catalogs
+gettext: $(PLUGINNAME)/i18n/SpreadsheetLayers_en.ts
+gettext: help/locale/index.pot
 
-%.qm : %.ts
-	lrelease $<
+.INTERMEDIATE: $(PLUGINNAME)/SpreadsheetLayers.pro
+.PHONY: $(PLUGINNAME)/SpreadsheetLayers.pro
+$(PLUGINNAME)/SpreadsheetLayers.pro:
+	echo "SOURCES = $(SOURCES)" > $@
+	echo "FORMS = $(FORMS)" >> $@
+	echo "TRANSLATIONS = i18n/SpreadsheetLayers_en.ts" >> $@
+	echo "CODECFORTR = UTF-8" >> $@
+	echo "CODECFORSRC = UTF-8" >> $@
 
-.PHONY: deploy
-deploy: ## Deploy plugin to your QGIS plugin directory (to test zip archive)
-deploy: package derase
-	unzip dist/$(PLUGINNAME).zip -d $(HOME)/$(QGISDIR)/python/plugins/
+.INTERMEDIATE: $(PLUGINNAME)/i18n/SpreadsheetLayers_en.ts
+$(PLUGINNAME)/i18n/SpreadsheetLayers_en.ts: $(PLUGINNAME)/SpreadsheetLayers.pro
+	mkdir -p $(dir $@)
+	pylupdate5 -noobsolete $(PLUGINNAME)/SpreadsheetLayers.pro
 
-.PHONY: derase
-derase: ## Remove deployed plugin from your QGIS plugin directory
-	rm -Rf $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)
+.INTERMEDIATE: help/locale/index.pot
+help/locale/index.pot: venv
+	make -C help gettext
+
+transcompile: ## Compile Qt .ts translation files into .qm binary format
+transcompile: tx-pull
+	lrelease $(shell find -name *.ts)
+
+
+#############
+# PACKAGING
+#############
 
 package: ## Create plugin archive
 package: compile
@@ -133,11 +139,32 @@ package: compile
 	zip dist/$(PLUGINNAME).zip -r $(PLUGINNAME) -x '*/__pycache__/*'
 	echo "Created package: dist/$(PLUGINNAME).zip"
 
+
+#############
+# DEBUGGING
+#############
+
+.PHONY: deploy
+deploy: ## Deploy plugin to your QGIS plugin directory (to test zip archive)
+deploy: package derase
+	unzip dist/$(PLUGINNAME).zip -d $(HOME)/$(QGISDIR)/python/plugins/
+
+.PHONY: derase
+derase: ## Remove deployed plugin from your QGIS plugin directory
+	rm -Rf $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)
+
 .PHONY: link
 link: ## Create symbolic link to this folder in your QGIS plugins folder (for development)
 link: derase
 	ln -s $(shell pwd)/$(PLUGINNAME) $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)
 
+
+###############
+# VIRTUAL ENV
+###############
+
+.PHONY: venv
+venv: .build/requirements-dev.timestamp
 
 .build/venv.timestamp:
 	python3 -m venv --system-site-packages .build/venv
