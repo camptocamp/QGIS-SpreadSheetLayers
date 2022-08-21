@@ -209,16 +209,23 @@
      </property>
      <layout class="QFormLayout" name="formLayout_2">
       <item row="0" column="0">
-       <widget class="QLabel" name="fieldsLabel">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
+       <widget class="QLabel" name="geometryEncodingLabel">
         <property name="text">
-         <string>Fields</string>
+         <string>Encoding</string>
         </property>
        </widget>
       </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="geometryEncodingComboBox"/>
+      </item>
       <item row="1" column="0">
+       <widget class="QLabel" name="geometryFieldLabel">
+        <property name="text">
+         <string>Field</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
        <widget class="QLabel" name="crsLabel">
         <property name="enabled">
          <bool>true</bool>
@@ -234,88 +241,137 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <layout class="QHBoxLayout" name="fieldOptionsLayout">
+      <item row="2" column="1">
+       <layout class="QHBoxLayout" name="crsLayout">
         <item>
-         <widget class="QLabel" name="xFieldLabel">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="text">
-           <string>X field</string>
-          </property>
-         </widget>
+         <widget class="QgsProjectionSelectionWidget" name="crsWidget"/>
         </item>
+       </layout>
+      </item>
+      <item row="1" column="1">
+       <layout class="QHBoxLayout" name="geometryFieldLayout">
         <item>
-         <widget class="QComboBox" name="xFieldBox">
-          <property name="enabled">
-           <bool>true</bool>
+         <widget class="QStackedWidget" name="geometryFieldStackedWidget">
+          <property name="currentIndex">
+           <number>0</number>
           </property>
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>120</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="toolTip">
-           <string/>
-          </property>
-          <property name="statusTip">
-           <string/>
-          </property>
-          <property name="whatsThis">
-           <string/>
-          </property>
-          <property name="editable">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="yFieldLabel">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="text">
-           <string>Y field</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="yFieldBox">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>120</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="toolTip">
-           <string/>
-          </property>
-          <property name="statusTip">
-           <string/>
-          </property>
-          <property name="whatsThis">
-           <string/>
-          </property>
-          <property name="editable">
-           <bool>false</bool>
-          </property>
+          <widget class="QWidget" name="unique_field">
+           <layout class="QVBoxLayout" name="verticalLayout">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QComboBox" name="geometryFieldComboBox"/>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="x_y">
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="xFieldLabel">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="text">
+               <string>X field</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="xFieldBox">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>120</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string/>
+              </property>
+              <property name="statusTip">
+               <string/>
+              </property>
+              <property name="whatsThis">
+               <string/>
+              </property>
+              <property name="editable">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="yFieldLabel">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="text">
+               <string>Y field</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="yFieldBox">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>120</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string/>
+              </property>
+              <property name="statusTip">
+               <string/>
+              </property>
+              <property name="whatsThis">
+               <string/>
+              </property>
+              <property name="editable">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
          </widget>
         </item>
         <item>
@@ -340,18 +396,17 @@
         </item>
        </layout>
       </item>
-      <item row="1" column="1">
-       <layout class="QHBoxLayout" name="crsLayout">
-        <item>
-         <widget class="QgsProjectionSelectionWidget" name="crsWidget"/>
-        </item>
-       </layout>
-      </item>
      </layout>
     </widget>
    </item>
    <item>
     <widget class="QTableView" name="sampleView">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>99</verstretch>
+      </sizepolicy>
+     </property>
      <property name="selectionMode">
       <enum>QAbstractItemView::NoSelection</enum>
      </property>
@@ -361,7 +416,7 @@
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
+    <layout class="QHBoxLayout" name="buttonsLayout">
      <item>
       <widget class="QPushButton" name="helpButton">
        <property name="text">
@@ -383,6 +438,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsprojectionselectionwidget.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>filePathEdit</tabstop>
   <tabstop>filePathButton</tabstop>
@@ -392,20 +454,15 @@
   <tabstop>headerBox</tabstop>
   <tabstop>eofDetectionBox</tabstop>
   <tabstop>geometryBox</tabstop>
+  <tabstop>geometryEncodingComboBox</tabstop>
+  <tabstop>geometryFieldComboBox</tabstop>
   <tabstop>xFieldBox</tabstop>
   <tabstop>yFieldBox</tabstop>
   <tabstop>showGeometryFieldsBox</tabstop>
+  <tabstop>crsWidget</tabstop>
   <tabstop>sampleView</tabstop>
   <tabstop>helpButton</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
- <customwidgets>
-  <customwidget>
-   <class>QgsProjectionSelectionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgis.gui</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections>
   <connection>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OGRVRTDataSource>
+    <OGRVRTLayer name="test_entete_wkt-test_entete_wkt">
+        <SrcDataSource relativeToVRT="1">test_entete_wkt.ods</SrcDataSource>
+        <!--Header=False-->
+        <SrcLayer>test_entete_wkt</SrcLayer>
+        <Field name="id" src="id" type="Integer"/>
+        <Field name="Name" src="Name" type="String"/>
+        <Field name="Field5" src="Field5" type="Integer"/>
+        <Field name="wkt" src="wkt" type="String"/>
+        <GeometryType>wkbPoint</GeometryType>
+        <LayerSRS>EPSG:4326</LayerSRS>
+        <GeometryField encoding="WKT" field="wkt"/>
+    </OGRVRTLayer>
+</OGRVRTDataSource>
