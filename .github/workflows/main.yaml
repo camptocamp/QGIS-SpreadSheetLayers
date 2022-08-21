@@ -9,6 +9,9 @@ on:
       - '*'
   pull_request:
 
+env:
+  HAS_SECRETS: ${{ secrets.HAS_SECRETS }}
+
 jobs:
   main:
     runs-on: ubuntu-20.04
