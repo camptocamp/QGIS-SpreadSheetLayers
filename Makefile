@@ -72,6 +72,15 @@ compile: doc transcompile
 clean: ## Delete generated files
 	git clean -dfX
 
+.PHONY: build
+build: ## Build docker images
+build:
+	docker build --tag camptocamp/qgis-spreadsheetlayers:latest .
+
+.PHONY: qgis
+qgis: ## Run QGIS desktop
+	docker-compose run --rm --user `id -u`:`id -g` qgis
+
 
 #################
 # DOCUMENTATION
