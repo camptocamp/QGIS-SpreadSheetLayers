@@ -40,5 +40,5 @@ jobs:
       - name: Push on transifex
         run: make tx-push
         if: >
-          github.ref == format('refs/heads/{0}', env.MAIN_BRANCH)
+          github.ref == 'refs/heads/master'
           && env.HAS_SECRETS == 'HAS_SECRETS'
