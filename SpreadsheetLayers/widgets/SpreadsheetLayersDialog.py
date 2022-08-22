@@ -43,7 +43,6 @@ class GeometryEncoding(Enum):
     WKB = 2
     PointFromColumns = 3
 
-
 ENCODINGS = (
     ("WKT", GeometryEncoding.WKT),
     ("WKB", GeometryEncoding.WKB),
@@ -51,12 +50,33 @@ ENCODINGS = (
 )
 
 
+class GeometryType(Enum):
+    wkbNone = 1
+    wkbUnknown = 2
+    wkbPoint = 3
+    wkbLineString = 4
+    wkbPolygon = 5
+    wkbMultiPoint = 6
+    wkbMultiLineString = 7
+    wkbMultiPolygon = 8
+    wkbGeometryCollection = 9
+
+GEOMETRY_TYPES = (
+    ("None", GeometryType.wkbNone),
+    ("Unknown", GeometryType.wkbUnknown),
+    ("Point", GeometryType.wkbPoint),
+    ("LineString", GeometryType.wkbLineString),
+    ("Polygon", GeometryType.wkbPolygon),
+    ("MultiPoint", GeometryType.wkbMultiPoint),
+    ("MultiLineString", GeometryType.wkbMultiLineString),
+    ("MultiPolygon", GeometryType.wkbMultiPolygon),
+    ("GeometryCollection", GeometryType.wkbGeometryCollection),
+)
+
+
 class GeometryEncodingsModel(QtCore.QAbstractListModel):
     '''GeometryEncodingsModel provide a ListModel class to display encodings in QComboBox.
     '''
-    def __init__(selfself, parent=None):
-        super().__init__(parent)
-
     def rowCount(self, parent=QtCore.QModelIndex()):
         return len(ENCODINGS)
 
@@ -66,6 +86,20 @@ class GeometryEncodingsModel(QtCore.QAbstractListModel):
             return encoding[0]
         if role == QtCore.Qt.EditRole:
             return encoding[1]
+
+
+class GeometryTypesModel(QtCore.QAbstractListModel):
+    '''GeometryTypesModel provide a ListModel class to display types of geometries in QComboBox.
+    '''
+    def rowCount(self, parent=QtCore.QModelIndex):
+        return len(GEOMETRY_TYPES)
+
+    def data(self, index, role=QtCore.Qt.DisplayRole):
+        geometry_type = GEOMETRY_TYPES[index.row()]
+        if role == QtCore.Qt.DisplayRole:
+            return geometry_type[0]
+        if role == QtCore.Qt.EditRole:
+            return geometry_type[1]
 
 
 class FieldsModel(QtCore.QAbstractListModel):
@@ -187,9 +221,10 @@ for fieldType in [
     ogr.OFTBinary,
     ogr.OFTDate,
     ogr.OFTTime,
-    ogr.OFTDateTime]:
+    ogr.OFTDateTime,
     #ogr.OFTInteger64,
     #ogr.OFTInteger64List
+]:
     ogrFieldTypes.append((fieldType, ogr.GetFieldTypeName(fieldType)))
 
 
@@ -240,8 +275,11 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
         self.messageBar = QgsMessageBar(self)
         self.layout().insertWidget(0, self.messageBar)
 
-        encodings_model = GeometryEncodingsModel()
+        encodings_model = GeometryEncodingsModel(self)
         self.geometryEncodingComboBox.setModel(encodings_model)
+
+        geometry_types_model = GeometryTypesModel(self)
+        self.geometryTypeComboBox.setModel(geometry_types_model)
 
         self.geometryBox.setChecked(False)
         self.sampleRefreshDisabled = False
@@ -553,6 +591,15 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
     def setShowGeometryFields(self, value):
         self.showGeometryFieldsBox.setChecked(value)
 
+    def geometryType(self):
+        index = self.geometryTypeComboBox.currentIndex()
+        if index == -1:
+            return ''
+        return self.geometryTypeComboBox.itemData(index, QtCore.Qt.EditRole)
+
+    def setGeometryType(self, value):
+        self.geometryTypeComboBox.setCurrentIndex(self.geometryTypeComboBox.findData(value, QtCore.Qt.EditRole))
+
     def crs(self):
         return self.crsWidget.crs().authid()
 
@@ -705,12 +752,17 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
                         elif stream.name() == "Field":
                             fields.append(stream.attributes().value("name"))
 
-                        elif stream.name() == "GeometryType":
-                            self.geometryBox.setChecked(True)
-
                         elif stream.name() == "LayerSRS":
                             text = stream.readElementText()
                             self.setCrs(text)
+
+                        elif stream.name() == "GeometryType":
+                            geometry_type = GeometryType.__members__.get(stream.readElementText(), None)
+                            if geometry_type is None:
+                                self.setGeometryType(GeometryType.wkbNone)
+                            else:
+                                self.setGeometryType(geometry_type)
+                            self.geometryBox.setChecked(geometry_type not in (None, GeometryType.wkbNone))
 
                         elif stream.name() == "GeometryField":
                             encoding = GeometryEncoding.__members__.get(stream.attributes().value("encoding"), None)
@@ -806,7 +858,7 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
 
         if (self.geometry() and not sample):
             stream.writeStartElement("GeometryType")
-            stream.writeCharacters("wkbPoint")
+            stream.writeCharacters(self.geometryType().name)
             stream.writeEndElement()
 
             if self.crs():
