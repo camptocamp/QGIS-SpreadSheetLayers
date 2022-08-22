@@ -20,9 +20,6 @@
  *                                                                         *
  ***************************************************************************/
 """
-from builtins import str
-from builtins import range
-
 import datetime
 import os
 import re
@@ -31,7 +28,7 @@ from pkg_resources import resource_filename
 from tempfile import gettempdir
 
 from osgeo import ogr
-from qgis.core import Qgis, QgsVectorDataProvider, QgsCoordinateReferenceSystem
+from qgis.core import Qgis, QgsCoordinateReferenceSystem
 from qgis.gui import QgsMessageBar
 from qgis.PyQt import QtCore, QtGui, QtWidgets, uic
 
@@ -453,7 +450,7 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
     def setOffset(self, value):
         try:
             value = int(value)
-        except:
+        except ValueError:
             return False
         if self.header():
             value -= 1
@@ -487,7 +484,7 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
             feature = layer.GetNextFeature()
             current_row = 1
             while feature is not None:
-                values = []
+                # values = []
 
                 for iField in range(0, layerDefn.GetFieldCount()):
                     # values.append(feature.GetFieldAsString(iField))
@@ -723,7 +720,7 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
 
         try:
             self.readVrtStream(file)
-        except Exception as e:
+        except Exception:
             self.warning("An error occurs during existing VRT file loading")
             return False
 

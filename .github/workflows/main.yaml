@@ -39,6 +39,9 @@ jobs:
       - name: Build docker images
         run: make build
 
+      - name: Run linters
+        run: make check
+
       - name: Run automated tests suite
         run: make test
 

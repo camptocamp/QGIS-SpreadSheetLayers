@@ -1,9 +1,6 @@
 import os
 from unittest.mock import patch
 
-from qgis.PyQt.QtCore import QSettings
-from qgis.PyQt.QtWidgets import QCheckBox, QComboBox
-
 from tests import QgisTestCase
 from tests import INPUT_PATH, OUTPUT_PATH
 
