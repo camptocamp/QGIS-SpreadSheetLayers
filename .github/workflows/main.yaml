@@ -27,15 +27,29 @@ jobs:
                 pyqt5-dev-tools \
                 qttools5-dev-tools
 
+      - name: Create virtual env
+        run: make venv
+
+      - name: Pull transifex
+        run: make tx-pull
+
       - name: Generate runtime files
         run: make compile
+
+      - name: Build docker images
+        run: make build
+
+      - name: Run automated tests suite
+        run: make test
 
       - uses: camptocamp/initialise-gopass-summon-action@v2
         with:
           ci-gpg-private-key: ${{secrets.CI_GPG_PRIVATE_KEY}}
           github-gopass-ci-token: ${{secrets.GOPASS_CI_GITHUB_TOKEN}}
           patterns: transifex
-        if: env.HAS_SECRETS == 'HAS_SECRETS'
+        if: >
+          github.ref == 'refs/heads/master'
+          && env.HAS_SECRETS == 'HAS_SECRETS'
 
       - name: Push on transifex
         run: make tx-push

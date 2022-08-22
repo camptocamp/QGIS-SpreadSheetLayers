@@ -1,0 +1,12 @@
+black
+coverage
+flake8
+nose
+psycopg2-binary
+pydevd
+pytest
+pytest-cov
+pyyaml
+sphinx
+sphinx-intl
+transifex-client

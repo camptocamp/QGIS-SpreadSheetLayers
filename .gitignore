@@ -3,5 +3,7 @@
 *~
 
 .build
+.pytest_cache
 dist
 SpreadsheetLayers/help
+.coverage
