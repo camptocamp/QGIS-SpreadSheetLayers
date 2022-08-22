@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <OGRVRTDataSource>
-    <OGRVRTLayer name="test_entete_float-Feuille1">
-        <SrcDataSource relativeToVRT="1">test_entete_float.ods</SrcDataSource>
+    <OGRVRTLayer name="x_y-x_y">
+        <SrcDataSource relativeToVRT="1">x_y.ods</SrcDataSource>
         <!--Header=False-->
-        <SrcLayer>Feuille1</SrcLayer>
+        <SrcLayer>x_y</SrcLayer>
         <Field name="id" src="id" type="Integer"/>
         <Field name="Name" src="Name" type="String"/>
         <Field name="Field5" src="Field5" type="Integer"/>

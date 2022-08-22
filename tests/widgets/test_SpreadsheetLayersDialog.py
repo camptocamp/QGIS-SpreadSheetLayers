@@ -23,11 +23,11 @@ class TestSpreadsheetLayersDialog(QgisTestCase):
 
         dlg = self.create_dialog()
 
-        path = os.path.join(INPUT_PATH, "test_entete_float.ods")
+        path = os.path.join(INPUT_PATH, "x_y.ods")
         dlg.setFilePath(path)
         dlg.afterOpenFile()
-        assert dlg.sheet() == "Feuille1"
-        assert dlg.layerName() == "test_entete_float-Feuille1"
+        assert dlg.sheet() == "x_y"
+        assert dlg.layerName() == "x_y-x_y"
         assert dlg.header() is False
         assert dlg.geometry() is True
         assert dlg.geometryEncoding() == GeometryEncoding.PointFromColumns
@@ -39,22 +39,22 @@ class TestSpreadsheetLayersDialog(QgisTestCase):
     def test_writeVrt_xy(self):
         dlg = self.create_dialog()
 
-        path = os.path.join(INPUT_PATH, "test_entete_float.ods")
+        path = os.path.join(INPUT_PATH, "x_y.ods")
         dlg.setFilePath(path)
         dlg.afterOpenFile()
 
         with patch(
                 "SpreadsheetLayers.widgets.SpreadsheetLayersDialog.SpreadsheetLayersDialog.vrtPath",
-                return_value=os.path.join(OUTPUT_PATH, "test_entete_float.ods.Feuille1.vrt")
+                return_value=os.path.join(OUTPUT_PATH, "x_y.ods.x_y.vrt")
         ):
             dlg.writeVrt(overwrite=True)
 
         with open(
-                os.path.join(INPUT_PATH, "test_entete_float.ods.Feuille1.vrt"),
+                os.path.join(INPUT_PATH, "x_y.ods.x_y.vrt"),
                 mode="rt",
                 encoding="utf-8"
         ) as expected_file, open(
-            os.path.join(OUTPUT_PATH, "test_entete_float.ods.Feuille1.vrt"),
+            os.path.join(OUTPUT_PATH, "x_y.ods.x_y.vrt"),
             mode="rt",
             encoding="utf-8",
         ) as output_file:
@@ -65,11 +65,11 @@ class TestSpreadsheetLayersDialog(QgisTestCase):
 
         dlg = self.create_dialog()
 
-        path = os.path.join(INPUT_PATH, "test_entete_wkt.ods")
+        path = os.path.join(INPUT_PATH, "wkt_point.ods")
         dlg.setFilePath(path)
         dlg.afterOpenFile()
-        assert dlg.sheet() == "test_entete_wkt"
-        assert dlg.layerName() == "test_entete_wkt-test_entete_wkt"
+        assert dlg.sheet() == "wkt_point"
+        assert dlg.layerName() == "wkt_point-wkt_point"
         assert dlg.header() is False
         assert dlg.geometry() is True
         assert dlg.geometryEncoding() == GeometryEncoding.WKT
@@ -80,22 +80,22 @@ class TestSpreadsheetLayersDialog(QgisTestCase):
     def test_writeVrt_wkt_point(self):
         dlg = self.create_dialog()
 
-        path = os.path.join(INPUT_PATH, "test_entete_wkt.ods")
+        path = os.path.join(INPUT_PATH, "wkt_point.ods")
         dlg.setFilePath(path)
         dlg.afterOpenFile()
 
         with patch(
                 "SpreadsheetLayers.widgets.SpreadsheetLayersDialog.SpreadsheetLayersDialog.vrtPath",
-                return_value=os.path.join(OUTPUT_PATH, "test_entete_wkt.ods.test_entete_wkt.vrt")
+                return_value=os.path.join(OUTPUT_PATH, "wkt_point.ods.wkt_point.vrt")
         ):
             dlg.writeVrt(overwrite=True)
 
         with open(
-                os.path.join(INPUT_PATH, "test_entete_wkt.ods.test_entete_wkt.vrt"),
+                os.path.join(INPUT_PATH, "wkt_point.ods.wkt_point.vrt"),
                 mode="rt",
                 encoding="utf-8"
         ) as expected_file, open(
-            os.path.join(OUTPUT_PATH, "test_entete_wkt.ods.test_entete_wkt.vrt"),
+            os.path.join(OUTPUT_PATH, "wkt_point.ods.wkt_point.vrt"),
             mode="rt",
             encoding="utf-8",
         ) as output_file:
@@ -106,11 +106,11 @@ class TestSpreadsheetLayersDialog(QgisTestCase):
 
         dlg = self.create_dialog()
 
-        path = os.path.join(INPUT_PATH, "test_polygon.ods")
+        path = os.path.join(INPUT_PATH, "wkt_polygon.ods")
         dlg.setFilePath(path)
         dlg.afterOpenFile()
-        assert dlg.sheet() == "test_polygon"
-        assert dlg.layerName() == "test_polygon-test_polygon"
+        assert dlg.sheet() == "wkt_polygon"
+        assert dlg.layerName() == "wkt_polygon-wkt_polygon"
         assert dlg.header() is False
         assert dlg.geometry() is True
         assert dlg.geometryEncoding() == GeometryEncoding.WKT
@@ -121,22 +121,22 @@ class TestSpreadsheetLayersDialog(QgisTestCase):
     def test_writeVrt_wkt_polygon(self):
         dlg = self.create_dialog()
 
-        path = os.path.join(INPUT_PATH, "test_polygon.ods")
+        path = os.path.join(INPUT_PATH, "wkt_polygon.ods")
         dlg.setFilePath(path)
         dlg.afterOpenFile()
 
         with patch(
                 "SpreadsheetLayers.widgets.SpreadsheetLayersDialog.SpreadsheetLayersDialog.vrtPath",
-                return_value=os.path.join(OUTPUT_PATH, "test_polygon.ods.test_polygon.vrt")
+                return_value=os.path.join(OUTPUT_PATH, "wkt_polygon.ods.wkt_polygon.vrt")
         ):
             dlg.writeVrt(overwrite=True)
 
         with open(
-                os.path.join(INPUT_PATH, "test_polygon.ods.test_polygon.vrt"),
+                os.path.join(INPUT_PATH, "wkt_polygon.ods.wkt_polygon.vrt"),
                 mode="rt",
                 encoding="utf-8"
         ) as expected_file, open(
-            os.path.join(OUTPUT_PATH, "test_polygon.ods.test_polygon.vrt"),
+            os.path.join(OUTPUT_PATH, "wkt_polygon.ods.wkt_polygon.vrt"),
             mode="rt",
             encoding="utf-8",
         ) as output_file:

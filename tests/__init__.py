@@ -18,3 +18,5 @@ OUTPUT_PATH = os.environ.get("OUTPUT_PATH", os.path.join(DATA_PATH, "output"))
 TEMP_PATH = "/tmp"
 
 OVERWRITE_EXPECTED = os.environ.get("OVERWRITE_EXPECTED", False)
+
+os.makedirs(OUTPUT_PATH, exist_ok=True)

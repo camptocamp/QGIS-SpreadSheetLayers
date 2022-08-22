@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <OGRVRTDataSource>
-    <OGRVRTLayer name="test_polygon-test_polygon">
-        <SrcDataSource relativeToVRT="1">test_polygon.ods</SrcDataSource>
+    <OGRVRTLayer name="wkt_polygon-wkt_polygon">
+        <SrcDataSource relativeToVRT="1">wkt_polygon.ods</SrcDataSource>
         <!--Header=False-->
-        <SrcLayer>test_polygon</SrcLayer>
+        <SrcLayer>wkt_polygon</SrcLayer>
         <Field name="id" src="id" type="Integer"/>
         <Field name="name" src="name" type="String"/>
         <Field name="wkt" src="wkt" type="String"/>
