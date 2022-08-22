@@ -9,9 +9,11 @@ from tests import INPUT_PATH, OUTPUT_PATH
 
 
 class TestSpreadsheetLayersDialog(QgisTestCase):
-
     def create_dialog(self):
-        from SpreadsheetLayers.widgets.SpreadsheetLayersDialog import SpreadsheetLayersDialog
+        from SpreadsheetLayers.widgets.SpreadsheetLayersDialog import (
+            SpreadsheetLayersDialog,
+        )
+
         dlg = SpreadsheetLayersDialog()
         return dlg
 
@@ -19,7 +21,10 @@ class TestSpreadsheetLayersDialog(QgisTestCase):
         self.create_dialog()
 
     def test_readVrt_xy(self):
-        from SpreadsheetLayers.widgets.SpreadsheetLayersDialog import GeometryEncoding, GeometryType
+        from SpreadsheetLayers.widgets.SpreadsheetLayersDialog import (
+            GeometryEncoding,
+            GeometryType,
+        )
 
         dlg = self.create_dialog()
 
@@ -44,15 +49,13 @@ class TestSpreadsheetLayersDialog(QgisTestCase):
         dlg.afterOpenFile()
 
         with patch(
-                "SpreadsheetLayers.widgets.SpreadsheetLayersDialog.SpreadsheetLayersDialog.vrtPath",
-                return_value=os.path.join(OUTPUT_PATH, "x_y.ods.x_y.vrt")
+            "SpreadsheetLayers.widgets.SpreadsheetLayersDialog.SpreadsheetLayersDialog.vrtPath",
+            return_value=os.path.join(OUTPUT_PATH, "x_y.ods.x_y.vrt"),
         ):
             dlg.writeVrt(overwrite=True)
 
         with open(
-                os.path.join(INPUT_PATH, "x_y.ods.x_y.vrt"),
-                mode="rt",
-                encoding="utf-8"
+            os.path.join(INPUT_PATH, "x_y.ods.x_y.vrt"), mode="rt", encoding="utf-8"
         ) as expected_file, open(
             os.path.join(OUTPUT_PATH, "x_y.ods.x_y.vrt"),
             mode="rt",
@@ -61,7 +64,10 @@ class TestSpreadsheetLayersDialog(QgisTestCase):
             assert output_file.read() == expected_file.read()
 
     def test_readVrt_wkt_point(self):
-        from SpreadsheetLayers.widgets.SpreadsheetLayersDialog import GeometryEncoding, GeometryType
+        from SpreadsheetLayers.widgets.SpreadsheetLayersDialog import (
+            GeometryEncoding,
+            GeometryType,
+        )
 
         dlg = self.create_dialog()
 
@@ -85,15 +91,15 @@ class TestSpreadsheetLayersDialog(QgisTestCase):
         dlg.afterOpenFile()
 
         with patch(
-                "SpreadsheetLayers.widgets.SpreadsheetLayersDialog.SpreadsheetLayersDialog.vrtPath",
-                return_value=os.path.join(OUTPUT_PATH, "wkt_point.ods.wkt_point.vrt")
+            "SpreadsheetLayers.widgets.SpreadsheetLayersDialog.SpreadsheetLayersDialog.vrtPath",
+            return_value=os.path.join(OUTPUT_PATH, "wkt_point.ods.wkt_point.vrt"),
         ):
             dlg.writeVrt(overwrite=True)
 
         with open(
-                os.path.join(INPUT_PATH, "wkt_point.ods.wkt_point.vrt"),
-                mode="rt",
-                encoding="utf-8"
+            os.path.join(INPUT_PATH, "wkt_point.ods.wkt_point.vrt"),
+            mode="rt",
+            encoding="utf-8",
         ) as expected_file, open(
             os.path.join(OUTPUT_PATH, "wkt_point.ods.wkt_point.vrt"),
             mode="rt",
@@ -102,7 +108,10 @@ class TestSpreadsheetLayersDialog(QgisTestCase):
             assert output_file.read() == expected_file.read()
 
     def test_readVrt_wkt_polygon(self):
-        from SpreadsheetLayers.widgets.SpreadsheetLayersDialog import GeometryEncoding, GeometryType
+        from SpreadsheetLayers.widgets.SpreadsheetLayersDialog import (
+            GeometryEncoding,
+            GeometryType,
+        )
 
         dlg = self.create_dialog()
 
@@ -126,15 +135,15 @@ class TestSpreadsheetLayersDialog(QgisTestCase):
         dlg.afterOpenFile()
 
         with patch(
-                "SpreadsheetLayers.widgets.SpreadsheetLayersDialog.SpreadsheetLayersDialog.vrtPath",
-                return_value=os.path.join(OUTPUT_PATH, "wkt_polygon.ods.wkt_polygon.vrt")
+            "SpreadsheetLayers.widgets.SpreadsheetLayersDialog.SpreadsheetLayersDialog.vrtPath",
+            return_value=os.path.join(OUTPUT_PATH, "wkt_polygon.ods.wkt_polygon.vrt"),
         ):
             dlg.writeVrt(overwrite=True)
 
         with open(
-                os.path.join(INPUT_PATH, "wkt_polygon.ods.wkt_polygon.vrt"),
-                mode="rt",
-                encoding="utf-8"
+            os.path.join(INPUT_PATH, "wkt_polygon.ods.wkt_polygon.vrt"),
+            mode="rt",
+            encoding="utf-8",
         ) as expected_file, open(
             os.path.join(OUTPUT_PATH, "wkt_polygon.ods.wkt_polygon.vrt"),
             mode="rt",

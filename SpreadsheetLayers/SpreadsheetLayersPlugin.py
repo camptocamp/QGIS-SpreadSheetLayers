@@ -26,6 +26,7 @@ from pkg_resources import resource_filename
 
 from qgis.core import Qgis, QgsVectorLayer, QgsProject
 from qgis.PyQt import QtCore, QtGui, QtWidgets
+
 # Import the code for the dialog
 from .widgets.SpreadsheetLayersDialog import SpreadsheetLayersDialog
 
@@ -47,24 +48,28 @@ class SpreadsheetLayersPlugin(QtCore.QObject):
         # initialize plugin directory
         self.plugin_dir = os.path.dirname(__file__)
         # initialize locale
-        locale = QtCore.QSettings().value('locale/userLocale')[0:2]
+        locale = QtCore.QSettings().value("locale/userLocale")[0:2]
         locale_path = os.path.join(
-            self.plugin_dir,
-            'i18n',
-            'SpreadsheetLayers_{}.qm'.format(locale))
+            self.plugin_dir, "i18n", "SpreadsheetLayers_{}.qm".format(locale)
+        )
 
         if os.path.exists(locale_path):
             self.translator = QtCore.QTranslator()
             self.translator.load(locale_path)
 
-            if QtCore.qVersion() > '4.3.3':
+            if QtCore.qVersion() > "4.3.3":
                 QtCore.QCoreApplication.installTranslator(self.translator)
 
     def initGui(self):
         self.action = QtWidgets.QAction(
-            QtGui.QIcon(resource_filename("SpreadsheetLayers", "resources/icon/mActionAddSpreadsheetLayer.svg")),
+            QtGui.QIcon(
+                resource_filename(
+                    "SpreadsheetLayers", "resources/icon/mActionAddSpreadsheetLayer.svg"
+                )
+            ),
             self.tr("Add Spreadsheet Layer…"),
-            self)
+            self,
+        )
         self.action.triggered.connect(self.showDialog)
         if Qgis.QGIS_VERSION_INT > 20400:
             self.iface.addLayerMenu().addAction(self.action)
@@ -77,7 +82,7 @@ class SpreadsheetLayersPlugin(QtCore.QObject):
         self.iface.layerToolBar().addAction(self.action)
 
     def unload(self):
-        if hasattr(self, 'action'):
+        if hasattr(self, "action"):
             if Qgis.QGIS_VERSION_INT > 20400:
                 self.iface.addLayerMenu().removeAction(self.action)
             else:
@@ -88,8 +93,8 @@ class SpreadsheetLayersPlugin(QtCore.QObject):
         dlg = SpreadsheetLayersDialog(self.iface.mainWindow())
         dlg.show()
         if dlg.exec_():
-            layer = QgsVectorLayer(dlg.vrtPath(), dlg.layerName(), 'ogr')
-            layer.setProviderEncoding('UTF-8')
+            layer = QgsVectorLayer(dlg.vrtPath(), dlg.layerName(), "ogr")
+            layer.setProviderEncoding("UTF-8")
             if not layer.isValid():
                 # fix_print_with_import
                 print("Layer failed to load")
