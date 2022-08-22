@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <OGRVRTDataSource>
-    <OGRVRTLayer name="test_entete_float-Feuille1">
-        <SrcDataSource relativeToVRT="1">test_entete_float.ods</SrcDataSource>
+    <OGRVRTLayer name="wkt_point-wkt_point">
+        <SrcDataSource relativeToVRT="1">wkt_point.ods</SrcDataSource>
         <!--Header=False-->
-        <SrcLayer>Feuille1</SrcLayer>
+        <SrcLayer>wkt_point</SrcLayer>
         <Field name="id" src="id" type="Integer"/>
         <Field name="Name" src="Name" type="String"/>
         <Field name="Field5" src="Field5" type="Integer"/>
+        <Field name="wkt" src="wkt" type="String"/>
         <GeometryType>wkbPoint</GeometryType>
         <LayerSRS>EPSG:4326</LayerSRS>
-        <GeometryField encoding="PointFromColumns" x="Longitude" y="Latitude"/>
+        <GeometryField encoding="WKT" field="wkt"/>
     </OGRVRTLayer>
 </OGRVRTDataSource>

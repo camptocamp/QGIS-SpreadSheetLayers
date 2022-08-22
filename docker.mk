@@ -42,7 +42,7 @@ nosetests: ## Run tests using nose
 
 .PHONY: pytest
 pytest:  ## Run tests using pytest
-	pytest --cov --verbose --color=yes ${PYTEST_ARGS}
+	pytest --cov --verbose --color=yes -vv ${PYTEST_ARGS}
 
 .PHONY: coverage
 coverage: ## Display coverage report

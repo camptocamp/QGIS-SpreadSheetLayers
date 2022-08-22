@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OGRVRTDataSource>
+    <OGRVRTLayer name="x_y-x_y">
+        <SrcDataSource relativeToVRT="1">x_y.ods</SrcDataSource>
+        <!--Header=False-->
+        <SrcLayer>x_y</SrcLayer>
+        <Field name="id" src="id" type="Integer"/>
+        <Field name="Name" src="Name" type="String"/>
+        <Field name="Field5" src="Field5" type="Integer"/>
+        <GeometryType>wkbPoint</GeometryType>
+        <LayerSRS>EPSG:4326</LayerSRS>
+        <GeometryField encoding="PointFromColumns" x="Longitude" y="Latitude"/>
+    </OGRVRTLayer>
+</OGRVRTDataSource>

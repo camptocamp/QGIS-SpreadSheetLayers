@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OGRVRTDataSource>
+    <OGRVRTLayer name="wkt_polygon-wkt_polygon">
+        <SrcDataSource relativeToVRT="1">wkt_polygon.ods</SrcDataSource>
+        <!--Header=False-->
+        <SrcLayer>wkt_polygon</SrcLayer>
+        <Field name="id" src="id" type="Integer"/>
+        <Field name="name" src="name" type="String"/>
+        <Field name="wkt" src="wkt" type="String"/>
+        <GeometryType>wkbPolygon</GeometryType>
+        <LayerSRS>EPSG:4326</LayerSRS>
+        <GeometryField encoding="WKT" field="wkt"/>
+    </OGRVRTLayer>
+</OGRVRTDataSource>

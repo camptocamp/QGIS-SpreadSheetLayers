@@ -23,17 +23,83 @@
 from builtins import str
 from builtins import range
 
-import os
 import datetime
+import os
 import re
+from enum import Enum
 from pkg_resources import resource_filename
 from tempfile import gettempdir
+
 from osgeo import ogr
 from qgis.core import Qgis, QgsVectorDataProvider, QgsCoordinateReferenceSystem
 from qgis.gui import QgsMessageBar
 from qgis.PyQt import QtCore, QtGui, QtWidgets, uic
 
 from SpreadsheetLayers.util.gdal_util import GDAL_COMPAT
+
+
+class GeometryEncoding(Enum):
+    WKT = 1
+    WKB = 2
+    PointFromColumns = 3
+
+ENCODINGS = (
+    ("WKT", GeometryEncoding.WKT),
+    ("WKB", GeometryEncoding.WKB),
+    ("PointFromColumns", GeometryEncoding.PointFromColumns),
+)
+
+
+class GeometryType(Enum):
+    wkbNone = 1
+    wkbUnknown = 2
+    wkbPoint = 3
+    wkbLineString = 4
+    wkbPolygon = 5
+    wkbMultiPoint = 6
+    wkbMultiLineString = 7
+    wkbMultiPolygon = 8
+    wkbGeometryCollection = 9
+
+GEOMETRY_TYPES = (
+    ("None", GeometryType.wkbNone),
+    ("Unknown", GeometryType.wkbUnknown),
+    ("Point", GeometryType.wkbPoint),
+    ("LineString", GeometryType.wkbLineString),
+    ("Polygon", GeometryType.wkbPolygon),
+    ("MultiPoint", GeometryType.wkbMultiPoint),
+    ("MultiLineString", GeometryType.wkbMultiLineString),
+    ("MultiPolygon", GeometryType.wkbMultiPolygon),
+    ("GeometryCollection", GeometryType.wkbGeometryCollection),
+)
+
+
+class GeometryEncodingsModel(QtCore.QAbstractListModel):
+    '''GeometryEncodingsModel provide a ListModel class to display encodings in QComboBox.
+    '''
+    def rowCount(self, parent=QtCore.QModelIndex()):
+        return len(ENCODINGS)
+
+    def data(self, index, role=QtCore.Qt.DisplayRole):
+        encoding = ENCODINGS[index.row()]
+        if role == QtCore.Qt.DisplayRole:
+            return encoding[0]
+        if role == QtCore.Qt.EditRole:
+            return encoding[1]
+
+
+class GeometryTypesModel(QtCore.QAbstractListModel):
+    '''GeometryTypesModel provide a ListModel class to display types of geometries in QComboBox.
+    '''
+    def rowCount(self, parent=QtCore.QModelIndex):
+        return len(GEOMETRY_TYPES)
+
+    def data(self, index, role=QtCore.Qt.DisplayRole):
+        geometry_type = GEOMETRY_TYPES[index.row()]
+        if role == QtCore.Qt.DisplayRole:
+            return geometry_type[0]
+        if role == QtCore.Qt.EditRole:
+            return geometry_type[1]
 
 
 class FieldsModel(QtCore.QAbstractListModel):
@@ -155,9 +221,10 @@ for fieldType in [
     ogr.OFTBinary,
     ogr.OFTDate,
     ogr.OFTTime,
-    ogr.OFTDateTime]:
+    ogr.OFTDateTime,
     #ogr.OFTInteger64,
     #ogr.OFTInteger64List
+]:
     ogrFieldTypes.append((fieldType, ogr.GetFieldTypeName(fieldType)))
 
 
@@ -207,6 +274,12 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
 
         self.messageBar = QgsMessageBar(self)
         self.layout().insertWidget(0, self.messageBar)
+
+        encodings_model = GeometryEncodingsModel(self)
+        self.geometryEncodingComboBox.setModel(encodings_model)
+
+        geometry_types_model = GeometryTypesModel(self)
+        self.geometryTypeComboBox.setModel(geometry_types_model)
 
         self.geometryBox.setChecked(False)
         self.sampleRefreshDisabled = False
@@ -432,6 +505,29 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
         return (self.geometryBox.isEnabled()
                 and self.geometryBox.isChecked())
 
+    def geometryEncoding(self):
+        index = self.geometryEncodingComboBox.currentIndex()
+        return self.geometryEncodingComboBox.itemData(index, QtCore.Qt.EditRole)
+
+    def setGeometryEncoding(self, value):
+        self.geometryEncodingComboBox.setCurrentIndex(self.geometryEncodingComboBox.findData(value, QtCore.Qt.EditRole))
+
+    @QtCore.pyqtSlot(int)
+    def on_geometryEncodingComboBox_currentIndexChanged(self, index):
+        if self.geometryEncoding() == GeometryEncoding.PointFromColumns:
+            self.geometryFieldStackedWidget.setCurrentIndex(1)
+        else:
+            self.geometryFieldStackedWidget.setCurrentIndex(0)
+
+    def geometryField(self):
+        index = self.geometryFieldComboBox.currentIndex()
+        if index == -1:
+            return ''
+        return self.geometryFieldComboBox.itemData(index, QtCore.Qt.EditRole)
+
+    def setGeometryField(self, fieldName):
+        self.geometryFieldComboBox.setCurrentIndex(self.geometryFieldComboBox.findData(fieldName, QtCore.Qt.EditRole))
+
     def xField(self):
         index = self.xFieldBox.currentIndex()
         if index == -1:
@@ -456,45 +552,53 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
             pass
 
         if self.layer is None:
+            self.geometryFieldComboBox.clear()
             self.xFieldBox.clear()
             self.yFieldBox.clear()
             return
 
         model = FieldsModel(self.fields)
 
+        geometryField = self.geometryField()
         xField = self.xField()
         yField = self.yField()
 
+        self.geometryFieldComboBox.setModel(model)
         self.xFieldBox.setModel(model)
         self.yFieldBox.setModel(model)
 
+        self.setGeometryField(geometryField)
         self.setXField(xField)
         self.setYField(yField)
 
-        if self.xField() != '' and self.yField() != '':
+        self.autoFill(self.geometryFieldComboBox, ["WKT", 'WKB'])
+        self.autoFill(self.xFieldBox, ["longitude", "lon", "x"])
+        self.autoFill(self.yFieldBox, ["latitude", "lat", "y"])
+
+    def autoFill(self, fieldComboBox, candidates):
+        if fieldComboBox.currentIndex() != -1:
             return
-
-        self.tryFields("longitude", "latitude")
-        self.tryFields("lon", "lat")
-        self.tryFields("x", "y")
-
-    def tryFields(self, xName, yName):
-        if self.xField() == '':
-            for i in range(0, self.xFieldBox.count()):
-                xField = self.xFieldBox.itemText(i)
-                if xField.lower().find(xName.lower()) != -1:
-                    self.xFieldBox.setCurrentIndex(i)
-                    break;
-
-        if self.yField() == '':
-            for i in range(0, self.yFieldBox.count()):
-                yField = self.yFieldBox.itemText(i)
-                if yField.lower().find(yName.lower()) != -1:
-                    self.yFieldBox.setCurrentIndex(i)
-                    break;
+        for candidate in candidates:
+            for i in range(0, fieldComboBox.count()):
+                fieldName = fieldComboBox.itemText(i)
+                if fieldName.lower().find(candidate.lower()) != -1:
+                    fieldComboBox.setCurrentIndex(i)
+                    return
 
     def showGeometryFields(self):
         return self.showGeometryFieldsBox.isChecked()
+
+    def setShowGeometryFields(self, value):
+        self.showGeometryFieldsBox.setChecked(value)
+
+    def geometryType(self):
+        index = self.geometryTypeComboBox.currentIndex()
+        if index == -1:
+            return ''
+        return self.geometryTypeComboBox.itemData(index, QtCore.Qt.EditRole)
+
+    def setGeometryType(self, value):
+        self.geometryTypeComboBox.setCurrentIndex(self.geometryTypeComboBox.findData(value, QtCore.Qt.EditRole))
 
     def crs(self):
         return self.crsWidget.crs().authid()
@@ -543,7 +647,6 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
         # Move column format line at first
         vheader.moveSection(model.rowCount()-1, 0)
 
-
     def validate(self):
         try:
             if self.dataSource is None:
@@ -552,11 +655,16 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
             if self.layer is None:
                 raise ValueError(self.tr("Please select a sheet"))
 
-            if self.xField == '':
-                raise ValueError(self.tr("Please select an x field"))
+            if self.geometry():
+                if self.geometryEncoding() == GeometryEncoding.PointFromColumns:
+                    if self.xField() == '':
+                        raise ValueError(self.tr("Please select an x field"))
 
-            if self.yField == '':
-                raise ValueError(self.tr("Please select an y field"))
+                    if self.yField() == '':
+                        raise ValueError(self.tr("Please select an y field"))
+                else:
+                    if self.geometryField() == '':
+                        raise ValueError(self.tr("Please select a geometry field"))
 
         except ValueError as e:
             self.messageBar.pushMessage(str(e), Qgis.Warning, 5)
@@ -588,7 +696,7 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
 
         try:
             self.readVrtStream(file)
-        except Exception:
+        except Exception as e:
             self.warning("An error occurs during existing VRT file loading")
             return False
 
@@ -607,6 +715,8 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
             stream.readNextStartElement()
             if stream.name() == "OGRVRTLayer":
                 self.setLayerName(stream.attributes().value("name"))
+
+                fields = []
 
                 while stream.readNext() != QtCore.QXmlStreamReader.EndDocument:
                     if stream.isComment():
@@ -639,16 +749,32 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
                             if match:
                                 self.setOffset(int(match.group(1)))
 
-                        elif stream.name() == "GeometryType":
-                            self.geometryBox.setChecked(True)
+                        elif stream.name() == "Field":
+                            fields.append(stream.attributes().value("name"))
 
                         elif stream.name() == "LayerSRS":
                             text = stream.readElementText()
                             self.setCrs(text)
 
+                        elif stream.name() == "GeometryType":
+                            geometry_type = GeometryType.__members__.get(stream.readElementText(), None)
+                            if geometry_type is None:
+                                self.setGeometryType(GeometryType.wkbNone)
+                            else:
+                                self.setGeometryType(geometry_type)
+                            self.geometryBox.setChecked(geometry_type not in (None, GeometryType.wkbNone))
+
                         elif stream.name() == "GeometryField":
-                            self.setXField(stream.attributes().value("x"))
-                            self.setYField(stream.attributes().value("y"))
+                            encoding = GeometryEncoding.__members__.get(stream.attributes().value("encoding"), None)
+                            if encoding:
+                                self.setGeometryEncoding(encoding)
+                            if encoding == GeometryEncoding.PointFromColumns:
+                                self.setXField(stream.attributes().value("x"))
+                                self.setYField(stream.attributes().value("y"))
+                                self.setShowGeometryFields(stream.attributes().value("x") in fields)
+                            else:
+                                self.setGeometryField(stream.attributes().value("field"))
+                                self.setShowGeometryFields(stream.attributes().value("field") in fields)
 
                         if not stream.isEndElement():
                             stream.skipCurrentElement()
@@ -717,9 +843,12 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
 
         if not without_fields:
             for field in self.fields:
-                if (self.geometry() and not sample):
-                    if field['src'] in (self.xField(), self.yField()):
-                        if not self.showGeometryFields():
+                if (self.geometry() and not sample and not self.showGeometryFields()):
+                    if self.geometryEncoding() == GeometryEncoding.PointFromColumns:
+                        if field['src'] in (self.xField(), self.yField()):
+                            continue
+                    else:
+                        if field['src'] == self.geometryField():
                             continue
                 stream.writeStartElement("Field")
                 stream.writeAttribute("name", field['name'])
@@ -729,7 +858,7 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
 
         if (self.geometry() and not sample):
             stream.writeStartElement("GeometryType")
-            stream.writeCharacters("wkbPoint")
+            stream.writeCharacters(self.geometryType().name)
             stream.writeEndElement()
 
             if self.crs():
@@ -738,9 +867,12 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
                 stream.writeEndElement()
 
             stream.writeStartElement("GeometryField")
-            stream.writeAttribute("encoding", "PointFromColumns")
-            stream.writeAttribute("x", self.xField())
-            stream.writeAttribute("y", self.yField())
+            stream.writeAttribute("encoding", self.geometryEncoding().name)
+            if self.geometryEncoding() == GeometryEncoding.PointFromColumns:
+                stream.writeAttribute("x", self.xField())
+                stream.writeAttribute("y", self.yField())
+            else:
+                stream.writeAttribute("field", self.geometryField())
             stream.writeEndElement()
 
         stream.writeEndElement()  # OGRVRTLayer
@@ -753,7 +885,7 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
 
         return content
 
-    def writeVrt(self):
+    def writeVrt(self, overwrite=False):
         content = self.prepareVrt()
 
         vrtPath = self.vrtPath()
@@ -764,15 +896,15 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
                 file.close()
                 if content == oldContent:
                     return True
-
-            msgBox = QtWidgets.QMessageBox()
-            msgBox.setText(u"The file {} already exist.".format(vrtPath))
-            msgBox.setInformativeText(u"Do you want to overwrite ?");
-            msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
-            msgBox.setDefaultButton(QtWidgets.QMessageBox.Cancel)
-            ret = msgBox.exec_()
-            if ret == QtWidgets.QMessageBox.Cancel:
-                return False
+            if not overwrite:
+                msgBox = QtWidgets.QMessageBox()
+                msgBox.setText(u"The file {} already exist.".format(vrtPath))
+                msgBox.setInformativeText(u"Do you want to overwrite ?");
+                msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
+                msgBox.setDefaultButton(QtWidgets.QMessageBox.Cancel)
+                ret = msgBox.exec_()
+                if ret == QtWidgets.QMessageBox.Cancel:
+                    return False
             QtCore.QFile.remove(vrtPath)
 
         if not file.open(QtCore.QIODevice.ReadWrite | QtCore. QIODevice.Text):
