@@ -49,6 +49,9 @@ export QGIS_LOG_FILE=/dev/null
 export QGIS_DEBUG_FILE=/dev/null
 endif
 
+export DOCKER_BUILDKIT=1
+
+DOCKER_RUN_CMD = docker-compose run --rm --user `id -u` tester
 
 default: help
 
@@ -71,6 +74,42 @@ compile: doc transcompile
 .PHONY: clean
 clean: ## Delete generated files
 	git clean -dfX
+
+.PHONY: qgis
+qgis: ## Run QGIS desktop
+	docker-compose run --rm --user `id -u`:`id -g` qgis
+
+.PHONY: check
+check: ## Run linters
+	$(DOCKER_RUN_CMD) make -f docker.mk check
+
+.PHONY: black
+black: ## Run black formatter
+	$(DOCKER_RUN_CMD) make -f docker.mk black
+
+.PHONY: tests
+test: ## Run the automated tests suite
+	$(DOCKER_RUN_CMD) make -f docker.mk pytest
+
+.PHONY: nosetests
+nosetests: ## Run the automated tests suite with nose (useful when QGIS crash)
+	$(DOCKER_RUN_CMD) make -f docker.mk nosetests
+
+.PHONY: test-overwrite-expected
+test-overwrite-expected: ## Run the automated tests suite and overwrite expected results
+	docker-compose run --rm --user `id -u` -e OVERWRITE_EXPECTED=true tester make -f docker.mk pytest
+
+.PHONY: bash
+bash: ## Run bash in tests container
+	$(DOCKER_RUN_CMD) bash
+
+
+build: docker-build
+
+.PHONY: docker-build
+docker-build: ## Build docker images
+docker-build:
+	docker build --tag camptocamp/qgis-spreadsheetlayers:latest ./docker
 
 
 #################
@@ -120,7 +159,7 @@ help/locale/index.pot: venv
 	make -C help gettext
 
 transcompile: ## Compile Qt .ts translation files into .qm binary format
-transcompile: tx-pull
+transcompile:
 	lrelease $(shell find -name *.ts)
 
 
@@ -170,6 +209,6 @@ venv: .build/requirements-dev.timestamp
 	python3 -m venv --system-site-packages .build/venv
 	touch $@
 
-.build/requirements-dev.timestamp: .build/venv.timestamp requirements-dev.txt
-	.build/venv/bin/pip install -r requirements-dev.txt
+.build/requirements-dev.timestamp: .build/venv.timestamp docker/requirements-dev.txt
+	.build/venv/bin/pip install -r docker/requirements-dev.txt
 	touch $@

@@ -1,0 +1,41 @@
+---
+
+version: '2'
+
+volumes:
+  qgis-settings:
+
+services:
+
+  qgis:
+    image: camptocamp/qgis-spreadsheetlayers:latest
+    volumes:
+      - ${PWD}/SpreadsheetLayers:/app/SpreadsheetLayers
+      - ${PWD}/tests:/app/tests
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - qgis-settings:/home/user/.local/share/QGIS/QGIS3/profiles/default
+      - /home/amorvan/Téléchargements:/home/user/Téléchargements
+      - /home/amorvan/data/meddtl_qgis/SpreadsheetLayers:/home/user/data
+    environment:
+      - PYTHONPATH=/app:/usr/share/qgis/python/plugins/
+      - QGIS_DEBUG=0
+      - QGIS_LOG_FILE=/dev/null
+      - QGIS_PLUGINPATH=/app
+      - DISPLAY=unix${DISPLAY}
+    entrypoint: ""
+    command: qgis
+
+  tester:
+    image: camptocamp/qgis-spreadsheetlayers:latest
+    volumes:
+      - ${PWD}:/app
+    environment:
+      - PYTHONPATH=/app:/usr/local/share/qgis/python:/usr/share/qgis/python/plugins/
+      - QGIS_DEBUG=0
+      - QGIS_LOG_FILE=/dev/null
+      - QGIS_PLUGINPATH=/app
+      - DISPLAY=:0
+      - NOSETESTS_ARGS=tests
+      - PYTEST_ARGS=tests
+      - OUTPUT_PATH
+    command: make -f docker.mk nosetests
