@@ -53,6 +53,8 @@ export DOCKER_BUILDKIT=1
 
 DOCKER_RUN_CMD = docker-compose run --rm --user `id -u` tester
 
+-include local.mk
+
 default: help
 
 .PHONY: help
@@ -177,6 +179,11 @@ package: compile
 	rm -f dist/$(PLUGINNAME).zip
 	zip dist/$(PLUGINNAME).zip -r $(PLUGINNAME) -x '*/__pycache__/*'
 	echo "Created package: dist/$(PLUGINNAME).zip"
+
+.PHONY: upload
+upload: package
+upload: ## Upload the plugin archive on QGIS official repository
+	python3 ./scripts/upload_plugin.py --username $(OSGEO_USERNAME) --password $(OSGEO_PASSWORD) dist/SpreadsheetLayers.zip
 
 
 #############
