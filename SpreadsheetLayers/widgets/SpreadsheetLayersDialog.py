@@ -42,9 +42,9 @@ class GeometryEncoding(Enum):
 
 
 ENCODINGS = (
+    ("PointFromColumns", GeometryEncoding.PointFromColumns),
     ("WKT", GeometryEncoding.WKT),
     ("WKB", GeometryEncoding.WKB),
-    ("PointFromColumns", GeometryEncoding.PointFromColumns),
 )
 
 
@@ -616,6 +616,8 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
         index = self.geometryTypeComboBox.currentIndex()
         if index == -1:
             return ""
+        if self.geometryEncoding() == GeometryEncoding.PointFromColumns:
+            return GeometryType.wkbPoint
         return self.geometryTypeComboBox.itemData(index, QtCore.Qt.EditRole)
 
     def setGeometryType(self, value):
