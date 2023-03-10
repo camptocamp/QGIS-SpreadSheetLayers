@@ -49,7 +49,7 @@ run this commands in QGIS python console:
 .. code::
 
     import osgeo.gdal
-    print osgeo.gdal.__version__
+    print(osgeo.gdal.__version__)
 
 When opening a spreadsheet file, GDAL/OGR will try to detect the data type of
 columns (Date, Integer, Real, String, ...). This automatic detection occurs
@@ -84,8 +84,8 @@ Development install (linux)
 .. code::
 
    git clone git@github.com:camptocamp/QGIS-SpreadSheetLayers.git SpreadsheetLayers
-   ln -s SpreadsheetLayers ~/.qgis2/python/plugins/
    cd SpreadsheetLayers
+   ln -s ${PWD}/SpreadsheetLayers ~/.local/share/QGIS/QGIS3/profiles/default/python/plugins
    make
 
 - run QGIS and activate SpreadsheetLayers plugin.
