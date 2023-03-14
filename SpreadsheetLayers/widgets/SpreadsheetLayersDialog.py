@@ -258,7 +258,6 @@ FORM_CLASS, _ = uic.loadUiType(
 
 
 class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
-
     pluginKey = "SpreadsheetLayers"
     sampleRowCount = 20
 
@@ -737,7 +736,6 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
 
         stream.readNextStartElement()
         if stream.name() == "OGRVRTDataSource":
-
             stream.readNextStartElement()
             if stream.name() == "OGRVRTLayer":
                 self.setLayerName(stream.attributes().value("name"))
