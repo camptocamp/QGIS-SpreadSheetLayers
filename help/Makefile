@@ -3,8 +3,8 @@
 
 # You can set these variables from the command line.
 SPHINXOPTS    =
-SPHINXBUILD   = ../.build/venv/bin/sphinx-build
-SPHINXINTL    = ../.build/venv/bin/sphinx-intl
+SPHINXBUILD   = sphinx-build
+SPHINXINTL    = sphinx-intl
 PAPER         =
 BUILDDIR      = build
 

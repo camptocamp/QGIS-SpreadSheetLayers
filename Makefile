@@ -69,10 +69,6 @@ help: ## Display this help message
 # MAIN TARGETS
 ################
 
-.PHONY: compile
-compile: ## Create all runtime files
-compile: doc transcompile
-
 .PHONY: clean
 clean: ## Delete generated files
 	git clean -dfX
@@ -105,24 +101,12 @@ test-overwrite-expected: ## Run the automated tests suite and overwrite expected
 bash: ## Run bash in tests container
 	$(DOCKER_RUN_CMD) bash
 
-
 build: docker-build
+	$(DOCKER_RUN_CMD) make -f docker.mk build
 
 .PHONY: docker-build
 docker-build: ## Build docker images
-docker-build:
 	docker build --tag camptocamp/qgis-spreadsheetlayers:latest ./docker
-
-
-#################
-# DOCUMENTATION
-#################
-
-doc: ## Generate documentation files
-doc: venv tx-pull
-	make -C help html
-	mkdir -p $(PLUGINNAME)/help/
-	cp -r help/build/html/* $(PLUGINNAME)/help/
 
 
 ###############
@@ -130,39 +114,10 @@ doc: venv tx-pull
 ###############
 
 tx-pull: ## Pull translations from transifex using tx client
-tx-pull: venv
-	mkdir -p $(PLUGINNAME)/i18n
-	.build/venv/bin/tx pull --all || true
+	docker-compose run --rm --user `id -u` -v "$(HOME)/.transifexrc:/home/user/.transifexrc" tester make -f docker.mk tx-pull
 
 tx-push: ## Push translations on transifex using tx client
-tx-push: venv gettext
-	.build/venv/bin/tx -d push -s
-
-gettext: ## Update translation catalogs
-gettext: $(PLUGINNAME)/i18n/SpreadsheetLayers_en.ts
-gettext: help/locale/index.pot
-
-.INTERMEDIATE: $(PLUGINNAME)/SpreadsheetLayers.pro
-.PHONY: $(PLUGINNAME)/SpreadsheetLayers.pro
-$(PLUGINNAME)/SpreadsheetLayers.pro:
-	echo "SOURCES = $(SOURCES)" > $@
-	echo "FORMS = $(FORMS)" >> $@
-	echo "TRANSLATIONS = i18n/SpreadsheetLayers_en.ts" >> $@
-	echo "CODECFORTR = UTF-8" >> $@
-	echo "CODECFORSRC = UTF-8" >> $@
-
-.INTERMEDIATE: $(PLUGINNAME)/i18n/SpreadsheetLayers_en.ts
-$(PLUGINNAME)/i18n/SpreadsheetLayers_en.ts: $(PLUGINNAME)/SpreadsheetLayers.pro
-	mkdir -p $(dir $@)
-	pylupdate5 -noobsolete $(PLUGINNAME)/SpreadsheetLayers.pro
-
-.INTERMEDIATE: help/locale/index.pot
-help/locale/index.pot: venv
-	make -C help gettext
-
-transcompile: ## Compile Qt .ts translation files into .qm binary format
-transcompile:
-	lrelease $(shell find -name *.ts)
+	docker-compose run --rm --user `id -u` -v "$(HOME)/.transifexrc:/home/user/.transifexrc" tester make -f docker.mk tx-push
 
 
 #############
@@ -203,19 +158,3 @@ derase: ## Remove deployed plugin from your QGIS plugin directory
 link: ## Create symbolic link to this folder in your QGIS plugins folder (for development)
 link: derase
 	ln -s $(shell pwd)/$(PLUGINNAME) $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)
-
-
-###############
-# VIRTUAL ENV
-###############
-
-.PHONY: venv
-venv: .build/requirements-dev.timestamp
-
-.build/venv.timestamp:
-	python3 -m venv --system-site-packages .build/venv
-	touch $@
-
-.build/requirements-dev.timestamp: .build/venv.timestamp docker/requirements-dev.txt
-	.build/venv/bin/pip install -r docker/requirements-dev.txt
-	touch $@
