@@ -1,6 +1,10 @@
 PLUGINNAME = SpreadsheetLayers
 LOCALES = de fr ja ru
 
+SOURCES := $(shell (cd $(PLUGINNAME) && find . -name "*.py") )
+FORMS = $(shell (cd $(PLUGINNAME) && find . -name "*.ui") )
+
+
 default: help
 
 .PHONY: help
@@ -93,7 +97,7 @@ $(PLUGINNAME)/i18n/SpreadsheetLayers_en.ts: $(PLUGINNAME)/SpreadsheetLayers.pro
 	pylupdate5 -noobsolete $(PLUGINNAME)/SpreadsheetLayers.pro
 
 .INTERMEDIATE: help/locale/index.pot
-help/locale/index.pot: venv
+help/locale/index.pot:
 	make -C help gettext
 
 transcompile: ## Compile Qt .ts translation files into .qm binary format

@@ -6,6 +6,7 @@ RUN --mount=type=cache,target=/var/lib/apt/lists \
     && apt-get install --assume-yes --no-install-recommends \
         git \
         make \
+        pyqt5-dev-tools \
         qttools5-dev-tools
 
 COPY requirements-dev.txt /tmp/requirements-dev.txt

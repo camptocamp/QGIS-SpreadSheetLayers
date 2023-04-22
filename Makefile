@@ -31,8 +31,6 @@ QGISDIR ?= .local/share/QGIS/QGIS3/profiles/default
 # QGISDIR ?= .local/share/QGIS/QGIS3/profiles/russian
 ###################END CONFIGURE#########################
 
-SOURCES := $(shell (cd $(PLUGINNAME) && find . -name "*.py") )
-FORMS = $(shell (cd $(PLUGINNAME) && find . -name "*.ui") )
 
 # QGIS PATHS
 ifndef QGIS_PREFIX_PATH
