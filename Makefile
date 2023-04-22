@@ -123,7 +123,7 @@ tx-push: ## Push translations on transifex using tx client
 #############
 
 package: ## Create plugin archive
-package: compile
+package: build
 	@echo
 	@echo "------------------------------------"
 	@echo "Exporting plugin to zip package.	"
