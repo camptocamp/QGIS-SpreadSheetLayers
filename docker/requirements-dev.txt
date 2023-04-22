@@ -9,4 +9,3 @@ pytest-cov
 pyyaml
 sphinx
 sphinx-intl
-transifex-client

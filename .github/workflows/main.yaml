@@ -22,21 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - run: >
-            sudo apt-get install -y \
-                pyqt5-dev-tools \
-                qttools5-dev-tools
-
-      - name: Create virtual env
-        run: make venv
-
-      - name: Pull transifex
-        run: make tx-pull
-
-      - name: Generate runtime files
-        run: make compile
-
-      - name: Build docker images
+      - name: Build docker images and runtime files
         run: make build
 
       - name: Run linters
