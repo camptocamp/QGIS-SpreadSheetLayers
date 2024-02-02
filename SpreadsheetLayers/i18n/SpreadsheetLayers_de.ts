@@ -1,4 +1,4 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.0" language="de">
+<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="de">
 <context>
     <name>SpreadsheetLayersDialog</name>
     <message>
@@ -49,7 +49,7 @@
     <message>
         <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="191"/>
         <source>OGR_ODS_HEADERS = None</source>
-        <translation type="unfinished"/>
+        <translation>OGR_ODS_HEADERS = None</translation>
     </message>
     <message>
         <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="202"/>
@@ -57,85 +57,101 @@
         <translation>Geometrie</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="217"/>
-        <source>Fields</source>
-        <translation>Felder</translation>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="214"/>
+        <source>Encoding</source>
+        <translation>Kodierung</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="233"/>
-        <source>Reference system</source>
-        <translation>Koordinatenbezugssystem</translation>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="224"/>
+        <source>Field</source>
+        <translation>Feld</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="245"/>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="262"/>
+        <source>Type</source>
+        <translation>Typ</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="298"/>
         <source>X field</source>
         <translation>X-Feld</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="286"/>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="339"/>
         <source>Y field</source>
         <translation>Y-Feld</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="324"/>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="381"/>
         <source>Show fields in attribute table</source>
         <translation>Felder in Attributtabelle anzeigen</translation>
     </message>
     <message>
-        <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="368"/>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="412"/>
+        <source>Reference system</source>
+        <translation>Koordinatenbezugssystem</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="447"/>
         <source>Help</source>
         <translation>Hilfe</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="234"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="307"/>
         <source>Choose a spreadsheet file to open</source>
         <translation>Tabellendatei zum Öffnen auswählen</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="234"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="307"/>
         <source>Spreadsheet files</source>
         <translation>Tabellendateien</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="234"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="307"/>
         <source>GDAL Virtual Format</source>
-        <translation>GDAL Virtuell Format</translation>
+        <translation>GDAL Virtuelles Format</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="234"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="307"/>
         <source>All files</source>
         <translation>Alle Dateien</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="426"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="510"/>
         <source>Used GDAL version doesn't support VRT layers with sqlite dialect mixed with PointFromColumn functionality.
 For more informations, consult the plugin documentation.</source>
-        <translation type="unfinished"/>
+        <translation>Die verwendete GDAL-Version unterstützt keine VRT-Layer mit SQLite in Verbindung mit PointFromColumn-Funktionalität.
+Für weitere Informationen bitte die Plugin-Dokumentation lesen.</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="550"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="678"/>
         <source>Please select an input file</source>
         <translation>Bitte eine Eingabedatei auswählen</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="553"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="681"/>
         <source>Please select a sheet</source>
         <translation>Bitte ein Arbeitsblatt auswählen</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="556"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="686"/>
         <source>Please select an x field</source>
         <translation>Bitte ein X-Feld auswählen</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="559"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="689"/>
         <source>Please select an y field</source>
         <translation>Bitte ein Y-Feld auswählen</translation>
     </message>
+    <message>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="692"/>
+        <source>Please select a geometry field</source>
+        <translation>Bitte ein Geometrie-Feld auswählen</translation>
+    </message>
 </context>
-<context encoding="UTF-8">
+<context>
     <name>SpreadsheetLayersPlugin</name>
-    <message encoding="UTF-8">
+    <message>
         <location filename="../SpreadsheetLayersPlugin.py" line="64"/>
         <source>Add Spreadsheet Layer…</source>
         <translation>Tabellenkalkulations-Layer hinzufügen…</translation>

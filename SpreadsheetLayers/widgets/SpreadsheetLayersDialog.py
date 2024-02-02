@@ -28,7 +28,7 @@ from pkg_resources import resource_filename
 from tempfile import gettempdir
 
 from osgeo import ogr
-from qgis.core import Qgis, QgsCoordinateReferenceSystem
+from qgis.core import Qgis, QgsCoordinateReferenceSystem, QgsWkbTypes
 from qgis.gui import QgsMessageBar
 from qgis.PyQt import QtCore, QtGui, QtWidgets, uic
 
@@ -39,13 +39,6 @@ class GeometryEncoding(Enum):
     WKT = 1
     WKB = 2
     PointFromColumns = 3
-
-
-ENCODINGS = (
-    ("PointFromColumns", GeometryEncoding.PointFromColumns),
-    ("WKT", GeometryEncoding.WKT),
-    ("WKB", GeometryEncoding.WKB),
-)
 
 
 class GeometryType(Enum):
@@ -61,26 +54,34 @@ class GeometryType(Enum):
 
 
 GEOMETRY_TYPES = (
-    ("None", GeometryType.wkbNone),
-    ("Unknown", GeometryType.wkbUnknown),
-    ("Point", GeometryType.wkbPoint),
-    ("LineString", GeometryType.wkbLineString),
-    ("Polygon", GeometryType.wkbPolygon),
-    ("MultiPoint", GeometryType.wkbMultiPoint),
-    ("MultiLineString", GeometryType.wkbMultiLineString),
-    ("MultiPolygon", GeometryType.wkbMultiPolygon),
-    ("GeometryCollection", GeometryType.wkbGeometryCollection),
+    (QgsWkbTypes.NoGeometry, GeometryType.wkbNone),
+    (QgsWkbTypes.Unknown, GeometryType.wkbUnknown),
+    (QgsWkbTypes.Point, GeometryType.wkbPoint),
+    (QgsWkbTypes.LineString, GeometryType.wkbLineString),
+    (QgsWkbTypes.Polygon, GeometryType.wkbPolygon),
+    (QgsWkbTypes.MultiPoint, GeometryType.wkbMultiPoint),
+    (QgsWkbTypes.MultiLineString, GeometryType.wkbMultiLineString),
+    (QgsWkbTypes.MultiPolygon, GeometryType.wkbMultiPolygon),
+    (QgsWkbTypes.GeometryCollection, GeometryType.wkbGeometryCollection),
 )
 
 
 class GeometryEncodingsModel(QtCore.QAbstractListModel):
     """GeometryEncodingsModel provide a ListModel class to display encodings in QComboBox."""
 
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._encodings = (
+            (self.tr("PointFromColumns"), GeometryEncoding.PointFromColumns),
+            ("WKT", GeometryEncoding.WKT),
+            ("WKB", GeometryEncoding.WKB),
+        )
+
     def rowCount(self, parent=QtCore.QModelIndex()):
-        return len(ENCODINGS)
+        return len(self._encodings)
 
     def data(self, index, role=QtCore.Qt.DisplayRole):
-        encoding = ENCODINGS[index.row()]
+        encoding = self._encodings[index.row()]
         if role == QtCore.Qt.DisplayRole:
             return encoding[0]
         if role == QtCore.Qt.EditRole:
@@ -96,7 +97,7 @@ class GeometryTypesModel(QtCore.QAbstractListModel):
     def data(self, index, role=QtCore.Qt.DisplayRole):
         geometry_type = GEOMETRY_TYPES[index.row()]
         if role == QtCore.Qt.DisplayRole:
-            return geometry_type[0]
+            return QgsWkbTypes.translatedDisplayString(geometry_type[0])
         if role == QtCore.Qt.EditRole:
             return geometry_type[1]
 

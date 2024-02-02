@@ -4,38 +4,38 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Arnaud Morvan <arnaud.morvan@camptocamp.com>, 2024
+# Lucho Ferrer <lefcgis@gmail.com>, 2023
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: SpreadsheetLayers 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-02 14:00+0000\n"
+"POT-Creation-Date: 2023-04-26 11:07+0000\n"
 "PO-Revision-Date: 2022-08-20 17:09+0000\n"
-"Last-Translator: Arnaud Morvan <arnaud.morvan@camptocamp.com>, 2024\n"
-"Language-Team: French (https://app.transifex.com/camptocamp/teams/148927/fr/)\n"
+"Last-Translator: Lucho Ferrer <lefcgis@gmail.com>, 2023\n"
+"Language-Team: Spanish (https://app.transifex.com/camptocamp/teams/148927/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: fr\n"
-"Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+"Language: es\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 #: ../../README.rst:7
 msgid "QGIS-SpreadSheetLayers"
-msgstr "QGIS-SpreadSheetLayers"
+msgstr "QGIS Capas de hojas de cálculo"
 
 #: ../../README.rst:9
 msgid ""
 "QGIS plugin to load layers from spreadsheet files (\\*.ods, \\*.xls, "
 "\\*.xlsx)"
 msgstr ""
-"Plugin QGIS pour charger des couches depuis des fichiers feuille de calcul "
-"(\\*.ods, \\*.xls, \\*.xlsx)"
+"Herramienta de QGIS para cargar capas desde hojas de cálculo (*.ods, "
+"\\*.xls, \\*.xlsx)"
 
 #: ../../README.rst:12
 msgid "Description"
-msgstr "Description"
+msgstr "Descripción"
 
 #: ../../README.rst:14
 msgid ""
@@ -44,34 +44,34 @@ msgid ""
 "open the same dialog to load a layer from a spreadsheet file with some "
 "options:"
 msgstr ""
-"Ce plugin ajoute une nouvelle entrée *Ajouter une couche feuille de calcul* "
-"dans le menu *Couches* / *Ajouter une couche* et un bouton correspondant "
-"dans la barre d'outils *Couches*. Ces deux liens ouvrent un même boite de "
-"dialogue avec quelques options:"
+"Esta herramienta añade la entrada \"Añadir capa de hoja de cálculo\" en el "
+"menú Capa / Añadir nueva capa y un botón correspondiente en la barra de menú"
+" Capas. Estos dos enlaces abren el mismo dialogo para cargar una capa desde "
+"el archivo de la hoja de cálculo con algunas opciones: "
 
 #: ../../README.rst:18
 msgid "select file"
-msgstr "sélectionner le fichier"
+msgstr "Seleccionar archivo"
 
 #: ../../README.rst:19
 msgid "layer name"
-msgstr "nom de la couche"
+msgstr "Nombre de la capa"
 
 #: ../../README.rst:20
 msgid "sheet selection"
-msgstr "sélection de la feuille"
+msgstr "Selección de la hoja"
 
 #: ../../README.rst:21
 msgid "header at first line"
-msgstr "entête en début de fichier"
+msgstr "Cabecera como primera línea"
 
 #: ../../README.rst:22
 msgid "ignore some rows"
-msgstr "ignorer des lignes"
+msgstr "Ignorar algunas filas"
 
 #: ../../README.rst:23
 msgid "load geometry from x and y fields"
-msgstr "charger la géométrie depuis les champs x et y"
+msgstr "Cargar geometría desde los campos X e Y."
 
 #: ../../README.rst:25
 msgid ""
@@ -79,37 +79,37 @@ msgid ""
 "the source data file and layer name, expanded with a *.vrt* suffix, which is"
 " loaded into QGIS."
 msgstr ""
-"Lorsque le dialogue est accepté, il crée un nouveau fichier GDAL VRT dans le"
-" même dossier que le fichier de données source et le nom de la couche, "
-"étendu avec un suffixe *.vrt*, qui est chargé dans QGIS."
+"Cuando el diálogo es aceptado, se crea un nuevo archivo virtual GDAL en la "
+"misma carpeta que el archivo de datos origen y el nombre de la capa, con el "
+"sufijo \".vrt\", que se carga en QGIS."
 
 #: ../../README.rst:29
 msgid ""
 "When reusing the same file twice, the dialog loads its values from the "
 "existing *.vrt* file."
 msgstr ""
-"Lorque l'on utilise le même fichier une seconde fois, la boite de dialogue "
-"récupère les valeurs depuis le  fichier *.vrt* existant."
+"Cuando se reutiliza el mismo archivo dos veces, el cuadro de diálogo carga "
+"sus valores desde el archivo \"´.vrt\" existente."
 
 #: ../../README.rst:33
 msgid "Limitations"
-msgstr "Limitations"
+msgstr "Limitaciones"
 
 #: ../../README.rst:35
 msgid "Due to a GDAL/OGR lacks of functionalities:"
-msgstr "A cause d'un manque de fonctionnalités dans GDAL/OGR:"
+msgstr "Debido a que GDAL/OGR carece de funcionalidades:"
 
 #: ../../README.rst:37
 msgid "use of header line on a per file basis ;"
-msgstr "configuration de la ligne d'entête pour chaque fichier ;"
+msgstr "Utilización de la línea de encabezamiento por fichero; "
 
 #: ../../README.rst:38
 msgid "ignore lines at the beginning of file ;"
-msgstr "possibilité d'ignorer des lignes en début de fichier ;"
+msgstr "Ignorar líneas al inicio del archivo ;"
 
 #: ../../README.rst:39
 msgid "correct end of .xls files detection."
-msgstr "détection correcte de la fin des fichiers .xls."
+msgstr "Detección correcta final de los archivos .XLS"
 
 #: ../../README.rst:41
 msgid ""
@@ -117,9 +117,10 @@ msgid ""
 "to extract corresponding data from the source file. When one of this "
 "functionalities is in use, this could have some side effects."
 msgstr ""
-"Le plugin utilise une requête de sélection SQLITE avec des paramètres "
-"décalage et limite pour extraire les données correspondantes. Lorsque l'une "
-"de ces fonctionnalités est utilisée, ceci peut avoir des effets de bord."
+"La herramienta utiliza la sentencia Select de SQLite con los parámetros "
+"offset y limit para extraer datos correspondientes desde el archivo base. "
+"Cuando una de estas funcionalidades se encuentra en uso, podría tener "
+"algunos efectos secundarios."
 
 #: ../../README.rst:45
 msgid ""
@@ -127,10 +128,10 @@ msgid ""
 "degradation, geometry checkbox is then locked. To get the GDAL version in "
 "use, run this commands in QGIS python console:"
 msgstr ""
-"Avec GDAL <= 1.11.1, le plugin ne peut charger la géométrie. Dans ce mode "
-"dégradé, la case à cocher geometry est alors bloquée. Pour obtenir la "
-"version de GDAL en cours d'utilisation, lancez ces commandes dans la console"
-" python de QGIS:"
+"Con GDAL <= 1.11.1, la herramienta no puede cargar geometría. Con el cajetín"
+" de herramientas Geometría está bloqueado. Para obtener la versión actual de"
+" GDAL que se está utilizando, corre estos comandos en la consola de Python "
+"en QGIS."
 
 #: ../../README.rst:54
 msgid ""
@@ -139,16 +140,15 @@ msgid ""
 "occurs outside of plugin header and ignore lines functionalities, so when "
 "using this, GDAL/OGR should be unable to correctly detect data types."
 msgstr ""
-"Lors de l'ouverture de fichiers feuille de calcul, GDAL/OGR opère une "
-"détection automatique des types de données (Date, Entier, Réel, Chaine de "
-"caractères, ...). Cette détection automatique se produit en dehors des "
-"fonctionnalités d'entête et de lignes ignorées fournies par le plugin, "
-"lorsque vous les utilisez, GDAL/OGR ne pourra donc peut-être pas détecter "
-"correctement les types de données."
+"Cuando abres un archivo de hoja de cálculo, GDAL/OGR intentará detectar los "
+"tipos de datos de las columnas (Fecha, Entero, Real, Texto...). Esta "
+"detección ocurre fuera de la cabecera de la herramienta e ignora las "
+"funcionalidades de línea, entonces cuando lo usas, GDAL/OGR puede estar apto"
+" para estar disponible para detectar correctamente los tipos de datos."
 
 #: ../../README.rst:60
 msgid "Configuration"
-msgstr "Configuration"
+msgstr "Configuración"
 
 #: ../../README.rst:62
 msgid ""
@@ -159,96 +159,91 @@ msgid ""
 " corresponding drivers documentation ie: http://www.gdal.org/drv_ods.html, "
 "http://www.gdal.org/drv_xls.html and http://www.gdal.org/drv_xlsx.html."
 msgstr ""
-"GDAL n'autorise pas la définition de la présence de la ligne d'entête pour "
-"chaque couche, ce choix est fait à travers des variables d'environnement "
-"pour chaque pilote *OGR_ODS_HEADERS*, *OGR_XLS_HEADERS* and "
-"*OGR_XLSX_HEADERS*, avec trois valeurs possibles *FORCE*, *DISABLE* and "
-"*AUTO*. Pour plus de détail, consultez la documentation des pilotes "
-"correspondants: http://www.gdal.org/drv_ods.html, "
-"http://www.gdal.org/drv_xls.html and http://www.gdal.org/drv_xlsx.html."
+"GDAL no permite definir la presencia de cabeceras de línea por capa, esta selección se realiza a través de un entorno para cada driver *OGR_ODS_HEADERS*, *OGR_XLS_HEADERS* y *OGR_XLSX_HEADERS*, con tres posibles valores:  *FORCE*, *DISABLE* y  *AUTO*. Para más detalles consulte los drivers de la documentación: \n"
+"http://www.gdal.org/drv_ods.html, http://www.gdal.org/drv_xls.html and http://www.gdal.org/drv_xlsx.html."
 
 #: ../../README.rst:70
 msgid "You can change this values in QGIS settings:"
-msgstr "Vous pouvez changer ces valeurs dans les options de QGIS:"
+msgstr "Puedes cambiar estos valores en la configuración de QGIS"
 
 #: ../../README.rst:72
 msgid "open *Settings* / *Options* dialog;"
-msgstr "ouvrez la boite de dialogue *Préférences* / *Options*;"
+msgstr "Abre el cuadro de diálogo \"Configuraciones\" / \"Opciones\":"
 
 #: ../../README.rst:73
 msgid "select *System* tab, and go to *Environment* section;"
-msgstr ""
+msgstr "Seleccionar \"Sistema\", espacio e ir a la sección Entorno"
 
 #: ../../README.rst:74
 msgid "check *Use custom variables*."
-msgstr "Cochez la case *Utiliser des variables personnalisées*."
+msgstr "Marcar \"Usar variables personalizadas\""
 
 #: ../../README.rst:75
 msgid "add a new line. Example:"
-msgstr "ajoutez une nouvelle ligne. Exemple:"
+msgstr "Añade una nueva línea. Ejemplo:"
 
 #: ../../README.rst:77
 msgid "*Overwrite* | *OGR_ODS_HEADERS* | *FORCE*"
-msgstr "*Overwrite* | *OGR_ODS_HEADERS* | *FORCE*"
+msgstr "Sobreescribir  | *OGR_ODS_HEADERS* | *FORCE*"
 
 #: ../../README.rst:79
 msgid "restart QGIS to take this into consideration."
-msgstr "redémarrer QGIS pour que la modification soit prise en compte."
+msgstr "Reiniciar QGIS para tomar esto en consideración"
 
 #: ../../README.rst:82
 msgid "Development install (linux)"
-msgstr "Installation pour le développement (linux)"
+msgstr "Instalación de Desarrollo (Linux)"
 
 #: ../../README.rst:91
 msgid "run QGIS and activate SpreadsheetLayers plugin."
-msgstr "lancez QGIS et activez le plugin SpreadsheetLayers"
+msgstr "Corre QGIS y activa la herramienta SpreadsheetLayers"
 
 #: ../../README.rst:94
 msgid "Release a new version"
-msgstr "Publier une nouvelle version"
+msgstr "Publicar una nueva versión"
 
 #: ../../README.rst:96
 msgid "First update l10n files:"
-msgstr "Mettre à jour d'abord les fichiers l10n."
+msgstr "Primero actualiza  l10n archivos:"
 
 #: ../../README.rst:102
 msgid "Then create a commit if relevant:"
-msgstr "Ensuite, créez un commit si nécessaire."
+msgstr "A continuación crea una confirmación. si fuera relevante"
 
 #: ../../README.rst:109
 msgid ""
 "Now update :code:`SpreadsheetLayers/metadata.txt` file with the version "
 "number."
 msgstr ""
-"Maintenant, mettez à jour le fichier :code:`SpreadsheetLayers/metadata.txt` "
-"avec le numéro de version."
+"Ahora actualiza: código: 'El archivo SpreadsheetLayers/metadata.txt' con el "
+"número de  la versión "
 
 #: ../../README.rst:111
 msgid "For an experimental release:"
-msgstr "Pour une version expérimentale :"
+msgstr "Para un lanzamiento experimental"
 
 #: ../../README.rst:118
 msgid "Or for a final release:"
-msgstr "Ou pour une version finale :"
+msgstr "O para un lanzamiento final"
 
 #: ../../README.rst:125
 msgid "And create a new commit, tag, and push on GitHub:"
-msgstr "Et créez un nouveau commit, tag et push sur GitHub."
+msgstr "Y crea un nuevo registro, etiquétalo y publícalo en Github"
 
 #: ../../README.rst:133
 msgid "Then create the package and test it with you local QGIS:"
-msgstr "Ensuite, créez le package et testez-le avec votre QGIS local."
+msgstr "A continuación crea un paquete, pruébalo con tu QGIS local"
 
 #: ../../README.rst:140
 msgid "Then, if everything looks fine, you can create a tag:"
-msgstr "Ensuite, si tout semble bon, vous pouvez créer un tag:"
+msgstr "Luego si se ve bien, puedes crear una etiqueta:"
 
 #: ../../README.rst:147
 msgid ""
 "Then log in to QGIS plugins repository: "
 "https://plugins.qgis.org/accounts/login/"
 msgstr ""
-"Ensuite, connectez-vous au dépôt des plugins QGIS : "
+"Luego, accede al repositorio de herramientas de QGIS: "
 "https://plugins.qgis.org/accounts/login/"
 
 #: ../../README.rst:149
@@ -256,5 +251,6 @@ msgid ""
 "And upload the file :code:`dist/SpreadsheetLayers.zip` here: "
 "https://plugins.qgis.org/plugins/SpreadsheetLayers/"
 msgstr ""
-"Et téléversez le fichier :code:`dist/SpreadsheetLayers.zip` ici : "
+"Y carga el archivo: :code:`dist/SpreadsheetLayers.zip` aquí:\n"
+"\n"
 "https://plugins.qgis.org/plugins/SpreadsheetLayers/"
