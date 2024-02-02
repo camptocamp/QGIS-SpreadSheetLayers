@@ -41,13 +41,6 @@ class GeometryEncoding(Enum):
     PointFromColumns = 3
 
 
-ENCODINGS = (
-    ("PointFromColumns", GeometryEncoding.PointFromColumns),
-    ("WKT", GeometryEncoding.WKT),
-    ("WKB", GeometryEncoding.WKB),
-)
-
-
 class GeometryType(Enum):
     wkbNone = 1
     wkbUnknown = 2
@@ -76,11 +69,19 @@ GEOMETRY_TYPES = (
 class GeometryEncodingsModel(QtCore.QAbstractListModel):
     """GeometryEncodingsModel provide a ListModel class to display encodings in QComboBox."""
 
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._encodings = (
+            (self.tr("PointFromColumns"), GeometryEncoding.PointFromColumns),
+            ("WKT", GeometryEncoding.WKT),
+            ("WKB", GeometryEncoding.WKB),
+        )
+
     def rowCount(self, parent=QtCore.QModelIndex()):
-        return len(ENCODINGS)
+        return len(self._encodings)
 
     def data(self, index, role=QtCore.Qt.DisplayRole):
-        encoding = ENCODINGS[index.row()]
+        encoding = self._encodings[index.row()]
         if role == QtCore.Qt.DisplayRole:
             return encoding[0]
         if role == QtCore.Qt.EditRole:
