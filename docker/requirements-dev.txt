@@ -1,5 +1,6 @@
 black
 coverage
+debugpy
 flake8
 nose
 psycopg2-binary

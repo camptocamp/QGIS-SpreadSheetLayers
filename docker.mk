@@ -72,7 +72,7 @@ coverage: ## Display coverage report
 tx-pull: ## Pull translations from transifex using tx client
 tx-pull: $(HOME)/.transifexrc
 	mkdir -p $(PLUGINNAME)/i18n
-	tx pull --all
+	tx pull --all --force
 
 tx-push: ## Push translations on transifex using tx client
 tx-push: transup

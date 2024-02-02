@@ -1,4 +1,4 @@
-FROM camptocamp/qgis-server:3.22-desktop
+FROM qgis/qgis:release-3_34
 
 RUN --mount=type=cache,target=/var/lib/apt/lists \
     --mount=type=cache,target=/var/cache,sharing=locked \

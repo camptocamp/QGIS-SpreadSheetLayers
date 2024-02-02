@@ -60,7 +60,7 @@ help: ## Display this help message
 	@echo "Usage: make <target>"
 	@echo
 	@echo "Possible targets:"
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "    %-20s%s\n", $$1, $$2}'
+	@grep -E -h '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "    %-20s%s\n", $$1, $$2}'
 
 
 ################
@@ -73,7 +73,7 @@ clean: ## Delete generated files
 
 .PHONY: qgis
 qgis: ## Run QGIS desktop
-	docker-compose run --rm --user `id -u`:`id -g` qgis
+	docker-compose run --rm --user `id -u`:`id -g` --publish "5679:5679" qgis
 
 .PHONY: check
 check: ## Run linters
