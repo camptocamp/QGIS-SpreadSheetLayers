@@ -1,151 +1,151 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="fr">
+<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="es">
 <context>
     <name>SpreadsheetLayersDialog</name>
     <message>
         <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="14"/>
         <source>Create a Layer from a Spreadsheet File</source>
-        <translation>Créer une couche depuis un fichier feuille de calcul</translation>
+        <translation>Crea una capa desde una hoja de cálculo</translation>
     </message>
     <message>
         <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="31"/>
         <source>File Name</source>
-        <translation>Fichier</translation>
+        <translation>Nombre del archivo</translation>
     </message>
     <message>
         <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="74"/>
         <source>Browse...</source>
-        <translation>Parcourir...</translation>
+        <translation>Buscar</translation>
     </message>
     <message>
         <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="92"/>
         <source>Sheet</source>
-        <translation>Feuille</translation>
+        <translation>Hoja de cálculo</translation>
     </message>
     <message>
         <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="115"/>
         <source>Layer name</source>
-        <translation>Nom de la couche</translation>
+        <translation>Nombre de la capa</translation>
     </message>
     <message>
         <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="145"/>
         <source>Rows</source>
-        <translation>Lignes</translation>
+        <translation>Filas</translation>
     </message>
     <message>
         <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="154"/>
         <source>Number of lines to ignore</source>
-        <translation>Nombre de lignes à ignorer</translation>
+        <translation>Número de líneas para ignorar</translation>
     </message>
     <message>
         <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="164"/>
         <source>Header at first line</source>
-        <translation>Entête en début de fichier</translation>
+        <translation>Cabecera como primera línea</translation>
     </message>
     <message>
         <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="184"/>
         <source>End of file detection</source>
-        <translation>Détection de la fin de fichier</translation>
+        <translation>Detección de fin del archivo</translation>
     </message>
     <message>
         <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="191"/>
         <source>OGR_ODS_HEADERS = None</source>
-        <translation>OGR_ODS_HEADERS = None</translation>
+        <translation>Cabeceras OGR-ODS = Ninguna</translation>
     </message>
     <message>
         <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="202"/>
         <source>Geometry</source>
-        <translation>Géométrie</translation>
+        <translation>Geometría</translation>
     </message>
     <message>
         <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="214"/>
         <source>Encoding</source>
-        <translation>Encodage</translation>
+        <translation>Codificación</translation>
     </message>
     <message>
         <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="224"/>
         <source>Field</source>
-        <translation>Champ</translation>
+        <translation>Campo</translation>
     </message>
     <message>
         <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="262"/>
         <source>Type</source>
-        <translation>Type</translation>
+        <translation>Tipo</translation>
     </message>
     <message>
         <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="298"/>
         <source>X field</source>
-        <translation>Champ X</translation>
+        <translation>Campo X</translation>
     </message>
     <message>
         <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="339"/>
         <source>Y field</source>
-        <translation>Champ Y</translation>
+        <translation>Campo Y</translation>
     </message>
     <message>
         <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="381"/>
         <source>Show fields in attribute table</source>
-        <translation>Afficher les champs dans la table des attributs</translation>
+        <translation>Mostrar campos en la tabla de atributos</translation>
     </message>
     <message>
         <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="412"/>
         <source>Reference system</source>
-        <translation>Système de référence</translation>
+        <translation>Sistema de referencia</translation>
     </message>
     <message>
         <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="447"/>
         <source>Help</source>
-        <translation>Aide</translation>
+        <translation>Ayuda</translation>
     </message>
     <message>
         <location filename="../widgets/SpreadsheetLayersDialog.py" line="307"/>
         <source>Choose a spreadsheet file to open</source>
-        <translation>Choisissez un fichier feuille de calcul à ouvrir</translation>
+        <translation>Buscar una hoja de cálculo para abrir</translation>
     </message>
     <message>
         <location filename="../widgets/SpreadsheetLayersDialog.py" line="307"/>
         <source>Spreadsheet files</source>
-        <translation>Fichiers feuille de calcul</translation>
+        <translation>Archivos de hojas de cálculo</translation>
     </message>
     <message>
         <location filename="../widgets/SpreadsheetLayersDialog.py" line="307"/>
         <source>GDAL Virtual Format</source>
-        <translation>Source de données virtuelle GDAL</translation>
+        <translation>Formato virtual GDAL</translation>
     </message>
     <message>
         <location filename="../widgets/SpreadsheetLayersDialog.py" line="307"/>
         <source>All files</source>
-        <translation>Tous les fichiers</translation>
+        <translation>Todos los archivos</translation>
     </message>
     <message>
         <location filename="../widgets/SpreadsheetLayersDialog.py" line="510"/>
         <source>Used GDAL version doesn't support VRT layers with sqlite dialect mixed with PointFromColumn functionality.
 For more informations, consult the plugin documentation.</source>
-        <translation>La version courante de GDAL ne supporte pas la combinaison couches VRT utilisant le dialecte sqlite et la geometrie depuis les colonnes.</translation>
+        <translation>La versión usada de GDAL no soporta las capas VRT con el dialecto SQLite combinado con la función PointFromColumn. Para más información, consulta la documentación de la herramienta.</translation>
     </message>
     <message>
         <location filename="../widgets/SpreadsheetLayersDialog.py" line="678"/>
         <source>Please select an input file</source>
-        <translation>Veuillez sélectionner un fichier</translation>
+        <translation>Por favor selecciona un archivo de ingreso</translation>
     </message>
     <message>
         <location filename="../widgets/SpreadsheetLayersDialog.py" line="681"/>
         <source>Please select a sheet</source>
-        <translation>Veuillez sélectionner une feuille</translation>
+        <translation>Por favor selecciona una hoja</translation>
     </message>
     <message>
         <location filename="../widgets/SpreadsheetLayersDialog.py" line="686"/>
         <source>Please select an x field</source>
-        <translation>Veuillez sélectionner un champ x</translation>
+        <translation>Por favor selecciona un campo X</translation>
     </message>
     <message>
         <location filename="../widgets/SpreadsheetLayersDialog.py" line="689"/>
         <source>Please select an y field</source>
-        <translation>Veuillez sélectionner un champ y</translation>
+        <translation>Por favor selecciona un campo Y</translation>
     </message>
     <message>
         <location filename="../widgets/SpreadsheetLayersDialog.py" line="692"/>
         <source>Please select a geometry field</source>
-        <translation>Veuillez sélectionner un champ de géométrie</translation>
+        <translation>Por favor selecciona un campo de geometría</translation>
     </message>
 </context>
 <context>
@@ -153,7 +153,7 @@ For more informations, consult the plugin documentation.</source>
     <message>
         <location filename="../SpreadsheetLayersPlugin.py" line="64"/>
         <source>Add Spreadsheet Layer…</source>
-        <translation>Ajouter une couche feuille de calcul…</translation>
+        <translation>Añade la capa de hoja de cálculo</translation>
     </message>
 </context>
 </TS>

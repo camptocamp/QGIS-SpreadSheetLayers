@@ -3,14 +3,18 @@
 # This file is distributed under the same license as the SpreadsheetLayers package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
+# Translators:
+# yamamoto ryuzo <ryu@yamakun.net>, 2023
+# 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: SpreadsheetLayers 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-08-20 19:07+0200\n"
+"POT-Creation-Date: 2023-04-26 11:07+0000\n"
 "PO-Revision-Date: 2022-08-20 17:09+0000\n"
-"Language-Team: Japanese (https://www.transifex.com/camptocamp/teams/148927/ja/)\n"
+"Last-Translator: yamamoto ryuzo <ryu@yamakun.net>, 2023\n"
+"Language-Team: Japanese (https://app.transifex.com/camptocamp/teams/148927/ja/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,17 +23,17 @@ msgstr ""
 
 #: ../../README.rst:7
 msgid "QGIS-SpreadSheetLayers"
-msgstr ""
+msgstr "QGIS-表計算レイヤー"
 
 #: ../../README.rst:9
 msgid ""
 "QGIS plugin to load layers from spreadsheet files (\\*.ods, \\*.xls, "
 "\\*.xlsx)"
-msgstr ""
+msgstr "表計算ファイル( \\*.ods, \\*.xls, \\*.xlsx) からレイヤーを読み込むためのQGISプラグイン。"
 
 #: ../../README.rst:12
 msgid "Description"
-msgstr ""
+msgstr "概要説明"
 
 #: ../../README.rst:14
 msgid ""
@@ -38,30 +42,33 @@ msgid ""
 "open the same dialog to load a layer from a spreadsheet file with some "
 "options:"
 msgstr ""
+"このプラグインは、*Layer* / *Add new Layer* メニューに *Add spreadsheet layer* "
+"エントリを追加し、*Layers* "
+"ツールバーに対応するボタンを追加します。この2つのリンクは、表計算ファイルからレイヤーを読み込むための同じダイアログを開き、いくつかのオプションを設定します。"
 
 #: ../../README.rst:18
 msgid "select file"
-msgstr ""
+msgstr "ファイル選択"
 
 #: ../../README.rst:19
 msgid "layer name"
-msgstr ""
+msgstr "レイヤー名"
 
 #: ../../README.rst:20
 msgid "sheet selection"
-msgstr ""
+msgstr "シート選択"
 
 #: ../../README.rst:21
 msgid "header at first line"
-msgstr ""
+msgstr "ヘッダ"
 
 #: ../../README.rst:22
 msgid "ignore some rows"
-msgstr ""
+msgstr "行を無視する"
 
 #: ../../README.rst:23
 msgid "load geometry from x and y fields"
-msgstr ""
+msgstr "x、y座標から地物を作成する"
 
 #: ../../README.rst:25
 msgid ""
@@ -69,32 +76,34 @@ msgid ""
 "the source data file and layer name, expanded with a *.vrt* suffix, which is"
 " loaded into QGIS."
 msgstr ""
+"完了すると、ソースデータファイルおよびレイヤ名と同じフォルダに、拡張子 *.vrt* の GDAL VRT ファイルが新規作成され、QGIS "
+"に読み込まれます。"
 
 #: ../../README.rst:29
 msgid ""
 "When reusing the same file twice, the dialog loads its values from the "
 "existing *.vrt* file."
-msgstr ""
+msgstr "同じファイルを2回使用する場合、システムは既存の*.vrt*ファイルからその値を読み込みます。"
 
 #: ../../README.rst:33
 msgid "Limitations"
-msgstr ""
+msgstr "制限事項"
 
 #: ../../README.rst:35
 msgid "Due to a GDAL/OGR lacks of functionalities:"
-msgstr ""
+msgstr "GDAL/OGRの機能不足によるものです："
 
 #: ../../README.rst:37
 msgid "use of header line on a per file basis ;"
-msgstr ""
+msgstr "ファイルごとにヘッダーラインを使用する："
 
 #: ../../README.rst:38
 msgid "ignore lines at the beginning of file ;"
-msgstr ""
+msgstr "ファイル先頭の行を無視する ："
 
 #: ../../README.rst:39
 msgid "correct end of .xls files detection."
-msgstr ""
+msgstr ".xlsファイルの終了を正しく検出しました。"
 
 #: ../../README.rst:41
 msgid ""
@@ -102,6 +111,8 @@ msgid ""
 "to extract corresponding data from the source file. When one of this "
 "functionalities is in use, this could have some side effects."
 msgstr ""
+"このプラグインは、SQLITE の select 文に offset と limit "
+"パラメータを付けて、ソースファイルから対応するデータを抽出します。この機能のいずれかが使用されている場合、いくつかの不具合が発生する場合があります。"
 
 #: ../../README.rst:45
 msgid ""
@@ -109,6 +120,8 @@ msgid ""
 "degradation, geometry checkbox is then locked. To get the GDAL version in "
 "use, run this commands in QGIS python console:"
 msgstr ""
+"GDAL <= 1.11.1 では、プラグインは地物を読み込むことができません。graceful "
+"degradationでは、地物のチェックボックスがロックされます。使用中のGDALのバージョンを知るには、QGISのPythonコンソールで以下のコマンドを実行します。"
 
 #: ../../README.rst:54
 msgid ""
@@ -117,10 +130,12 @@ msgid ""
 "occurs outside of plugin header and ignore lines functionalities, so when "
 "using this, GDAL/OGR should be unable to correctly detect data types."
 msgstr ""
+"表計算ファイルを開くと、GDAL/OGRは列のデータ型（Date, Integer, Real, String, "
+"...）を検出しようとします。この自動検出は、プラグインのヘッダーと無視行の機能の外で行われるので、これを使用する場合、GDAL/OGRはデータ型を正しく検出することができないはずです。"
 
 #: ../../README.rst:60
 msgid "Configuration"
-msgstr ""
+msgstr "設定"
 
 #: ../../README.rst:62
 msgid ""
@@ -131,39 +146,96 @@ msgid ""
 " corresponding drivers documentation ie: http://www.gdal.org/drv_ods.html, "
 "http://www.gdal.org/drv_xls.html and http://www.gdal.org/drv_xlsx.html."
 msgstr ""
+"GDALは、レイヤー毎にヘッダラインの有無を定義することができません。この選択は、各ドライバーで環境変数 *OGR_ODS_HEADERS*, "
+"*OGR_XLS_HEADERS*, *OGR_XLSX_HEADERS* によって行われ、*Force*, *Disable*, "
+"*AUTO*の3つが可能な値になっています。詳細については、対応するドライバのドキュメントを参照してください。: "
+"http://www.gdal.org/drv_ods.html, http://www.gdal.org/drv_xls.html and "
+"http://www.gdal.org/drv_xlsx.html."
 
 #: ../../README.rst:70
 msgid "You can change this values in QGIS settings:"
-msgstr ""
+msgstr "この値は、QGISの設定で変更することができます。"
 
 #: ../../README.rst:72
 msgid "open *Settings* / *Options* dialog;"
-msgstr ""
+msgstr "*設定* / *オプション* ダイアログを開きます。:"
 
 #: ../../README.rst:73
 msgid "select *System* tab, and go to *Environment* section;"
-msgstr ""
+msgstr "*システム* タブを選択し、 *環境* セクションを開きます。"
 
 #: ../../README.rst:74
 msgid "check *Use custom variables*."
-msgstr ""
+msgstr "*Use custom variables* にチェックを入れます。"
 
 #: ../../README.rst:75
 msgid "add a new line. Example:"
-msgstr ""
+msgstr "lineの新規追加　例："
 
 #: ../../README.rst:77
 msgid "*Overwrite* | *OGR_ODS_HEADERS* | *FORCE*"
-msgstr ""
+msgstr "*上書き* | *OGR_ODS_HEADERS* | *強制*"
 
 #: ../../README.rst:79
 msgid "restart QGIS to take this into consideration."
-msgstr ""
+msgstr "設定を反映させるためQGISを再起動させます。"
 
 #: ../../README.rst:82
 msgid "Development install (linux)"
-msgstr ""
+msgstr "開発用インストール（リナックス）"
 
 #: ../../README.rst:91
 msgid "run QGIS and activate SpreadsheetLayers plugin."
+msgstr "QGISを起動し、表計算レイヤプラグインを有効にします。"
+
+#: ../../README.rst:94
+msgid "Release a new version"
+msgstr "新バージョンをリリース"
+
+#: ../../README.rst:96
+msgid "First update l10n files:"
+msgstr "最初にl10nファイルを更新する："
+
+#: ../../README.rst:102
+msgid "Then create a commit if relevant:"
+msgstr "必要であればコミットを作成する："
+
+#: ../../README.rst:109
+msgid ""
+"Now update :code:`SpreadsheetLayers/metadata.txt` file with the version "
+"number."
+msgstr "ここで :code:`SpreadsheetLayers/metadata.txt` ファイルをバージョン番号で更新する。"
+
+#: ../../README.rst:111
+msgid "For an experimental release:"
+msgstr "実験的なリリースのため："
+
+#: ../../README.rst:118
+msgid "Or for a final release:"
+msgstr "最終的なリリースのために："
+
+#: ../../README.rst:125
+msgid "And create a new commit, tag, and push on GitHub:"
+msgstr "そして新しいコミットを作成し、タグを付けてGitHubにプッシュする："
+
+#: ../../README.rst:133
+msgid "Then create the package and test it with you local QGIS:"
+msgstr "パッケージを作成し、ローカルのQGISでテストします："
+
+#: ../../README.rst:140
+msgid "Then, if everything looks fine, you can create a tag:"
+msgstr "問題がなければ、タグを作成することができる："
+
+#: ../../README.rst:147
+msgid ""
+"Then log in to QGIS plugins repository: "
+"https://plugins.qgis.org/accounts/login/"
+msgstr "QGIS プラグイン リポジトリにログインします: https://plugins.qgis.org/accounts/login/"
+
+#: ../../README.rst:149
+msgid ""
+"And upload the file :code:`dist/SpreadsheetLayers.zip` here: "
+"https://plugins.qgis.org/plugins/SpreadsheetLayers/"
 msgstr ""
+":code:`dist/SpreadsheetLayers.zip` ファイルをここにアップロードしてください: "
+"https://plugins.qgis.org/plugins/SpreadsheetLayers/"

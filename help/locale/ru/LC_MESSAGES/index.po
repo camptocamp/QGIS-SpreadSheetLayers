@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SpreadsheetLayers 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-08-20 19:07+0200\n"
+"POT-Creation-Date: 2023-04-26 11:07+0000\n"
 "PO-Revision-Date: 2022-08-20 17:09+0000\n"
-"Language-Team: Russian (https://www.transifex.com/camptocamp/teams/148927/ru/)\n"
+"Language-Team: Russian (https://app.transifex.com/camptocamp/teams/148927/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -166,4 +166,54 @@ msgstr ""
 
 #: ../../README.rst:91
 msgid "run QGIS and activate SpreadsheetLayers plugin."
+msgstr ""
+
+#: ../../README.rst:94
+msgid "Release a new version"
+msgstr ""
+
+#: ../../README.rst:96
+msgid "First update l10n files:"
+msgstr ""
+
+#: ../../README.rst:102
+msgid "Then create a commit if relevant:"
+msgstr ""
+
+#: ../../README.rst:109
+msgid ""
+"Now update :code:`SpreadsheetLayers/metadata.txt` file with the version "
+"number."
+msgstr ""
+
+#: ../../README.rst:111
+msgid "For an experimental release:"
+msgstr ""
+
+#: ../../README.rst:118
+msgid "Or for a final release:"
+msgstr ""
+
+#: ../../README.rst:125
+msgid "And create a new commit, tag, and push on GitHub:"
+msgstr ""
+
+#: ../../README.rst:133
+msgid "Then create the package and test it with you local QGIS:"
+msgstr ""
+
+#: ../../README.rst:140
+msgid "Then, if everything looks fine, you can create a tag:"
+msgstr ""
+
+#: ../../README.rst:147
+msgid ""
+"Then log in to QGIS plugins repository: "
+"https://plugins.qgis.org/accounts/login/"
+msgstr ""
+
+#: ../../README.rst:149
+msgid ""
+"And upload the file :code:`dist/SpreadsheetLayers.zip` here: "
+"https://plugins.qgis.org/plugins/SpreadsheetLayers/"
 msgstr ""
