@@ -8,7 +8,7 @@ SPHINXINTL    = sphinx-intl
 PAPER         =
 BUILDDIR      = build
 
-export SPHINXINTL_LANGUAGE=fr
+LANGUAGES = de es fr ja ru
 
 # Internal variables.
 PAPEROPT_a4     = -D latex_paper_size=a4
@@ -43,7 +43,9 @@ clean:
 
 html:
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html/en
-	$(SPHINXBUILD) -b html -D language='fr' $(ALLSPHINXOPTS) $(BUILDDIR)/html/fr
+	for language in $(LANGUAGES); do \
+		$(SPHINXBUILD) -b html -D "language=$$language" $(ALLSPHINXOPTS) $(BUILDDIR)/html/$$language ; \
+	done
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html"
 
