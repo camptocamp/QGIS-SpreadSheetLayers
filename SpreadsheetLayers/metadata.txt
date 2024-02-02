@@ -17,7 +17,7 @@ about=This plugin adds a "Add spreadsheet layer" entry in "Layer" / "Add new Lay
     When this dialog is accepted, it creates a new GDAL VRT file in same folder as the source data file and layer name, expanded with a .vrt suffix which is loaded into QGIS using OGR VRT driver.
     When reusing the same file twice, the dialog loads its values from the existing .vrt file.
     No need to install additional dependencies.
-version=2.1.0
+version=2.1.1
 author=Camptocamp
 email=info@camptocamp.com
 
