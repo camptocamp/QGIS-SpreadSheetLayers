@@ -28,7 +28,7 @@ from pkg_resources import resource_filename
 from tempfile import gettempdir
 
 from osgeo import ogr
-from qgis.core import Qgis, QgsCoordinateReferenceSystem
+from qgis.core import Qgis, QgsCoordinateReferenceSystem, QgsWkbTypes
 from qgis.gui import QgsMessageBar
 from qgis.PyQt import QtCore, QtGui, QtWidgets, uic
 
@@ -61,15 +61,15 @@ class GeometryType(Enum):
 
 
 GEOMETRY_TYPES = (
-    ("None", GeometryType.wkbNone),
-    ("Unknown", GeometryType.wkbUnknown),
-    ("Point", GeometryType.wkbPoint),
-    ("LineString", GeometryType.wkbLineString),
-    ("Polygon", GeometryType.wkbPolygon),
-    ("MultiPoint", GeometryType.wkbMultiPoint),
-    ("MultiLineString", GeometryType.wkbMultiLineString),
-    ("MultiPolygon", GeometryType.wkbMultiPolygon),
-    ("GeometryCollection", GeometryType.wkbGeometryCollection),
+    (QgsWkbTypes.NoGeometry, GeometryType.wkbNone),
+    (QgsWkbTypes.Unknown, GeometryType.wkbUnknown),
+    (QgsWkbTypes.Point, GeometryType.wkbPoint),
+    (QgsWkbTypes.LineString, GeometryType.wkbLineString),
+    (QgsWkbTypes.Polygon, GeometryType.wkbPolygon),
+    (QgsWkbTypes.MultiPoint, GeometryType.wkbMultiPoint),
+    (QgsWkbTypes.MultiLineString, GeometryType.wkbMultiLineString),
+    (QgsWkbTypes.MultiPolygon, GeometryType.wkbMultiPolygon),
+    (QgsWkbTypes.GeometryCollection, GeometryType.wkbGeometryCollection),
 )
 
 
@@ -96,7 +96,7 @@ class GeometryTypesModel(QtCore.QAbstractListModel):
     def data(self, index, role=QtCore.Qt.DisplayRole):
         geometry_type = GEOMETRY_TYPES[index.row()]
         if role == QtCore.Qt.DisplayRole:
-            return geometry_type[0]
+            return QgsWkbTypes.translatedDisplayString(geometry_type[0])
         if role == QtCore.Qt.EditRole:
             return geometry_type[1]
 
