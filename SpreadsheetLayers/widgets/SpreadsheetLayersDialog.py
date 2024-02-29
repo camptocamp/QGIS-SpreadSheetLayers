@@ -97,7 +97,11 @@ class GeometryTypesModel(QtCore.QAbstractListModel):
     def data(self, index, role=QtCore.Qt.DisplayRole):
         geometry_type = GEOMETRY_TYPES[index.row()]
         if role == QtCore.Qt.DisplayRole:
-            return QgsWkbTypes.translatedDisplayString(geometry_type[0])
+            if Qgis.QGIS_VERSION_INT >= 31800:
+                return QgsWkbTypes.translatedDisplayString(geometry_type[0])
+            else:
+                return QgsWkbTypes.displayString(geometry_type[0])
+
         if role == QtCore.Qt.EditRole:
             return geometry_type[1]
 
