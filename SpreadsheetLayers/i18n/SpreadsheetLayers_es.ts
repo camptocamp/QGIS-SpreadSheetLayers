@@ -1,5 +1,13 @@
 <?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="es">
 <context>
+    <name>GeometryEncodingsModel</name>
+    <message>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="74"/>
+        <source>PointFromColumns</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
     <name>SpreadsheetLayersDialog</name>
     <message>
         <location filename="../ui/ui_SpreadsheetLayersDialog.ui" line="14"/>
@@ -97,53 +105,53 @@
         <translation>Ayuda</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="307"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="312"/>
         <source>Choose a spreadsheet file to open</source>
         <translation>Buscar una hoja de cálculo para abrir</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="307"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="312"/>
         <source>Spreadsheet files</source>
         <translation>Archivos de hojas de cálculo</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="307"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="312"/>
         <source>GDAL Virtual Format</source>
         <translation>Formato virtual GDAL</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="307"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="312"/>
         <source>All files</source>
         <translation>Todos los archivos</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="510"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="515"/>
         <source>Used GDAL version doesn't support VRT layers with sqlite dialect mixed with PointFromColumn functionality.
 For more informations, consult the plugin documentation.</source>
         <translation>La versión usada de GDAL no soporta las capas VRT con el dialecto SQLite combinado con la función PointFromColumn. Para más información, consulta la documentación de la herramienta.</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="678"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="683"/>
         <source>Please select an input file</source>
         <translation>Por favor selecciona un archivo de ingreso</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="681"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="686"/>
         <source>Please select a sheet</source>
         <translation>Por favor selecciona una hoja</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="686"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="691"/>
         <source>Please select an x field</source>
         <translation>Por favor selecciona un campo X</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="689"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="694"/>
         <source>Please select an y field</source>
         <translation>Por favor selecciona un campo Y</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="692"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="697"/>
         <source>Please select a geometry field</source>
         <translation>Por favor selecciona un campo de geometría</translation>
     </message>

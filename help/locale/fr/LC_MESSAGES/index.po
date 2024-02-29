@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SpreadsheetLayers 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-02 14:00+0000\n"
+"POT-Creation-Date: 2024-02-29 07:12+0000\n"
 "PO-Revision-Date: 2022-08-20 17:09+0000\n"
 "Last-Translator: Arnaud Morvan <arnaud.morvan@camptocamp.com>, 2024\n"
 "Language-Team: French (https://app.transifex.com/camptocamp/teams/148927/fr/)\n"
@@ -178,6 +178,7 @@ msgstr "ouvrez la boite de dialogue *Préférences* / *Options*;"
 #: ../../README.rst:73
 msgid "select *System* tab, and go to *Environment* section;"
 msgstr ""
+"sélectionnez l'onglet *Système* et allez à la section *Environnement*;"
 
 #: ../../README.rst:74
 msgid "check *Use custom variables*."
