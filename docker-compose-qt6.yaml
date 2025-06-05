@@ -10,8 +10,6 @@ services:
 
     volumes:
       - .:/src
-    # environment:
-    #   - PYTHONPATH=/home/pyqgisdev/.local/lib/python3.12/site-packages/
 
   qgis:
     image: ghcr.io/qgis/qgis-qt6-unstable:main

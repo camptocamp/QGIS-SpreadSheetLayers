@@ -55,15 +55,15 @@ class GeometryType(Enum):
 
 
 GEOMETRY_TYPES = (
-    (QgsWkbTypes.NoGeometry, GeometryType.wkbNone),
-    (QgsWkbTypes.Unknown, GeometryType.wkbUnknown),
-    (QgsWkbTypes.Point, GeometryType.wkbPoint),
-    (QgsWkbTypes.LineString, GeometryType.wkbLineString),
-    (QgsWkbTypes.Polygon, GeometryType.wkbPolygon),
-    (QgsWkbTypes.MultiPoint, GeometryType.wkbMultiPoint),
-    (QgsWkbTypes.MultiLineString, GeometryType.wkbMultiLineString),
-    (QgsWkbTypes.MultiPolygon, GeometryType.wkbMultiPolygon),
-    (QgsWkbTypes.GeometryCollection, GeometryType.wkbGeometryCollection),
+    (QgsWkbTypes.Type.NoGeometry, GeometryType.wkbNone),
+    (QgsWkbTypes.Type.Unknown, GeometryType.wkbUnknown),
+    (QgsWkbTypes.Type.Point, GeometryType.wkbPoint),
+    (QgsWkbTypes.Type.LineString, GeometryType.wkbLineString),
+    (QgsWkbTypes.Type.Polygon, GeometryType.wkbPolygon),
+    (QgsWkbTypes.Type.MultiPoint, GeometryType.wkbMultiPoint),
+    (QgsWkbTypes.Type.MultiLineString, GeometryType.wkbMultiLineString),
+    (QgsWkbTypes.Type.MultiPolygon, GeometryType.wkbMultiPolygon),
+    (QgsWkbTypes.Type.GeometryCollection, GeometryType.wkbGeometryCollection),
 )
 
 
@@ -292,10 +292,10 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
         self.sampleView.setItemDelegate(OgrFieldTypeDelegate())
 
     def info(self, msg):
-        self.messageBar.pushMessage(msg, Qgis.Info, 5)
+        self.messageBar.pushMessage(msg, Qgis.MessageLevel.Info, 5)
 
     def warning(self, msg):
-        self.messageBar.pushMessage(msg, Qgis.Warning, 5)
+        self.messageBar.pushMessage(msg, Qgis.MessageLevel.Warning, 5)
 
     def filePath(self):
         return self.filePathEdit.text()
@@ -360,7 +360,7 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
         dataSource = ogr.Open(filePath, 0)
         if dataSource is None:
             self.messageBar.pushMessage(
-                "Could not open {}".format(filePath), Qgis.Warning, 5
+                "Could not open {}".format(filePath), Qgis.MessageLevel.Warning, 5
             )
         self.dataSource = dataSource
 
@@ -383,7 +383,7 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
         dataSource = ogr.Open(filePath, 0)
         if dataSource is None:
             self.messageBar.pushMessage(
-                "Could not open {}".format(filePath), Qgis.Warning, 5
+                "Could not open {}".format(filePath), Qgis.MessageLevel.Warning, 5
             )
         self.sampleDatasource = dataSource
 
@@ -698,7 +698,7 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
                         raise ValueError(self.tr("Please select a geometry field"))
 
         except ValueError as e:
-            self.messageBar.pushMessage(str(e), Qgis.Warning, 5)
+            self.messageBar.pushMessage(str(e), Qgis.MessageLevel.Warning, 5)
             return False
 
         return True
@@ -941,7 +941,7 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
                     QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel
                 )
                 msgBox.setDefaultButton(QtWidgets.QMessageBox.Cancel)
-                ret = msgBox.exec_()
+                ret = msgBox.exec()
                 if ret == QtWidgets.QMessageBox.Cancel:
                     return False
             QtCore.QFile.remove(vrtPath)
