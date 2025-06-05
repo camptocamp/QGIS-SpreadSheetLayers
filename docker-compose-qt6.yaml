@@ -1,0 +1,32 @@
+services:
+  pyqt5_to_pyqt6:
+    # image: ghcr.io/qgis/pyqgis4-checker:main
+    # image: registry.gitlab.com/oslandia/qgis/pyqgis-4-checker/pyqgis-qt-checker:latest
+
+    # Use an up to date version of the pyqt5_to_pyqt6 script
+    build:
+      context: ./docker
+      dockerfile: pyqt5_to_pyqt6.dockerfile
+
+    volumes:
+      - .:/src
+    # environment:
+    #   - PYTHONPATH=/home/pyqgisdev/.local/lib/python3.12/site-packages/
+
+  qgis:
+    image: ghcr.io/qgis/qgis-qt6-unstable:main
+    volumes:
+      - ${PWD}/SpreadsheetLayers:/app/SpreadsheetLayers
+      - ${PWD}/tests:/app/tests
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      # - qgis-settings:/home/user/.local/share/QGIS/QGIS3/profiles/default
+    environment:
+      - PYTHONPATH=/app:/usr/share/qgis/python/plugins/
+      - QGIS_DEBUG=0
+      - QGIS_LOG_FILE=/dev/null
+      - QGIS_PLUGINPATH=/app
+      - DISPLAY=unix${DISPLAY}
+      - LC_ALL=C.utf8
+      - LANG=C.utf8
+    entrypoint: ""
+    command: qgis
