@@ -20,9 +20,11 @@
  *                                                                         *
  ***************************************************************************/
 """
-
 import os.path
-from pkg_resources import resource_filename
+# ligne dépréciée
+# from pkg_resources import resource_filename
+# Ligne en remplacement
+import importlib.resources
 
 from qgis.core import Qgis, QgsVectorLayer, QgsProject
 from qgis.PyQt import QtCore, QtGui, QtWidgets
@@ -63,9 +65,10 @@ class SpreadsheetLayersPlugin(QtCore.QObject):
     def initGui(self):
         self.action = QtWidgets.QAction(
             QtGui.QIcon(
-                resource_filename(
-                    "SpreadsheetLayers", "resources/icon/mActionAddSpreadsheetLayer.svg"
-                )
+                # ligne dépréciée
+                # resource_filename("SpreadsheetLayers", "resources/icon/mActionAddSpreadsheetLayer.svg")
+                # Ligne en remplacement
+                str(importlib.resources.files("SpreadsheetLayers").joinpath("resources/icon/mActionAddSpreadsheetLayer.svg"))
             ),
             self.tr("Add Spreadsheet Layer…"),
             self,
@@ -88,16 +91,19 @@ class SpreadsheetLayersPlugin(QtCore.QObject):
             else:
                 self.iface.layerMenu().removeAction(self.action)
             self.iface.layerToolBar().removeAction(self.action)
+        if hasattr(self, "debug_action"):
+            self.iface.removeToolBarIcon(self.debug_action)
 
     def showDialog(self):
         dlg = SpreadsheetLayersDialog(self.iface.mainWindow())
         dlg.show()
-        if dlg.exec_():
+        if dlg.exec():
             layer = QgsVectorLayer(dlg.vrtPath(), dlg.layerName(), "ogr")
             layer.setProviderEncoding("UTF-8")
             if not layer.isValid():
                 # fix_print_with_import
                 print("Layer failed to load")
             else:
-                QgsProject.instance().addMapLayer(layer)
+                # QgsProject.instance().addMapLayer(layer)
+                pass
         dlg.deleteLater()

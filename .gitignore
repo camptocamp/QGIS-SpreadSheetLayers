@@ -6,4 +6,5 @@
 .pytest_cache
 dist
 SpreadsheetLayers/help
+SpreadsheetLayers/libs
 .coverage

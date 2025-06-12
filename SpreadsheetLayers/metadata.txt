@@ -1,25 +1,28 @@
-# This file contains metadata for your plugin. Since 
-# version 2.0 of QGIS this is the proper way to supply 
-# information about a plugin. The old method of 
-# embedding metadata in __init__.py will 
-# is no longer supported since version 2.0.
-
-# This file should be included when you package your plugin.
-
 # Mandatory items:
 
 [general]
-name=Spreadsheet Layers
+name=Spreadsheet Layers Reloaded
+supportsQt6=True
+version=2.3.0
 qgisMinimumVersion=3.0
 description=Load layers from spreadsheet files (*.ods, *.xls, *.xlsx)
+
+about[fr]=Ce plugin ajoute une entrée « Ajouter une couche de feuille de calcul » dans le menu « Couche » / « Ajouter une nouvelle couche » et un bouton correspondant dans la barre d'outils « Couches ».
+	Ces deux liens ouvrent la même boîte de dialogue pour charger une couche depuis un fichier tableur (*.ods, *.xls, *.xlsx) avec quelques options (utiliser l'en-tête à la première ligne, ignorer certaines lignes et éventuellement charger la géométrie à partir des champs x et y).
+	Lorsque cette boîte de dialogue est acceptée, un nouveau fichier VRT GDAL est créé dans le même dossier que le fichier de données source et le nom de la couche, étendu avec le suffixe .vrt, et chargé dans QGIS à l'aide du pilote VRT OGR.
+	Lorsque le même fichier est réutilisé deux fois, la boîte de dialogue charge ses valeurs depuis le fichier .vrt existant.
+	Aucune dépendance supplémentaire n'est requise.
+	Correction des éléments de code python dépréciés, export sqlite, ajout de bibliothèques et mise en conformité Qt6 par francois.thevand@gmail.com
+
 about=This plugin adds a "Add spreadsheet layer" entry in "Layer" / "Add new Layer" menu and a corresponding button in the "Layers" toolbar.
     These two links open the same dialog to load a layer from a spreadsheet file (*.ods, *.xls, *.xlsx) with some options (use header at first line, ignore some rows and optionally load geometry from x and y fields).
     When this dialog is accepted, it creates a new GDAL VRT file in same folder as the source data file and layer name, expanded with a .vrt suffix which is loaded into QGIS using OGR VRT driver.
     When reusing the same file twice, the dialog loads its values from the existing .vrt file.
     No need to install additional dependencies.
-version=2.1.2
-author=Camptocamp
-email=info@camptocamp.com
+	Fixed deprecated python code elements, sqlite export, added libraries, and Qt6 compliance by francois.thevand@gmail.com
+
+author=François Thevand (d'après Camptocamp)
+email=francois.thevand@gmail.com
 
 # End of mandatory metadata
 
@@ -31,9 +34,9 @@ email=info@camptocamp.com
 # Tags are comma separated with spaces allowed
 tags=spreadsheet,ods,xls,xlsx,calc,excel
 
-homepage=https://github.com/camptocamp/QGIS-SpreadSheetLayers
-tracker=https://github.com/camptocamp/QGIS-SpreadSheetLayers/issues
-repository=https://github.com/camptocamp/QGIS-SpreadSheetLayers
+homepage=https://github.com/fthvd/QGIS-SpreadSheetLayers
+tracker=https://github.com/fthvd/QGIS-SpreadSheetLayers/issues
+repository=https://github.com/fthvd/QGIS-SpreadSheetLayers
 icon=resources/icon/mActionAddSpreadsheetLayer.svg
 # experimental flag
 experimental=False

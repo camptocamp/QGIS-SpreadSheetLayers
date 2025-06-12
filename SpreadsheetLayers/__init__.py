@@ -21,7 +21,13 @@
  ***************************************************************************/
  This script initializes the plugin, making it known to QGIS.
 """
+from pathlib import Path
+import sys
 
+# Ajout du dossier "libs" au PYTHONPATH pour les dépendances embarquées
+libs_path = Path(__file__).resolve().parent / "libs"
+if str(libs_path) not in sys.path:
+    sys.path.insert(0, str(libs_path))
 
 # noinspection PyPep8Naming
 def classFactory(iface):  # pylint: disable=invalid-name
@@ -31,6 +37,7 @@ def classFactory(iface):  # pylint: disable=invalid-name
     :type iface: QgsInterface
     """
     #
+
     from .SpreadsheetLayersPlugin import SpreadsheetLayersPlugin
 
     return SpreadsheetLayersPlugin(iface)
