@@ -513,9 +513,14 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
             self._non_empty_rows = self.layer.GetFeatureCount()
 
     def sql(self):
-        sql = ("SELECT * FROM '{}'" " LIMIT {} OFFSET {}").format(
-            self.sheet(), self.limit(), self.offset()
-        )
+        if self.eofDetection() or self.offset() == 0:
+            sql = ("SELECT * FROM '{}'" " LIMIT {} OFFSET {}").format(
+                self.sheet(), self.limit(), self.offset()
+            )
+        else:
+            sql = ("SELECT * FROM '{}'" " LIMIT -1 OFFSET {}").format(
+                self.sheet(), self.offset()
+            )
         return sql
 
     def updateGeometry(self):
