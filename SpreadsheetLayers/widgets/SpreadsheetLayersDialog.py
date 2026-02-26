@@ -24,7 +24,6 @@ import datetime
 import os
 import re
 from enum import Enum
-from pkg_resources import resource_filename
 from tempfile import gettempdir
 
 from osgeo import ogr
@@ -33,6 +32,19 @@ from qgis.gui import QgsMessageBar
 from qgis.PyQt import QtCore, QtGui, QtWidgets, uic
 
 from SpreadsheetLayers.util.gdal_util import GDAL_COMPAT
+
+
+def _warmup_ogr_layer(layer):
+    """Trigger GDAL column discovery so subsequent calls succeed.
+
+    The GDAL XLSX driver throws RuntimeError on the first
+    GetLayerDefn() call for spreadsheets whose rows have
+    inconsistent column counts.  A second call succeeds.
+    """
+    try:
+        layer.GetLayerDefn()
+    except RuntimeError:
+        pass
 
 
 class GeometryEncoding(Enum):
@@ -144,8 +156,9 @@ class OgrTableModel(QtGui.QStandardItemModel):
         if layer is None:
             return
 
-        layerDefn = layer.GetLayerDefn()
+        _warmup_ogr_layer(layer)
 
+        layerDefn = layer.GetLayerDefn()
         rows = min(layer.GetFeatureCount(), self.maxRowCount)
         columns = layerDefn.GetFieldCount()
 
@@ -274,6 +287,7 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
         self.dataSource = None
         self.layer = None
         self.fields = None
+        self._non_empty_rows = 0
         self.sampleDatasource = None
         self.ogrHeadersLabel.setText("")
 
@@ -408,6 +422,7 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
             self.layer = None
         else:
             self.layer = self.sheetBox.itemData(index)
+            _warmup_ogr_layer(self.layer)
             self.setLayerName(
                 "{}-{}".format(
                     self.finfo.completeBaseName(), self.sheetBox.itemText(index)
@@ -488,10 +503,7 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
             feature = layer.GetNextFeature()
             current_row = 1
             while feature is not None:
-                # values = []
-
                 for iField in range(0, layerDefn.GetFieldCount()):
-                    # values.append(feature.GetFieldAsString(iField))
                     if feature.IsFieldSet(iField):
                         self._non_empty_rows = current_row
 
@@ -501,9 +513,14 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
             self._non_empty_rows = self.layer.GetFeatureCount()
 
     def sql(self):
-        sql = ("SELECT * FROM '{}'" " LIMIT {} OFFSET {}").format(
-            self.sheet(), self.limit(), self.offset()
-        )
+        if self.eofDetection() or self.offset() == 0:
+            sql = ("SELECT * FROM '{}'" " LIMIT {} OFFSET {}").format(
+                self.sheet(), self.limit(), self.offset()
+            )
+        else:
+            sql = ("SELECT * FROM '{}'" " LIMIT -1 OFFSET {}").format(
+                self.sheet(), self.offset()
+            )
         return sql
 
     def updateGeometry(self):
@@ -980,7 +997,7 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
 
     @QtCore.pyqtSlot()
     def on_helpButton_clicked(self):
-        help_path = resource_filename("SpreadsheetLayers", "help")
+        help_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "help")
         user_locale = QtCore.QSettings().value("locale/userLocale")[0:2]
         locale_path = os.path.join(help_path, user_locale)
         if not os.path.exists(locale_path):
