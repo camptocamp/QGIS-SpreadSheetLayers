@@ -22,7 +22,7 @@
 """
 
 import os.path
-from pkg_resources import resource_filename
+from importlib import resources
 
 from qgis.core import Qgis, QgsVectorLayer, QgsProject
 from qgis.PyQt import QtCore, QtGui, QtWidgets
@@ -61,12 +61,14 @@ class SpreadsheetLayersPlugin(QtCore.QObject):
                 QtCore.QCoreApplication.installTranslator(self.translator)
 
     def initGui(self):
+        icon_path = (
+            resources.files("SpreadsheetLayers")
+            / "resources"
+            / "icon"
+            / "mActionAddSpreadsheetLayer.svg"
+        )
         self.action = QtWidgets.QAction(
-            QtGui.QIcon(
-                resource_filename(
-                    "SpreadsheetLayers", "resources/icon/mActionAddSpreadsheetLayer.svg"
-                )
-            ),
+            QtGui.QIcon(str(icon_path)),
             self.tr("Add Spreadsheet Layer…"),
             self,
         )

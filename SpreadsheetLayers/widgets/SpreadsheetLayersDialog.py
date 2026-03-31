@@ -25,7 +25,7 @@ import datetime
 import os
 import re
 from enum import Enum
-from pkg_resources import resource_filename
+from importlib import resources
 from tempfile import gettempdir
 
 from osgeo import ogr
@@ -981,10 +981,10 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
 
     @QtCore.pyqtSlot()
     def on_helpButton_clicked(self):
-        help_path = resource_filename("SpreadsheetLayers", "help")
+        help_path = resources.files("SpreadsheetLayers") / "help"
         user_locale = QtCore.QSettings().value("locale/userLocale")[0:2]
-        locale_path = os.path.join(help_path, user_locale)
-        if not os.path.exists(locale_path):
-            locale_path = os.path.join(help_path, "en")
-        path = os.path.join(locale_path, "index.html")
-        QtGui.QDesktopServices.openUrl(QtCore.QUrl.fromLocalFile(path))
+        locale_path = help_path / user_locale
+        if not locale_path.exists():
+            locale_path = help_path / "en"
+        path = locale_path / "index.html"
+        QtGui.QDesktopServices.openUrl(QtCore.QUrl.fromLocalFile(str(path)))
