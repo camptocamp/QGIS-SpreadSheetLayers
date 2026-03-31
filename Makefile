@@ -49,7 +49,7 @@ endif
 
 export DOCKER_BUILDKIT=1
 
-DOCKER_RUN_CMD = docker-compose run --rm --user `id -u` tester
+DOCKER_RUN_CMD = docker compose run --rm --user `id -u` tester
 
 -include local.mk
 
@@ -73,7 +73,7 @@ clean: ## Delete generated files
 
 .PHONY: qgis
 qgis: ## Run QGIS desktop
-	docker-compose run --rm --user `id -u`:`id -g` --publish "5679:5679" qgis
+	docker compose run --rm --user `id -u`:`id -g` --publish "5679:5679" qgis
 
 .PHONY: check
 check: ## Run linters
@@ -93,7 +93,7 @@ nosetests: ## Run the automated tests suite with nose (useful when QGIS crash)
 
 .PHONY: test-overwrite-expected
 test-overwrite-expected: ## Run the automated tests suite and overwrite expected results
-	docker-compose run --rm --user `id -u` -e OVERWRITE_EXPECTED=true tester make -f docker.mk pytest
+	docker compose run --rm --user `id -u` -e OVERWRITE_EXPECTED=true tester make -f docker.mk pytest
 
 .PHONY: bash
 bash: ## Run bash in tests container
@@ -112,10 +112,10 @@ docker-build: ## Build docker images
 ###############
 
 tx-pull: ## Pull translations from transifex using tx client
-	docker-compose run --rm --user `id -u` -v "$(HOME)/.transifexrc:/home/user/.transifexrc" tester make -f docker.mk tx-pull
+	docker compose run --rm --user `id -u` -v "$(HOME)/.transifexrc:/home/user/.transifexrc" tester make -f docker.mk tx-pull
 
 tx-push: ## Push translations on transifex using tx client
-	docker-compose run --rm --user `id -u` -v "$(HOME)/.transifexrc:/home/user/.transifexrc" tester make -f docker.mk tx-push
+	docker compose run --rm --user `id -u` -v "$(HOME)/.transifexrc:/home/user/.transifexrc" tester make -f docker.mk tx-push
 
 
 #############
