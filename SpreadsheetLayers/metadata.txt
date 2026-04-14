@@ -10,7 +10,8 @@
 
 [general]
 name=Spreadsheet Layers
-qgisMinimumVersion=3.0
+qgisMinimumVersion=3.44
+qgisMaximumVersion=4.99
 description=Load layers from spreadsheet files (*.ods, *.xls, *.xlsx)
 about=This plugin adds a "Add spreadsheet layer" entry in "Layer" / "Add new Layer" menu and a corresponding button in the "Layers" toolbar.
     These two links open the same dialog to load a layer from a spreadsheet file (*.ods, *.xls, *.xlsx) with some options (use header at first line, ignore some rows and optionally load geometry from x and y fields).
@@ -20,6 +21,7 @@ about=This plugin adds a "Add spreadsheet layer" entry in "Layer" / "Add new Lay
 version=2.1.3
 author=Camptocamp
 email=info@camptocamp.com
+supportsQt6=True
 
 # End of mandatory metadata
 
