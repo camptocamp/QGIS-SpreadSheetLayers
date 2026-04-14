@@ -2,9 +2,9 @@
 <context>
     <name>GeometryEncodingsModel</name>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="74"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="75"/>
         <source>PointFromColumns</source>
-        <translation type="unfinished"/>
+        <translation>属性から点を生成</translation>
     </message>
 </context>
 <context>
@@ -105,53 +105,53 @@
         <translation>ヘルプ</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="312"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="313"/>
         <source>Choose a spreadsheet file to open</source>
         <translation>開く表計算ファイルを選択する</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="312"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="313"/>
         <source>Spreadsheet files</source>
         <translation>表計算ファイル</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="312"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="313"/>
         <source>GDAL Virtual Format</source>
         <translation>GDAL仮想データソース</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="312"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="313"/>
         <source>All files</source>
         <translation>全てのファイル</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="515"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="516"/>
         <source>Used GDAL version doesn't support VRT layers with sqlite dialect mixed with PointFromColumn functionality.
 For more informations, consult the plugin documentation.</source>
         <translation>現バージョンのGDALは、sqliteダイアログを使用したVRTレイヤーとカラムからのジオメトリの組み合わせに対応していません。</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="683"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="684"/>
         <source>Please select an input file</source>
         <translation>ファイルを選択してください</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="686"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="687"/>
         <source>Please select a sheet</source>
         <translation>シートを選択してください</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="691"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="692"/>
         <source>Please select an x field</source>
         <translation>x座標を選択してください</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="694"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="695"/>
         <source>Please select an y field</source>
         <translation>y座標を選択してください</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="697"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="698"/>
         <source>Please select a geometry field</source>
         <translation>地物の座標を選択してください</translation>
     </message>
@@ -159,7 +159,7 @@ For more informations, consult the plugin documentation.</source>
 <context>
     <name>SpreadsheetLayersPlugin</name>
     <message>
-        <location filename="../SpreadsheetLayersPlugin.py" line="64"/>
+        <location filename="../SpreadsheetLayersPlugin.py" line="70"/>
         <source>Add Spreadsheet Layer…</source>
         <translation>表計算レイヤーの追加</translation>
     </message>

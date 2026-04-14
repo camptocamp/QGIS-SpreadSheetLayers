@@ -2,9 +2,9 @@
 <context>
     <name>GeometryEncodingsModel</name>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="74"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="75"/>
         <source>PointFromColumns</source>
-        <translation type="unfinished"/>
+        <translation>PointFromColumns (Punkt aus Spalten)</translation>
     </message>
 </context>
 <context>
@@ -105,54 +105,54 @@
         <translation>Hilfe</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="312"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="313"/>
         <source>Choose a spreadsheet file to open</source>
         <translation>Tabellendatei zum Öffnen auswählen</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="312"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="313"/>
         <source>Spreadsheet files</source>
         <translation>Tabellendateien</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="312"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="313"/>
         <source>GDAL Virtual Format</source>
         <translation>GDAL Virtuelles Format</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="312"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="313"/>
         <source>All files</source>
         <translation>Alle Dateien</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="515"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="516"/>
         <source>Used GDAL version doesn't support VRT layers with sqlite dialect mixed with PointFromColumn functionality.
 For more informations, consult the plugin documentation.</source>
         <translation>Die verwendete GDAL-Version unterstützt keine VRT-Layer mit SQLite in Verbindung mit PointFromColumn-Funktionalität.
 Für weitere Informationen bitte die Plugin-Dokumentation lesen.</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="683"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="684"/>
         <source>Please select an input file</source>
         <translation>Bitte eine Eingabedatei auswählen</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="686"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="687"/>
         <source>Please select a sheet</source>
         <translation>Bitte ein Arbeitsblatt auswählen</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="691"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="692"/>
         <source>Please select an x field</source>
         <translation>Bitte ein X-Feld auswählen</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="694"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="695"/>
         <source>Please select an y field</source>
         <translation>Bitte ein Y-Feld auswählen</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="697"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="698"/>
         <source>Please select a geometry field</source>
         <translation>Bitte ein Geometrie-Feld auswählen</translation>
     </message>
@@ -160,7 +160,7 @@ Für weitere Informationen bitte die Plugin-Dokumentation lesen.</translation>
 <context>
     <name>SpreadsheetLayersPlugin</name>
     <message>
-        <location filename="../SpreadsheetLayersPlugin.py" line="64"/>
+        <location filename="../SpreadsheetLayersPlugin.py" line="70"/>
         <source>Add Spreadsheet Layer…</source>
         <translation>Tabellenkalkulations-Layer hinzufügen…</translation>
     </message>

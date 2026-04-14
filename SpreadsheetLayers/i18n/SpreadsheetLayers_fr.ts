@@ -2,7 +2,7 @@
 <context>
     <name>GeometryEncodingsModel</name>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="74"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="75"/>
         <source>PointFromColumns</source>
         <translation type="unfinished"/>
     </message>
@@ -105,53 +105,53 @@
         <translation>Aide</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="312"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="313"/>
         <source>Choose a spreadsheet file to open</source>
         <translation>Choisissez un fichier feuille de calcul à ouvrir</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="312"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="313"/>
         <source>Spreadsheet files</source>
         <translation>Fichiers feuille de calcul</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="312"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="313"/>
         <source>GDAL Virtual Format</source>
         <translation>Source de données virtuelle GDAL</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="312"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="313"/>
         <source>All files</source>
         <translation>Tous les fichiers</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="515"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="516"/>
         <source>Used GDAL version doesn't support VRT layers with sqlite dialect mixed with PointFromColumn functionality.
 For more informations, consult the plugin documentation.</source>
         <translation>La version courante de GDAL ne supporte pas la combinaison couches VRT utilisant le dialecte sqlite et la geometrie depuis les colonnes.</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="683"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="684"/>
         <source>Please select an input file</source>
         <translation>Veuillez sélectionner un fichier</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="686"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="687"/>
         <source>Please select a sheet</source>
         <translation>Veuillez sélectionner une feuille</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="691"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="692"/>
         <source>Please select an x field</source>
         <translation>Veuillez sélectionner un champ x</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="694"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="695"/>
         <source>Please select an y field</source>
         <translation>Veuillez sélectionner un champ y</translation>
     </message>
     <message>
-        <location filename="../widgets/SpreadsheetLayersDialog.py" line="697"/>
+        <location filename="../widgets/SpreadsheetLayersDialog.py" line="698"/>
         <source>Please select a geometry field</source>
         <translation>Veuillez sélectionner un champ de géométrie</translation>
     </message>
@@ -159,7 +159,7 @@ For more informations, consult the plugin documentation.</source>
 <context>
     <name>SpreadsheetLayersPlugin</name>
     <message>
-        <location filename="../SpreadsheetLayersPlugin.py" line="64"/>
+        <location filename="../SpreadsheetLayersPlugin.py" line="70"/>
         <source>Add Spreadsheet Layer…</source>
         <translation>Ajouter une couche feuille de calcul…</translation>
     </message>
