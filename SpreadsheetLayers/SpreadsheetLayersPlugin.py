@@ -94,7 +94,7 @@ class SpreadsheetLayersPlugin(QtCore.QObject):
     def showDialog(self):
         dlg = SpreadsheetLayersDialog(self.iface.mainWindow())
         dlg.show()
-        if dlg.exec_():
+        if dlg.exec():
             layer = QgsVectorLayer(dlg.vrtPath(), dlg.layerName(), "ogr")
             layer.setProviderEncoding("UTF-8")
             if not layer.isValid():

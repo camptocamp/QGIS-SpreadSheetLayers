@@ -55,15 +55,15 @@ class GeometryType(Enum):
 
 
 GEOMETRY_TYPES = (
-    (QgsWkbTypes.NoGeometry, GeometryType.wkbNone),
-    (QgsWkbTypes.Unknown, GeometryType.wkbUnknown),
-    (QgsWkbTypes.Point, GeometryType.wkbPoint),
-    (QgsWkbTypes.LineString, GeometryType.wkbLineString),
-    (QgsWkbTypes.Polygon, GeometryType.wkbPolygon),
-    (QgsWkbTypes.MultiPoint, GeometryType.wkbMultiPoint),
-    (QgsWkbTypes.MultiLineString, GeometryType.wkbMultiLineString),
-    (QgsWkbTypes.MultiPolygon, GeometryType.wkbMultiPolygon),
-    (QgsWkbTypes.GeometryCollection, GeometryType.wkbGeometryCollection),
+    (QgsWkbTypes.Type.NoGeometry, GeometryType.wkbNone),
+    (QgsWkbTypes.Type.Unknown, GeometryType.wkbUnknown),
+    (QgsWkbTypes.Type.Point, GeometryType.wkbPoint),
+    (QgsWkbTypes.Type.LineString, GeometryType.wkbLineString),
+    (QgsWkbTypes.Type.Polygon, GeometryType.wkbPolygon),
+    (QgsWkbTypes.Type.MultiPoint, GeometryType.wkbMultiPoint),
+    (QgsWkbTypes.Type.MultiLineString, GeometryType.wkbMultiLineString),
+    (QgsWkbTypes.Type.MultiPolygon, GeometryType.wkbMultiPolygon),
+    (QgsWkbTypes.Type.GeometryCollection, GeometryType.wkbGeometryCollection),
 )
 
 
@@ -81,11 +81,11 @@ class GeometryEncodingsModel(QtCore.QAbstractListModel):
     def rowCount(self, parent=QtCore.QModelIndex()):
         return len(self._encodings)
 
-    def data(self, index, role=QtCore.Qt.DisplayRole):
+    def data(self, index, role=QtCore.Qt.ItemDataRole.DisplayRole):
         encoding = self._encodings[index.row()]
-        if role == QtCore.Qt.DisplayRole:
+        if role == QtCore.Qt.ItemDataRole.DisplayRole:
             return encoding[0]
-        if role == QtCore.Qt.EditRole:
+        if role == QtCore.Qt.ItemDataRole.EditRole:
             return encoding[1]
 
 
@@ -95,15 +95,15 @@ class GeometryTypesModel(QtCore.QAbstractListModel):
     def rowCount(self, parent=QtCore.QModelIndex):
         return len(GEOMETRY_TYPES)
 
-    def data(self, index, role=QtCore.Qt.DisplayRole):
+    def data(self, index, role=QtCore.Qt.ItemDataRole.DisplayRole):
         geometry_type = GEOMETRY_TYPES[index.row()]
-        if role == QtCore.Qt.DisplayRole:
+        if role == QtCore.Qt.ItemDataRole.DisplayRole:
             if Qgis.QGIS_VERSION_INT >= 31800:
                 return QgsWkbTypes.translatedDisplayString(geometry_type[0])
             else:
                 return QgsWkbTypes.displayString(geometry_type[0])
 
-        if role == QtCore.Qt.EditRole:
+        if role == QtCore.Qt.ItemDataRole.EditRole:
             return geometry_type[1]
 
 
@@ -117,11 +117,11 @@ class FieldsModel(QtCore.QAbstractListModel):
     def rowCount(self, parent=QtCore.QModelIndex()):
         return len(self._fields)
 
-    def data(self, index, role=QtCore.Qt.DisplayRole):
+    def data(self, index, role=QtCore.Qt.ItemDataRole.DisplayRole):
         field = self._fields[index.row()]
-        if role == QtCore.Qt.DisplayRole:
+        if role == QtCore.Qt.ItemDataRole.DisplayRole:
             return field["name"]
-        if role == QtCore.Qt.EditRole:
+        if role == QtCore.Qt.ItemDataRole.EditRole:
             return field["src"]
 
 
@@ -180,37 +180,37 @@ class OgrTableModel(QtGui.QStandardItemModel):
         if fieldDefn.GetType() == ogr.OFTDate:
             if feature.IsFieldSet(iField):
                 value = datetime.date(*feature.GetFieldAsDateTime(iField)[:3])
-            hAlign = QtCore.Qt.AlignCenter
+            hAlign = QtCore.Qt.AlignmentFlag.AlignCenter
 
         elif fieldDefn.GetType() == ogr.OFTInteger:
             if feature.IsFieldSet(iField):
                 value = feature.GetFieldAsInteger(iField)
-            hAlign = QtCore.Qt.AlignRight
+            hAlign = QtCore.Qt.AlignmentFlag.AlignRight
 
         elif fieldDefn.GetType() == ogr.OFTReal:
             if feature.IsFieldSet(iField):
                 value = feature.GetFieldAsDouble(iField)
-            hAlign = QtCore.Qt.AlignRight
+            hAlign = QtCore.Qt.AlignmentFlag.AlignRight
 
         elif fieldDefn.GetType() == ogr.OFTString:
             if feature.IsFieldSet(iField):
                 value = feature.GetFieldAsString(iField)
-            hAlign = QtCore.Qt.AlignLeft
+            hAlign = QtCore.Qt.AlignmentFlag.AlignLeft
 
         else:
             if feature.IsFieldSet(iField):
                 value = feature.GetFieldAsString(iField)
-            hAlign = QtCore.Qt.AlignLeft
+            hAlign = QtCore.Qt.AlignmentFlag.AlignLeft
 
         if value is None:
             item = QtGui.QStandardItem("NULL")
-            item.setForeground(QtGui.QBrush(QtCore.Qt.gray))
+            item.setForeground(QtGui.QBrush(QtCore.Qt.GlobalColor.gray))
             font = item.font()
             font.setItalic(True)
             item.setFont(font)
         else:
             item = QtGui.QStandardItem(str(value))
-        item.setTextAlignment(hAlign | QtCore.Qt.AlignVCenter)
+        item.setTextAlignment(hAlign | QtCore.Qt.AlignmentFlag.AlignVCenter)
         return item
 
 
@@ -433,11 +433,11 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
         self.updateSampleView()
 
     def header(self):
-        return self.headerBox.checkState() == QtCore.Qt.Checked
+        return self.headerBox.checkState() == QtCore.Qt.CheckState.Checked
 
     def setHeader(self, value):
         self.headerBox.setCheckState(
-            QtCore.Qt.Checked if value else QtCore.Qt.Unchecked
+            QtCore.Qt.CheckState.Checked if value else QtCore.Qt.CheckState.Unchecked
         )
 
     @QtCore.pyqtSlot(int)
@@ -465,11 +465,11 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
         return self._non_empty_rows - self.offset()
 
     def eofDetection(self):
-        return self.eofDetectionBox.checkState() == QtCore.Qt.Checked
+        return self.eofDetectionBox.checkState() == QtCore.Qt.CheckState.Checked
 
     def setEofDetection(self, value):
         self.eofDetectionBox.setCheckState(
-            QtCore.Qt.Checked if value else QtCore.Qt.Unchecked
+            QtCore.Qt.CheckState.Checked if value else QtCore.Qt.CheckState.Unchecked
         )
 
     @QtCore.pyqtSlot(int)
@@ -525,11 +525,11 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
 
     def geometryEncoding(self):
         index = self.geometryEncodingComboBox.currentIndex()
-        return self.geometryEncodingComboBox.itemData(index, QtCore.Qt.EditRole)
+        return self.geometryEncodingComboBox.itemData(index, QtCore.Qt.ItemDataRole.EditRole)
 
     def setGeometryEncoding(self, value):
         self.geometryEncodingComboBox.setCurrentIndex(
-            self.geometryEncodingComboBox.findData(value, QtCore.Qt.EditRole)
+            self.geometryEncodingComboBox.findData(value, QtCore.Qt.ItemDataRole.EditRole)
         )
 
     @QtCore.pyqtSlot(int)
@@ -543,33 +543,33 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
         index = self.geometryFieldComboBox.currentIndex()
         if index == -1:
             return ""
-        return self.geometryFieldComboBox.itemData(index, QtCore.Qt.EditRole)
+        return self.geometryFieldComboBox.itemData(index, QtCore.Qt.ItemDataRole.EditRole)
 
     def setGeometryField(self, fieldName):
         self.geometryFieldComboBox.setCurrentIndex(
-            self.geometryFieldComboBox.findData(fieldName, QtCore.Qt.EditRole)
+            self.geometryFieldComboBox.findData(fieldName, QtCore.Qt.ItemDataRole.EditRole)
         )
 
     def xField(self):
         index = self.xFieldBox.currentIndex()
         if index == -1:
             return ""
-        return self.xFieldBox.itemData(index, QtCore.Qt.EditRole)
+        return self.xFieldBox.itemData(index, QtCore.Qt.ItemDataRole.EditRole)
 
     def setXField(self, fieldName):
         self.xFieldBox.setCurrentIndex(
-            self.xFieldBox.findData(fieldName, QtCore.Qt.EditRole)
+            self.xFieldBox.findData(fieldName, QtCore.Qt.ItemDataRole.EditRole)
         )
 
     def yField(self):
         index = self.yFieldBox.currentIndex()
         if index == -1:
             return ""
-        return self.yFieldBox.itemData(index, QtCore.Qt.EditRole)
+        return self.yFieldBox.itemData(index, QtCore.Qt.ItemDataRole.EditRole)
 
     def setYField(self, fieldName):
         self.yFieldBox.setCurrentIndex(
-            self.yFieldBox.findData(fieldName, QtCore.Qt.EditRole)
+            self.yFieldBox.findData(fieldName, QtCore.Qt.ItemDataRole.EditRole)
         )
 
     def updateFieldBoxes(self):
@@ -623,11 +623,11 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
             return ""
         if self.geometryEncoding() == GeometryEncoding.PointFromColumns:
             return GeometryType.wkbPoint
-        return self.geometryTypeComboBox.itemData(index, QtCore.Qt.EditRole)
+        return self.geometryTypeComboBox.itemData(index, QtCore.Qt.ItemDataRole.EditRole)
 
     def setGeometryType(self, value):
         self.geometryTypeComboBox.setCurrentIndex(
-            self.geometryTypeComboBox.findData(value, QtCore.Qt.EditRole)
+            self.geometryTypeComboBox.findData(value, QtCore.Qt.ItemDataRole.EditRole)
         )
 
     def crs(self):
@@ -719,7 +719,9 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
             return False
 
         file = QtCore.QFile(vrtPath)
-        if not file.open(QtCore.QIODevice.ReadOnly | QtCore.QIODevice.Text):
+        if not file.open(
+                QtCore.QIODevice.OpenModeFlag.ReadOnly | QtCore.QIODevice.OpenModeFlag.Text
+        ):
             self.warning("Impossible to open VRT file {}".format(vrtPath))
             return False
 
@@ -748,7 +750,7 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
 
                 fields = []
 
-                while stream.readNext() != QtCore.QXmlStreamReader.EndDocument:
+                while stream.readNext() != QtCore.QXmlStreamReader.TokenType.EndDocument:
                     if stream.isComment():
                         text = stream.text()
                         pattern = re.compile(r"Header=(\w+)")
@@ -848,7 +850,7 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
 
     def prepareVrt(self, sample=False, without_fields=False):
         buffer = QtCore.QBuffer()
-        buffer.open(QtCore.QBuffer.ReadWrite)
+        buffer.open(QtCore.QIODeviceBase.OpenModeFlag.ReadWrite)
 
         stream = QtCore.QXmlStreamWriter(buffer)
         stream.setAutoFormatting(True)
@@ -928,7 +930,9 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
         vrtPath = self.vrtPath()
         file = QtCore.QFile(vrtPath)
         if file.exists():
-            if file.open(QtCore.QIODevice.ReadOnly | QtCore.QIODevice.Text):
+            if file.open(
+                    QtCore.QIODevice.OpenModeFlag.ReadOnly | QtCore.QIODevice.OpenModeFlag.Text
+            ):
                 oldContent = file.readAll()
                 file.close()
                 if content == oldContent:
@@ -938,15 +942,18 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
                 msgBox.setText("The file {} already exist.".format(vrtPath))
                 msgBox.setInformativeText("Do you want to overwrite ?")
                 msgBox.setStandardButtons(
-                    QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel
+                    QtWidgets.QMessageBox.StandardButton.Ok |
+                    QtWidgets.QMessageBox.StandardButton.Cancel
                 )
-                msgBox.setDefaultButton(QtWidgets.QMessageBox.Cancel)
-                ret = msgBox.exec_()
-                if ret == QtWidgets.QMessageBox.Cancel:
+                msgBox.setDefaultButton(QtWidgets.QMessageBox.StandardButton.Cancel)
+                ret = msgBox.exec()
+                if ret == QtWidgets.QMessageBox.StandardButton.Cancel:
                     return False
             QtCore.QFile.remove(vrtPath)
 
-        if not file.open(QtCore.QIODevice.ReadWrite | QtCore.QIODevice.Text):
+        if not file.open(
+                QtCore.QIODevice.OpenModeFlag.ReadWrite | QtCore.QIODevice.OpenModeFlag.Text
+        ):
             self.warning("Impossible to open VRT file {}".format(vrtPath))
             return False
 
@@ -962,7 +969,9 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
         if file.exists():
             QtCore.QFile.remove(vrtPath)
 
-        if not file.open(QtCore.QIODevice.ReadWrite | QtCore.QIODevice.Text):
+        if not file.open(
+                QtCore.QIODevice.OpenModeFlag.ReadWrite | QtCore.QIODevice.OpenModeFlag.Text
+        ):
             self.warning("Impossible to open VRT file {}".format(vrtPath))
             return False
 
