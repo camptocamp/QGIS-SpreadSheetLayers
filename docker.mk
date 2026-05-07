@@ -24,7 +24,11 @@ build: doc transcompile
 doc: ## Generate documentation files
 	make -C help html
 	mkdir -p $(PLUGINNAME)/help/
-	cp -r help/build/html/* $(PLUGINNAME)/help/
+	rsync -r \
+		--exclude="_sources" \
+		--exclude=".buildinfo" \
+		--exclude=".buildinfo.bak" \
+		help/build/html/ $(PLUGINNAME)/help/
 
 
 ########

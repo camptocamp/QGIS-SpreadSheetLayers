@@ -7,7 +7,8 @@ RUN --mount=type=cache,target=/var/lib/apt/lists \
         git \
         make \
         pyqt5-dev-tools \
-        qttools5-dev-tools
+        qttools5-dev-tools \
+        rsync
 
 COPY requirements-dev.txt /tmp/requirements-dev.txt
 RUN --mount=type=cache,target=/root/.cache \
