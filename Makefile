@@ -130,7 +130,9 @@ package: build
 	@echo "------------------------------------"
 	mkdir -p dist
 	rm -f dist/$(PLUGINNAME).zip
+	cp LICENSE $(PLUGINNAME)/
 	zip dist/$(PLUGINNAME).zip -r $(PLUGINNAME) -x '*/__pycache__/*'
+	rm -f $(PLUGINNAME)/LICENSE
 	echo "Created package: dist/$(PLUGINNAME).zip"
 
 .PHONY: upload
