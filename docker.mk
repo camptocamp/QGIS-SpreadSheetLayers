@@ -33,7 +33,7 @@ doc: ## Generate documentation files
 
 .PHONY: check
 check: ## Run all linters
-check: black-check flake8
+check: black-check flake8 bandit detect-secrets
 
 .PHONY: black
 black:
@@ -46,6 +46,14 @@ black-check:
 .PHONY: flake8
 flake8:
 	flake8 $(PLUGINNAME) tests
+
+.PHONY: bandit
+bandit:
+	bandit -r $(PLUGINNAME)
+
+.PHONY: detect-secrets
+detect-secrets:
+	detect-secrets scan $(PLUGINNAME)
 
 
 #########

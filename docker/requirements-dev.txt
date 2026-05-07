@@ -1,6 +1,8 @@
+bandit
 black
 coverage
 debugpy
+detect-secrets
 flake8
 nose
 psycopg2-binary
