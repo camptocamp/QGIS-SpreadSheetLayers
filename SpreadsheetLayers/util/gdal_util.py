@@ -15,10 +15,11 @@ def testGdal():
     f.close()
 
     vrt_xml = (
+        # path comes from tempfile.gettempdir(), not user input — no SQL injection risk
         """
 <OGRVRTDataSource>
     <OGRVRTLayer name="gdal_test">
-        <SrcDataSource relativeToVRT="0">"""
+        <SrcDataSource relativeToVRT="0">"""  # nosec B608
         + path
         + """</SrcDataSource>
         <SrcSql dialect="sqlite">SELECT * FROM gdal_test</SrcSql>

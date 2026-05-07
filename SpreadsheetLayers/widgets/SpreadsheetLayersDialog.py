@@ -502,9 +502,13 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
             self._non_empty_rows = self.layer.GetFeatureCount()
 
     def sql(self):
-        sql = ("SELECT * FROM '{}'" " LIMIT {} OFFSET {}").format(
-            self.sheet(), self.limit(), self.offset()
+        sheet = self.sheet().replace("'", "''")
+        sql = "SELECT * FROM '{}' LIMIT {:d} OFFSET {:d}".format(  # nosec B608
+            sheet, self.limit(), self.offset()
         )
+        # nosec B608: sheet name is SQL-escaped (single quotes doubled);
+        # limit/offset are enforced as integers via {:d}; no user input reaches
+        # this query directly — sheet names come from the spreadsheet file itself.
         return sql
 
     def updateGeometry(self):
@@ -754,7 +758,9 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
                         pattern = re.compile(r"Header=(\w+)")
                         match = pattern.search(text)
                         if match:
-                            self.setHeader(eval(match.group(1)))
+                            # Parse "True" or "False" as bool
+                            header = match.group(1) == "True"
+                            self.setHeader(header)
 
                     if stream.isStartElement():
                         if stream.name() == "SrcDataSource":
