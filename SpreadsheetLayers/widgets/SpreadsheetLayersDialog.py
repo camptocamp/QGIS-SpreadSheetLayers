@@ -642,15 +642,41 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
         crs.createFromString(authid)
         self.crsWidget.setCrs(crs)
 
+    def closePersistentEditors(self):
+        model = self.sampleView.model()
+        if model is not None:
+            for row in range(0, model.rowCount()):
+                for column in range(0, model.columnCount()):
+                    index = model.index(row, column)
+                    if self.sampleView.isPersistentEditorOpen(index):
+                        self.sampleView.closePersistentEditor(index)
+        # closePersistentEditor() only hides the editor widgets: delete any
+        # that are left in the viewport so they cannot pile up on every
+        # refresh of the sample table.
+        for editor in self.sampleView.viewport().findChildren(QtWidgets.QComboBox):
+            editor.setParent(None)
+            editor.deleteLater()
+
     def updateSampleView(self):
         if self.sampleRefreshDisabled:
             return
 
         self.updateGeometry()
 
+        # setModel(None) does not close persistent editors: they would stay
+        # in the viewport and accumulate on every refresh, corrupting the
+        # rendering of the table view (black sample area in the dialog).
+        self.closePersistentEditors()
+
         if self.layer is not None:
             self.writeSampleVrt()
             self.openSampleDatasource()
+        else:
+            # No sheet selected: do not fall back on a stale sample datasource
+            # (its fields would be empty while the sample model still has
+            # columns, crashing the field type delegate).
+            self.sampleView.setModel(None)
+            return
 
         layer = None
         dataSource = self.sampleDatasource

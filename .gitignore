@@ -1,9 +1,2 @@
-*.swp
-*.pyc
-*~
-
-.build
 .pytest_cache
-dist
-SpreadsheetLayers/help
-.coverage
+tests/data/output/
