@@ -28,6 +28,11 @@ from qgis.PyQt import QtCore, QtGui, QtWidgets
 
 from SpreadsheetLayers.widgets.SpreadsheetLayersDialog import SpreadsheetLayersDialog
 
+# NOTE (Qt6 migration): all Qt enums use scoped form (Qt.WindowType.Widget,
+# QgsProviderRegistry.WidgetMode.Embedded, etc.) which is required by PyQt6
+# and also accepted by PyQt5, ensuring compatibility with both QGIS 3.44 and
+# QGIS 4.x.
+
 
 class SpreadsheetLayersSourceSelect(QgsAbstractDataSourceWidget):
     """Source select widget embedded in the Data Source Manager dialog.

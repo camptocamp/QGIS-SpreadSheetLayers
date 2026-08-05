@@ -54,6 +54,10 @@ class GeometryType(Enum):
     wkbGeometryCollection = 9
 
 
+# QgsWkbTypes.Type.* uses scoped enum syntax required by PyQt6 (Qt6).
+# In PyQt5 the bare QgsWkbTypes.NoGeometry form also worked, but PyQt6
+# enforces the scoped form.  Keeping the scoped form ensures compatibility
+# with both Qt5 (QGIS 3.44) and Qt6 (QGIS 4.x).
 GEOMETRY_TYPES = (
     (QgsWkbTypes.Type.NoGeometry, GeometryType.wkbNone),
     (QgsWkbTypes.Type.Unknown, GeometryType.wkbUnknown),
@@ -790,7 +794,12 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
 
                 fields = []
 
-                while stream.readNext() != QtCore.QXmlStreamReader.EndDocument:
+                while (
+                    stream.readNext() != QtCore.QXmlStreamReader.TokenType.EndDocument
+                ):
+                    # NOTE: PyQt6 (Qt6) removed the unscoped QXmlStreamReader.EndDocument
+                    # enum, so the bare form raises AttributeError.  The scoped
+                    # TokenType.EndDocument works on both PyQt5 (Qt5) and PyQt6 (Qt6).
                     if stream.isComment():
                         text = stream.text()
                         pattern = re.compile(r"Header=(\w+)")
@@ -962,7 +971,7 @@ class SpreadsheetLayersDialog(QtWidgets.QDialog, FORM_CLASS):
 
         buffer.reset()
         content = buffer.readAll()
-        buffer.close
+        buffer.close()
 
         return content
 
