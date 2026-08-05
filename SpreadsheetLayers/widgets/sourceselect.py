@@ -36,7 +36,7 @@ class SpreadsheetLayersSourceSelect(QgsAbstractDataSourceWidget):
     and relies on the Data Source Manager buttons to add the layer.
     """
 
-    def __init__(self, parent=None, fl=QtCore.Qt.Widget, widgetMode=None):
+    def __init__(self, parent=None, fl=QtCore.Qt.WindowType.Widget, widgetMode=None):
         if widgetMode is None:
             widgetMode = QgsProviderRegistry.WidgetMode.Embedded
         super().__init__(parent, fl, widgetMode)
@@ -53,13 +53,15 @@ class SpreadsheetLayersSourceSelect(QgsAbstractDataSourceWidget):
             self._dialog.deleteLater()
 
         self._dialog = SpreadsheetLayersDialog(self)
-        self._dialog.setWindowFlags(QtCore.Qt.Widget)
+        self._dialog.setWindowFlags(QtCore.Qt.WindowType.Widget)
         self._layout.addWidget(self._dialog)
 
         # Turn the dialog button box into Add / Close / Help buttons and route
         # the "Add" button to addButtonClicked() (same pattern as Delimited Text).
         self.setupButtons(self._dialog.buttonBox)
-        help_button = self._dialog.buttonBox.button(QtWidgets.QDialogButtonBox.Help)
+        help_button = self._dialog.buttonBox.button(
+            QtWidgets.QDialogButtonBox.StandardButton.Help
+        )
         if help_button is not None:
             help_button.hide()
 
@@ -129,7 +131,9 @@ class SpreadsheetLayersSourceSelectProvider(QgsSourceSelectProvider):
         # providers and just before the metadata search tab.
         return QgsSourceSelectProvider.OrderSearchProvider - 1000
 
-    def createDataSourceWidget(self, parent=None, fl=QtCore.Qt.Widget, widgetMode=None):
+    def createDataSourceWidget(
+        self, parent=None, fl=QtCore.Qt.WindowType.Widget, widgetMode=None
+    ):
         if widgetMode is None:
             widgetMode = QgsProviderRegistry.WidgetMode.Embedded
         return SpreadsheetLayersSourceSelect(parent, fl, widgetMode)

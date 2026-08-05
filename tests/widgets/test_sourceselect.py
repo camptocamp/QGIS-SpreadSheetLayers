@@ -47,11 +47,15 @@ class TestSpreadsheetLayersSourceSelect(QgisTestCase):
         widget._dialog.setFilePath(path)
         widget._dialog.afterOpenFile()
 
+        vrt_path = os.path.join(OUTPUT_PATH, "x_y.ods.x_y.vrt")
+        if os.path.exists(vrt_path):
+            os.remove(vrt_path)
+
         with patch(
             "SpreadsheetLayers.widgets.SpreadsheetLayersDialog.SpreadsheetLayersDialog.vrtPath",
-            return_value=os.path.join(OUTPUT_PATH, "x_y.ods.x_y.vrt"),
+            return_value=vrt_path,
         ):
             widget.addButtonClicked()
 
-        assert os.path.exists(os.path.join(OUTPUT_PATH, "x_y.ods.x_y.vrt"))
+        assert os.path.exists(vrt_path)
         widget.deleteLater()
