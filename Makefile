@@ -21,10 +21,15 @@
 ###################CONFIGURE HERE########################
 PLUGINNAME = SpreadsheetLayers
 
+# QGIS version of the docker image, can be overriden by calling
+# QGIS_VERSION=3.44 make <target> or in local.mk
+QGIS_VERSION ?= 4.2
+# QGIS_VERSION ?= 3.44
+
 #this can be overiden by calling QGIS_PREFIX_PATH=/my/path make
 # DEFAULT_QGIS_PREFIX_PATH=/usr/local/qgis-master
 DEFAULT_QGIS_PREFIX_PATH = /usr
-QGISDIR ?= .local/share/QGIS/QGIS3/profiles/default
+QGISDIR ?= .local/share/QGIS/QGIS4/profiles/default
 # QGISDIR ?= .local/share/QGIS/QGIS3/profiles/japanese
 # QGISDIR ?= .local/share/QGIS/QGIS3/profiles/french
 # QGISDIR ?= .local/share/QGIS/QGIS3/profiles/german
@@ -48,6 +53,9 @@ export QGIS_DEBUG_FILE=/dev/null
 endif
 
 export DOCKER_BUILDKIT=1
+
+# Used by docker-compose.yaml to select the image tag
+export QGIS_VERSION
 
 DOCKER_RUN_CMD = docker compose run --rm --user `id -u` tester
 
@@ -73,6 +81,8 @@ clean: ## Delete generated files
 
 .PHONY: qgis
 qgis: ## Run QGIS desktop
+	touch ./docker/xauth
+	xauth nlist ${DISPLAY} | sed -e 's/^..../ffff/' | xauth -f ./docker/xauth nmerge -
 	docker compose run --rm --user `id -u`:`id -g` --publish "5679:5679" qgis
 
 .PHONY: check
@@ -103,8 +113,11 @@ build: docker-build
 	$(DOCKER_RUN_CMD) make -f docker.mk build
 
 .PHONY: docker-build
-docker-build: ## Build docker images
-	docker build --tag camptocamp/qgis-spreadsheetlayers:latest ./docker
+docker-build: ## Build docker images (QGIS_VERSION=<version> to select the QGIS version)
+	docker build \
+		--build-arg QGIS_VERSION=$(QGIS_VERSION) \
+		--tag camptocamp/qgis-spreadsheetlayers:$(QGIS_VERSION) \
+		./docker
 
 
 ###############

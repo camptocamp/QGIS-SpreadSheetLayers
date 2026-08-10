@@ -1,9 +1,11 @@
-FROM qgis/qgis:release-3_34
+ARG QGIS_VERSION=4.2
+FROM qgis/qgis:${QGIS_VERSION}
 
 RUN --mount=type=cache,target=/var/lib/apt/lists \
     --mount=type=cache,target=/var/cache,sharing=locked \
     apt-get update \
     && apt-get install --assume-yes --no-install-recommends \
+        curl \
         git \
         make \
         pyqt5-dev-tools \
@@ -12,7 +14,7 @@ RUN --mount=type=cache,target=/var/lib/apt/lists \
 
 COPY requirements-dev.txt /tmp/requirements-dev.txt
 RUN --mount=type=cache,target=/root/.cache \
-    python3 -m pip install --disable-pip-version-check --requirement=/tmp/requirements-dev.txt
+    python3 -m pip install --disable-pip-version-check --break-system-packages --requirement=/tmp/requirements-dev.txt
 
 RUN curl -L -o /tmp/tx-linux-amd64.tar.gz https://github.com/transifex/cli/releases/download/v1.6.7/tx-linux-amd64.tar.gz \
     && tar -C /usr/local/bin -xf /tmp/tx-linux-amd64.tar.gz tx \
@@ -22,10 +24,11 @@ RUN curl -L -o /tmp/tx-linux-amd64.tar.gz https://github.com/transifex/cli/relea
 RUN mkdir -p /app /home/user \
     && chmod 777 /home/user
 
-# Keep QGIS settings in a volume
-RUN mkdir -p /home/user/.local/share/QGIS/QGIS3/profiles/default \
+# Mounted as a volume by docker-compose to keep QGIS settings between runs.
+# QGIS creates the QGIS3/ or QGIS4/ subdirectory itself, so settings of
+# several QGIS versions can coexist in the same volume.
+RUN mkdir -p /home/user/.local/share/QGIS \
     && chmod -R 777 /home/user/.local
-VOLUME /home/user/.local/share/QGIS/QGIS3/profiles/default
 
 WORKDIR /app
 
