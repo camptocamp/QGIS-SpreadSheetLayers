@@ -9,7 +9,28 @@ This is required to use [qgis-plugin-ci](https://opengisch.github.io/qgis-plugin
 
 <!-- ## Unreleased [{version_tag}](https://github.com/camptocamp/QGIS-SpreadSheetLayers/releases/tag/{version_tag}) - YYYY-MM-DD -->
 
-## Version 2.1.0 (Unreleased)
+
+## Version 2.2.0
+
+- Compatibility with QGIS 4 / Qt 6
+- Add Spreadsheet Layer in Data Source Manager
+
+## Version 2.1.3
+
+- Update translations
+- Fix WKB type translation with QGIS < 3.18
+
+## Version 2.1.2
+
+- Update translations
+- Generate help for all languages
+
+## Version 2.1.1
+
+- Update translations
+- Generate help for all languages
+
+## Version 2.1.0
 
 - Add support for WKT and WKB encoded geometries
 - Add translations for japanese
