@@ -1,2 +1,7 @@
 .pytest_cache
+__pycache__/
+dist
+docker/xauth
+SpreadsheetLayers/help
 tests/data/output/
+.coverage

@@ -8,10 +8,58 @@ Development install (linux)
 
    git clone git@github.com:camptocamp/QGIS-SpreadSheetLayers.git SpreadsheetLayers
    cd SpreadsheetLayers
-   ln -s ${PWD}/SpreadsheetLayers ~/.local/share/QGIS/QGIS3/profiles/default/python/plugins
-   make
+   make build
+   make link
 
 - run QGIS and activate SpreadsheetLayers plugin.
+
+The :code:`link` target creates the symbolic link in the QGIS profile
+directory given by :code:`QGISDIR`, which defaults to
+:code:`.local/share/QGIS/QGIS4/profiles/default` (relative to your
+:code:`$HOME`). Override it to target another QGIS version or profile:
+
+.. code::
+
+   make link QGISDIR=.local/share/QGIS/QGIS3/profiles/default
+
+Docker environment
+------------------
+
+Linters, tests and packaging run in a Docker image based on the official
+:code:`qgis/qgis` images. Build it with:
+
+.. code::
+
+   make docker-build
+
+The QGIS version defaults to the one set in the :code:`Makefile` and can be
+selected with the :code:`QGIS_VERSION` variable:
+
+.. code::
+
+   make docker-build test QGIS_VERSION=3.44
+
+Each version is tagged separately
+(:code:`camptocamp/qgis-spreadsheetlayers:<version>`), so images for several
+QGIS versions can coexist. To use a version for all the commands of your
+terminal session, export it:
+
+.. code::
+
+   export QGIS_VERSION=3.44
+
+Then run the checks and the tests suite:
+
+.. code::
+
+   make check
+   make test
+
+Or run QGIS desktop with the plugin loaded:
+
+.. code::
+
+   make qgis
 
 Release a new version
 ---------------------

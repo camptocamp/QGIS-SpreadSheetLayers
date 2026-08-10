@@ -11,13 +11,25 @@ on:
 
 env:
   HAS_SECRETS: ${{ secrets.HAS_SECRETS }}
+  # QGIS version used for the version independent steps (linters, transifex)
+  MAIN_QGIS_VERSION: '4.2'
 
 jobs:
   main:
     runs-on: ubuntu-24.04
-    name: Continuous integration
+    name: QGIS ${{ matrix.qgis-version }}
     timeout-minutes: 90
     if: "!startsWith(github.event.head_commit.message, '[skip ci] ')"
+
+    strategy:
+      fail-fast: false
+      matrix:
+        qgis-version:
+          - '3.44'
+          - '4.2'
+
+    env:
+      QGIS_VERSION: ${{ matrix.qgis-version }}
 
     steps:
       - uses: actions/checkout@v3
@@ -27,6 +39,7 @@ jobs:
 
       - name: Run linters
         run: make check
+        if: env.QGIS_VERSION == env.MAIN_QGIS_VERSION
 
       - name: Run automated tests suite
         run: make test
@@ -39,9 +52,11 @@ jobs:
         if: >
           github.ref == 'refs/heads/master'
           && env.HAS_SECRETS == 'HAS_SECRETS'
+          && env.QGIS_VERSION == env.MAIN_QGIS_VERSION
 
       - name: Push on transifex
         run: make tx-push
         if: >
           github.ref == 'refs/heads/master'
           && env.HAS_SECRETS == 'HAS_SECRETS'
+          && env.QGIS_VERSION == env.MAIN_QGIS_VERSION
