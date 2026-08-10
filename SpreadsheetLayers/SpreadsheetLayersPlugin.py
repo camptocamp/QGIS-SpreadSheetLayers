@@ -25,10 +25,12 @@ import os.path
 from importlib import resources
 
 from qgis.core import Qgis, QgsVectorLayer, QgsProject
+from qgis.gui import QgsGui
 from qgis.PyQt import QtCore, QtGui, QtWidgets
 
-# Import the code for the dialog
+# Import the code for the dialog (for the "showDialog" standalone flow)
 from .widgets.SpreadsheetLayersDialog import SpreadsheetLayersDialog
+from .widgets.sourceselect import SpreadsheetLayersSourceSelectProvider
 
 
 class SpreadsheetLayersPlugin(QtCore.QObject):
@@ -83,6 +85,11 @@ class SpreadsheetLayersPlugin(QtCore.QObject):
             self.iface.layerMenu().insertAction(action, self.action)
         self.iface.layerToolBar().addAction(self.action)
 
+        self.sourceSelectProvider = SpreadsheetLayersSourceSelectProvider()
+        QgsGui.instance().sourceSelectProviderRegistry().addProvider(
+            self.sourceSelectProvider
+        )
+
     def unload(self):
         if hasattr(self, "action"):
             if Qgis.QGIS_VERSION_INT > 20400:
@@ -90,11 +97,15 @@ class SpreadsheetLayersPlugin(QtCore.QObject):
             else:
                 self.iface.layerMenu().removeAction(self.action)
             self.iface.layerToolBar().removeAction(self.action)
+        if hasattr(self, "sourceSelectProvider"):
+            QgsGui.instance().sourceSelectProviderRegistry().removeProvider(
+                self.sourceSelectProvider
+            )
 
     def showDialog(self):
         dlg = SpreadsheetLayersDialog(self.iface.mainWindow())
         dlg.show()
-        if dlg.exec_():
+        if dlg.exec():
             layer = QgsVectorLayer(dlg.vrtPath(), dlg.layerName(), "ogr")
             layer.setProviderEncoding("UTF-8")
             if not layer.isValid():
